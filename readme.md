@@ -23,7 +23,7 @@ npm install mdast-util-to-markdown
 Say we have the following script, `example.js`:
 
 ```js
-var toMarkdown = require('.')
+var toMarkdown = require('mdast-util-to-markdown')
 
 var tree = {
   type: 'root',
