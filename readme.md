@@ -63,7 +63,7 @@ would otherwise turn into a list and image respectively):
 
 ## API
 
-### `toMarkdown(doc[, options])`
+### `toMarkdown(tree[, options])`
 
 Serialize **[mdast][]** to markdown.
 
