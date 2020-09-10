@@ -133,15 +133,20 @@ they’re empty.
 
 Marker to use to serialize strong (`'*'` or `'_'`, default: `'*'`).
 
-##### Escape options
+##### Extension options
+
+###### `options.extensions`
+
+List of extensions (`Array.<ToMarkdownExtension>`).
+Each `ToMarkdownExtension` is an object with optional `unsafe` and `handlers`
+keys, mapping to the values which can also be passed in directly, documented
+below.
 
 ###### `options.unsafe`
 
 List of patterns to escape.
 Useful for syntax extensions.
 Take a look at [`lib/unsafe.js`][unsafe] for examples.
-
-##### Extensions or overwrites options
 
 ###### `options.handlers`
 
