@@ -158,6 +158,15 @@ Take a look at [`lib/handle`][handlers] for examples.
 
 `string` — Serialized markdown.
 
+## List of extensions
+
+*   [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
+    — parse frontmatter (YAML, TOML, more)
+*   [`syntax-tree/mdast-util-gfm-autolink-literal`](https://github.com/syntax-tree/mdast-util-gfm-autolink-literal)
+    — parse GFM autolink literals
+*   [`syntax-tree/mdast-util-gfm-strikethrough`](https://github.com/syntax-tree/mdast-util-gfm-strikethrough)
+    — parse GFM strikethrough
+
 ## Security
 
 `mdast-util-to-markdown` will do its best to serialize markdown to match the
