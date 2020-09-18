@@ -1379,6 +1379,21 @@ test('link', function (t) {
     'should use an autolink for nodes w/ a value similar to the url and a protocol (email)'
   )
 
+  t.deepEqual(
+    to({
+      type: 'paragraph',
+      children: [
+        {
+          type: 'link',
+          url: 'mailto:a.b-c_d@a.b',
+          children: [{type: 'text', value: 'a.b-c_d@a.b'}]
+        }
+      ]
+    }),
+    '<a.b-c_d@a.b>',
+    'should not escape in autolinks'
+  )
+
   t.equal(
     to({type: 'link', title: 'b'}, {quote: "'"}),
     "[](<> 'b')",
