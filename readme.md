@@ -160,6 +160,8 @@ Take a look at [`lib/handle`][handlers] for examples.
 
 ## List of extensions
 
+*   [`syntax-tree/mdast-util-footnote`](https://github.com/syntax-tree/mdast-util-footnote)
+    — serialize footnotes
 *   [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
     — serialize frontmatter (YAML, TOML, more)
 *   [`syntax-tree/mdast-util-gfm`](https://github.com/syntax-tree/mdast-util-gfm)
