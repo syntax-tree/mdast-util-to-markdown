@@ -509,6 +509,14 @@ test('break', function (t) {
 test('code (flow)', function (t) {
   t.equal(to({type: 'code'}), '```\n```', 'should support empty code')
 
+  t.throws(
+    function () {
+      to({type: 'code'}, {fence: '+'})
+    },
+    /Cannot serialize code with `\+` for `options\.fence`, expected `` ` `` or `~`/,
+    'should throw on when given an incorrect `fence`'
+  )
+
   t.equal(
     to({type: 'code', value: 'a'}),
     '    a',
