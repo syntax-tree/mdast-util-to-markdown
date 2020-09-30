@@ -133,6 +133,11 @@ they’re empty.
 
 Marker to use to serialize strong (`'*'` or `'_'`, default: `'*'`).
 
+###### `options.tightDefinitions`
+
+Whether to separate definitions with a single line feed (`boolean`, default:
+`false`).
+
 ##### Extension options
 
 ###### `options.extensions`
