@@ -83,6 +83,16 @@ heading as the opening sequence (`boolean`, default: `false`).
 
 Marker to use to serialize emphasis (`'*'` or `'_'`, default: `'*'`).
 
+###### `options.fence`
+
+Marker to use to serialize fenced code (``'`'`` or `'~'`, default: ``'`'``).
+
+###### `options.fences`
+
+Whether to use fenced code always (`boolean`, default: `false`).
+The default is to fenced code if there is a language defined, if the code is
+empty, or if it starts or ends in empty lines.
+
 ###### `options.incrementListMarker`
 
 Whether to increment the value of bullets of items in ordered lists (`boolean`,
@@ -94,16 +104,6 @@ Whether to indent the content of list items with the size of the bullet plus one
 space (when `'one'`) or a tab stop (`'tab'`), or depending on the item and its
 parent list (`'mixed'`, uses `'one'` if the item and list are tight and `'tab'`
 otherwise) (`'one'`, `'tab'`, or `'mixed'`, default: `'tab'`).
-
-###### `options.fence`
-
-Marker to use to serialize fenced code (``'`'`` or `'~'`, default: ``'`'``).
-
-###### `options.fences`
-
-Whether to use fenced code always (`boolean`, default: `false`).
-The default is to fenced code if there is a language defined, if the code is
-empty, or if it starts or ends in empty lines.
 
 ###### `options.quote`
 
