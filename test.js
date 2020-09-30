@@ -2459,5 +2459,13 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (3)')
 
+  doc = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
+
+  t.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip autolinks w/ potentially escapable characters'
+  )
+
   t.end()
 })
