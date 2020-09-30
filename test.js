@@ -18,7 +18,7 @@ test('core', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
       ]
     }),
-    'a\n\n***\n\nb',
+    'a\n\n***\n\nb\n',
     'should support a `root`'
   )
 
@@ -32,7 +32,7 @@ test('core', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
       ]
     }),
-    'a\n\n[b]: <>\n\n[c]: <>\n\nd',
+    'a\n\n[b]: <>\n\n[c]: <>\n\nd\n',
     'should support adjacent definitions'
   )
 
@@ -49,7 +49,7 @@ test('core', function (t) {
       },
       {tightDefinitions: true}
     ),
-    'a\n\n[b]: <>\n[c]: <>\n\nd',
+    'a\n\n[b]: <>\n[c]: <>\n\nd\n',
     'should support tight adjacent definitions when `tightDefinitions: true`'
   )
 
@@ -65,7 +65,7 @@ test('core', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
       ]
     }),
-    'a\n\n*\n\n<!---->\n\n*\n\n1.\n\n<!---->\n\n1.\n\nd',
+    'a\n\n*\n\n<!---->\n\n*\n\n1.\n\n<!---->\n\n1.\n\nd\n',
     'should inject HTML comments between lists w/ the same ordered as they’d otherwise run into each other'
   )
 
@@ -78,7 +78,7 @@ test('core', function (t) {
         {type: 'code', value: 'b'}
       ]
     }),
-    '    a\n\n*\n\n<!---->\n\n    b',
+    '    a\n\n*\n\n<!---->\n\n    b\n',
     'should inject HTML comments between lists and an indented code as they’d otherwise run into each other'
   )
 
@@ -113,14 +113,14 @@ test('core', function (t) {
 })
 
 test('blockquote', function (t) {
-  t.equal(to({type: 'blockquote'}), '>', 'should support a block quote')
+  t.equal(to({type: 'blockquote'}), '>\n', 'should support a block quote')
 
   t.equal(
     to({
       type: 'blockquote',
       children: [{type: 'paragraph', children: [{type: 'text', value: 'a'}]}]
     }),
-    '> a',
+    '> a\n',
     'should support a block quote w/ a child'
   )
 
@@ -133,7 +133,7 @@ test('blockquote', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
       ]
     }),
-    '> a\n>\n> ***\n>\n> b',
+    '> a\n>\n> ***\n>\n> b\n',
     'should support a block quote w/ children'
   )
 
@@ -142,7 +142,7 @@ test('blockquote', function (t) {
       type: 'blockquote',
       children: [{type: 'paragraph', children: [{type: 'text', value: 'a\nb'}]}]
     }),
-    '> a\n> b',
+    '> a\n> b\n',
     'should support text w/ a line ending in a block quote'
   )
 
@@ -159,7 +159,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> ab',
+    '> ab\n',
     'should support adjacent texts in a block quote'
   )
 
@@ -190,7 +190,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> b\n>\n> > a\n> > `b\n> > c`\n> > d\n> >\n> > # a b',
+    '> a\n> b\n>\n> > a\n> > `b\n> > c`\n> > d\n> >\n> > # a b\n',
     'should support a block quote in a block quote'
   )
 
@@ -208,13 +208,13 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\\\n> b',
+    '> a\\\n> b\n',
     'should support a break in a block quote'
   )
 
   t.equal(
     to({type: 'blockquote', children: [{type: 'code', value: 'a\nb\n\nc'}]}),
-    '>     a\n>     b\n>\n>     c',
+    '>     a\n>     b\n>\n>     c\n',
     'should support code (flow, indented) in a block quote'
   )
 
@@ -223,7 +223,7 @@ test('blockquote', function (t) {
       type: 'blockquote',
       children: [{type: 'code', lang: 'a\nb', value: 'c\nd\n\ne'}]
     }),
-    '> ```a&#xA;b\n> c\n> d\n>\n> e\n> ```',
+    '> ```a&#xA;b\n> c\n> d\n>\n> e\n> ```\n',
     'should support code (flow, fenced) in a block quote'
   )
 
@@ -241,7 +241,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> `b\n> c`\n> d',
+    '> a\n> `b\n> c`\n> d\n',
     'should support code (text) in a block quote'
   )
 
@@ -259,7 +259,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> `  b\n> c  `\n> d',
+    '> a\n> `  b\n> c  `\n> d\n',
     'should support padded code (text) in a block quote'
   )
 
@@ -274,7 +274,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> [a\n> b]: <c&#xA;d> "e\n> f"\n>\n> a\n> b',
+    '> [a\n> b]: <c&#xA;d> "e\n> f"\n>\n> a\n> b\n',
     'should support a definition in a block quote'
   )
 
@@ -292,7 +292,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> *c\n> d*\n> d',
+    '> a\n> *c\n> d*\n> d\n',
     'should support an emphasis in a block quote'
   )
 
@@ -306,7 +306,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> # a&#xA;b',
+    '> # a&#xA;b\n',
     'should support a heading (atx) in a block quote'
   )
 
@@ -323,7 +323,7 @@ test('blockquote', function (t) {
       },
       {setext: true}
     ),
-    '> a\n> b\n> =',
+    '> a\n> b\n> =\n',
     'should support a heading (setext) in a block quote'
   )
 
@@ -332,7 +332,7 @@ test('blockquote', function (t) {
       type: 'blockquote',
       children: [{type: 'html', value: '<div\nhidden>'}]
     }),
-    '> <div\n> hidden>',
+    '> <div\n> hidden>\n',
     'should support html (flow) in a block quote'
   )
 
@@ -350,7 +350,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a <span\n> hidden>\n> b',
+    '> a <span\n> hidden>\n> b\n',
     'should support html (text) in a block quote'
   )
 
@@ -368,7 +368,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> ![d\n> e](<b&#xA;c> "f\n> g")\n> h',
+    '> a\n> ![d\n> e](<b&#xA;c> "f\n> g")\n> h\n',
     'should support an image (resource) in a block quote'
   )
 
@@ -386,7 +386,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> ![b\n> c][d\n> e]\n> f',
+    '> a\n> ![b\n> c][d\n> e]\n> f\n',
     'should support an image (reference) in a block quote'
   )
 
@@ -409,7 +409,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> [d\n> e](<b&#xA;c> "f\n> g")\n> h',
+    '> a\n> [d\n> e](<b&#xA;c> "f\n> g")\n> h\n',
     'should support a link (resource) in a block quote'
   )
 
@@ -431,7 +431,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> [b\n> c][d\n> e]\n> f',
+    '> a\n> [b\n> c][d\n> e]\n> f\n',
     'should support a link (reference) in a block quote'
   )
 
@@ -466,7 +466,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> b\n>\n> *   c\n>     d\n>\n> *   ***\n>\n> *   e\n>     f',
+    '> a\n> b\n>\n> *   c\n>     d\n>\n> *   ***\n>\n> *   e\n>     f\n',
     'should support a list in a block quote'
   )
 
@@ -484,7 +484,7 @@ test('blockquote', function (t) {
         }
       ]
     }),
-    '> a\n> **c\n> d**\n> d',
+    '> a\n> **c\n> d**\n> d\n',
     'should support a strong in a block quote'
   )
 
@@ -493,7 +493,7 @@ test('blockquote', function (t) {
       type: 'blockquote',
       children: [{type: 'thematicBreak'}, {type: 'thematicBreak'}]
     }),
-    '> ***\n>\n> ***',
+    '> ***\n>\n> ***\n',
     'should support a thematic break in a block quote'
   )
 
@@ -507,7 +507,7 @@ test('break', function (t) {
 })
 
 test('code (flow)', function (t) {
-  t.equal(to({type: 'code'}), '```\n```', 'should support empty code')
+  t.equal(to({type: 'code'}), '```\n```\n', 'should support empty code')
 
   t.throws(
     function () {
@@ -519,145 +519,145 @@ test('code (flow)', function (t) {
 
   t.equal(
     to({type: 'code', value: 'a'}),
-    '    a',
+    '    a\n',
     'should support code w/ a value (indent)'
   )
 
   t.equal(
     to({type: 'code', value: 'a'}, {fences: true}),
-    '```\na\n```',
+    '```\na\n```\n',
     'should support code w/ a value (fences)'
   )
 
   t.equal(
     to({type: 'code', lang: 'a'}),
-    '```a\n```',
+    '```a\n```\n',
     'should support code w/ a lang'
   )
 
   t.equal(
     to({type: 'code', meta: 'a'}),
-    '```\n```',
+    '```\n```\n',
     'should support (ignore) code w/ only a meta'
   )
 
   t.equal(
     to({type: 'code', lang: 'a', meta: 'b'}),
-    '```a b\n```',
+    '```a b\n```\n',
     'should support code w/ lang and meta'
   )
 
   t.equal(
     to({type: 'code', lang: 'a b'}),
-    '```a&#x20;b\n```',
+    '```a&#x20;b\n```\n',
     'should encode a space in `lang`'
   )
 
   t.equal(
     to({type: 'code', lang: 'a\nb'}),
-    '```a&#xA;b\n```',
+    '```a&#xA;b\n```\n',
     'should encode a line ending in `lang`'
   )
 
   t.equal(
     to({type: 'code', lang: 'a`b'}),
-    '```a&#x60;b\n```',
+    '```a&#x60;b\n```\n',
     'should encode a grave accent in `lang`'
   )
 
   t.equal(
     to({type: 'code', lang: 'a\\-b'}),
-    '```a\\\\-b\n```',
+    '```a\\\\-b\n```\n',
     'should escape a backslash in `lang`'
   )
 
   t.equal(
     to({type: 'code', lang: 'x', meta: 'a b'}),
-    '```x a b\n```',
+    '```x a b\n```\n',
     'should not encode a space in `meta`'
   )
 
   t.equal(
     to({type: 'code', lang: 'x', meta: 'a\nb'}),
-    '```x a&#xA;b\n```',
+    '```x a&#xA;b\n```\n',
     'should encode a line ending in `meta`'
   )
 
   t.equal(
     to({type: 'code', lang: 'x', meta: 'a`b'}),
-    '```x a&#x60;b\n```',
+    '```x a&#x60;b\n```\n',
     'should encode a grave accent in `meta`'
   )
 
   t.equal(
     to({type: 'code', lang: 'x', meta: 'a\\-b'}),
-    '```x a\\\\-b\n```',
+    '```x a\\\\-b\n```\n',
     'should escape a backslash in `meta`'
   )
 
   t.equal(
     to({type: 'code'}, {fence: '~'}),
-    '~~~\n~~~',
+    '~~~\n~~~\n',
     'should support fenced code w/ tildes when `fence: "~"`'
   )
 
   t.equal(
     to({type: 'code', lang: 'a`b'}, {fence: '~'}),
-    '~~~a`b\n~~~',
+    '~~~a`b\n~~~\n',
     'should not encode a grave accent when using tildes for fences'
   )
 
   t.equal(
     to({type: 'code', value: '```\nasd\n```'}, {fences: true}),
-    '````\n```\nasd\n```\n````',
+    '````\n```\nasd\n```\n````\n',
     'should use more grave accents for fences if there are streaks of grave accents in the value (fences)'
   )
 
   t.equal(
     to({type: 'code', value: '~~~\nasd\n~~~'}, {fence: '~', fences: true}),
-    '~~~~\n~~~\nasd\n~~~\n~~~~',
+    '~~~~\n~~~\nasd\n~~~\n~~~~\n',
     'should use more tildes for fences if there are streaks of tildes in the value (fences)'
   )
 
   t.equal(
     to({type: 'code', lang: 'a', value: 'b'}),
-    '```a\nb\n```',
+    '```a\nb\n```\n',
     'should use a fence if there is an info'
   )
 
   t.equal(
     to({type: 'code', value: ' '}),
-    '```\n \n```',
+    '```\n \n```\n',
     'should use a fence if there is only whitespace'
   )
 
   t.equal(
     to({type: 'code', value: '\na'}),
-    '```\n\na\n```',
+    '```\n\na\n```\n',
     'should use a fence if there first line is blank (void)'
   )
 
   t.equal(
     to({type: 'code', value: ' \na'}),
-    '```\n \na\n```',
+    '```\n \na\n```\n',
     'should use a fence if there first line is blank (filled)'
   )
 
   t.equal(
     to({type: 'code', value: 'a\n'}),
-    '```\na\n\n```',
+    '```\na\n\n```\n',
     'should use a fence if there last line is blank (void)'
   )
 
   t.equal(
     to({type: 'code', value: 'a\n '}),
-    '```\na\n \n```',
+    '```\na\n \n```\n',
     'should use a fence if there last line is blank (filled)'
   )
 
   t.equal(
     to({type: 'code', value: '  a\n\n b'}),
-    '      a\n\n     b',
+    '      a\n\n     b\n',
     'should use an indent if the value is indented'
   )
 
@@ -667,139 +667,139 @@ test('code (flow)', function (t) {
 test('definition', function (t) {
   t.equal(
     to({type: 'definition'}),
-    '[]: <>',
+    '[]: <>\n',
     'should support a definition w/o label'
   )
 
   t.equal(
     to({type: 'definition', label: 'a'}),
-    '[a]: <>',
+    '[a]: <>\n',
     'should support a definition w/ label'
   )
 
   t.equal(
     to({type: 'definition', label: '\\'}),
-    '[\\\\]: <>',
+    '[\\\\]: <>\n',
     'should escape a backslash in `label`'
   )
 
   t.equal(
     to({type: 'definition', label: '['}),
-    '[\\[]: <>',
+    '[\\[]: <>\n',
     'should escape an opening bracket in `label`'
   )
 
   t.equal(
     to({type: 'definition', label: ']'}),
-    '[\\]]: <>',
+    '[\\]]: <>\n',
     'should escape a closing bracket in `label`'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a'}),
-    '[a]: <>',
+    '[a]: <>\n',
     'should support a definition w/ identifier'
   )
 
   t.equal(
     to({type: 'definition', identifier: '\\'}),
-    '[\\\\]: <>',
+    '[\\\\]: <>\n',
     'should escape a backslash in `identifier`'
   )
 
   t.equal(
     to({type: 'definition', identifier: '['}),
-    '[\\[]: <>',
+    '[\\[]: <>\n',
     'should escape an opening bracket in `identifier`'
   )
 
   t.equal(
     to({type: 'definition', identifier: ']'}),
-    '[\\]]: <>',
+    '[\\]]: <>\n',
     'should escape a closing bracket in `identifier`'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b'}),
-    '[a]: b',
+    '[a]: b\n',
     'should support a definition w/ url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b c'}),
-    '[a]: <b c>',
+    '[a]: <b c>\n',
     'should support a definition w/ enclosed url w/ whitespace in url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b <c'}),
-    '[a]: <b \\<c>',
+    '[a]: <b \\<c>\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b >c'}),
-    '[a]: <b \\>c>',
+    '[a]: <b \\>c>\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b \\.c'}),
-    '[a]: <b \\\\.c>',
+    '[a]: <b \\\\.c>\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b\nc'}),
-    '[a]: <b&#xA;c>',
+    '[a]: <b&#xA;c>\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b(c'}),
-    '[a]: b\\(c',
+    '[a]: b\\(c\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b)c'}),
-    '[a]: b\\)c',
+    '[a]: b\\)c\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', url: 'b\\?c'}),
-    '[a]: b\\\\?c',
+    '[a]: b\\\\?c\n',
     'should escape a backslash in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', title: 'b'}),
-    '[a]: <> "b"',
+    '[a]: <> "b"\n',
     'should support a definition w/ title'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', title: '"'}),
-    '[a]: <> "\\""',
+    '[a]: <> "\\""\n',
     'should escape a quote in `title` in a title'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', title: '\\'}),
-    '[a]: <> "\\\\"',
+    '[a]: <> "\\\\"\n',
     'should escape a backslash in `title` in a title'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', title: 'b'}, {quote: "'"}),
-    "[a]: <> 'b'",
+    "[a]: <> 'b'\n",
     'should support a definition w/ title when `quote: "\'"`'
   )
 
   t.equal(
     to({type: 'definition', identifier: 'a', title: "'"}, {quote: "'"}),
-    "[a]: <> '\\''",
+    "[a]: <> '\\''\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
@@ -815,7 +815,7 @@ test('definition', function (t) {
 })
 
 test('emphasis', function (t) {
-  t.equal(to({type: 'emphasis'}), '**', 'should support an empty emphasis')
+  t.equal(to({type: 'emphasis'}), '**\n', 'should support an empty emphasis')
 
   t.throws(
     function () {
@@ -827,7 +827,7 @@ test('emphasis', function (t) {
 
   t.equal(
     to({type: 'emphasis', children: [{type: 'text', value: 'a'}]}),
-    '*a*',
+    '*a*\n',
     'should support an emphasis w/ children'
   )
 
@@ -836,7 +836,7 @@ test('emphasis', function (t) {
       {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
       {emphasis: '_'}
     ),
-    '_a_',
+    '_a_\n',
     'should support an emphasis w/ underscores when `emphasis: "_"`'
   )
 
@@ -846,37 +846,37 @@ test('emphasis', function (t) {
 test('heading', function (t) {
   t.equal(
     to({type: 'heading'}),
-    '#',
+    '#\n',
     'should serialize a heading w/o rank as a heading of rank 1'
   )
 
   t.equal(
     to({type: 'heading', depth: 1}),
-    '#',
+    '#\n',
     'should serialize a heading w/ rank 1'
   )
 
   t.equal(
     to({type: 'heading', depth: 6}),
-    '######',
+    '######\n',
     'should serialize a heading w/ rank 6'
   )
 
   t.equal(
     to({type: 'heading', depth: 7}),
-    '######',
+    '######\n',
     'should serialize a heading w/ rank 7 as 6'
   )
 
   t.equal(
     to({type: 'heading', depth: 0}),
-    '#',
+    '#\n',
     'should serialize a heading w/ rank 0 as 1'
   )
 
   t.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a'}]}),
-    '# a',
+    '# a\n',
     'should serialize a heading w/ content'
   )
 
@@ -885,7 +885,7 @@ test('heading', function (t) {
       {type: 'heading', depth: 1, children: [{type: 'text', value: 'a'}]},
       {setext: true}
     ),
-    'a\n=',
+    'a\n=\n',
     'should serialize a heading w/ rank 1 as setext when `setext: true`'
   )
 
@@ -894,7 +894,7 @@ test('heading', function (t) {
       {type: 'heading', depth: 2, children: [{type: 'text', value: 'a'}]},
       {setext: true}
     ),
-    'a\n-',
+    'a\n-\n',
     'should serialize a heading w/ rank 2 as setext when `setext: true`'
   )
 
@@ -903,7 +903,7 @@ test('heading', function (t) {
       {type: 'heading', depth: 3, children: [{type: 'text', value: 'a'}]},
       {setext: true}
     ),
-    '### a',
+    '### a\n',
     'should serialize a heading w/ rank 3 as atx when `setext: true`'
   )
 
@@ -912,7 +912,7 @@ test('heading', function (t) {
       {type: 'heading', depth: 2, children: [{type: 'text', value: 'aa\rb'}]},
       {setext: true}
     ),
-    'aa\rb\n-',
+    'aa\rb\n-\n',
     'should serialize a setext underline as long as the last line (1)'
   )
 
@@ -925,25 +925,25 @@ test('heading', function (t) {
       },
       {setext: true}
     ),
-    'a\r\nbbb\n===',
+    'a\r\nbbb\n===\n',
     'should serialize a setext underline as long as the last line (2)'
   )
 
   t.equal(
     to({type: 'heading', depth: 1}, {setext: true}),
-    '#',
+    '#\n',
     'should serialize an empty heading w/ rank 1 as atx when `setext: true`'
   )
 
   t.equal(
     to({type: 'heading', depth: 2}, {setext: true}),
-    '##',
+    '##\n',
     'should serialize an empty heading w/ rank 2 as atx when `setext: true`'
   )
 
   t.equal(
     to({type: 'heading'}, {closeAtx: true}),
-    '# #',
+    '# #\n',
     'should serialize a with a closing sequence when `closeAtx` (empty)'
   )
 
@@ -952,7 +952,7 @@ test('heading', function (t) {
       {type: 'heading', depth: 3, children: [{type: 'text', value: 'a'}]},
       {closeAtx: true}
     ),
-    '### a ###',
+    '### a ###\n',
     'should serialize a with a closing sequence when `closeAtx` (content)'
   )
 
@@ -962,98 +962,98 @@ test('heading', function (t) {
 test('html', function (t) {
   t.equal(to({type: 'html'}), '', 'should support a void html')
   t.equal(to({type: 'html', value: ''}), '', 'should support an empty html')
-  t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb', 'should support html')
+  t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb\n', 'should support html')
   t.end()
 })
 
 test('image', function (t) {
-  t.equal(to({type: 'image'}), '![]()', 'should support an image')
+  t.equal(to({type: 'image'}), '![]()\n', 'should support an image')
 
-  t.equal(to({type: 'image', alt: 'a'}), '![a]()', 'should support `alt`')
+  t.equal(to({type: 'image', alt: 'a'}), '![a]()\n', 'should support `alt`')
 
-  t.equal(to({type: 'image', url: 'a'}), '![](a)', 'should support a url')
+  t.equal(to({type: 'image', url: 'a'}), '![](a)\n', 'should support a url')
 
   t.equal(
     to({type: 'image', title: 'a'}),
-    '![](<> "a")',
+    '![](<> "a")\n',
     'should support a title'
   )
 
   t.equal(
     to({type: 'image', url: 'a', title: 'b'}),
-    '![](a "b")',
+    '![](a "b")\n',
     'should support a url and title'
   )
 
   t.equal(
     to({type: 'image', url: 'b c'}),
-    '![](<b c>)',
+    '![](<b c>)\n',
     'should support an image w/ enclosed url w/ whitespace in url'
   )
 
   t.equal(
     to({type: 'image', url: 'b <c'}),
-    '![](<b \\<c>)',
+    '![](<b \\<c>)\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'image', url: 'b >c'}),
-    '![](<b \\>c>)',
+    '![](<b \\>c>)\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'image', url: 'b \\+c'}),
-    '![](<b \\\\+c>)',
+    '![](<b \\\\+c>)\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'image', url: 'b\nc'}),
-    '![](<b&#xA;c>)',
+    '![](<b&#xA;c>)\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'image', url: 'b(c'}),
-    '![](b\\(c)',
+    '![](b\\(c)\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'image', url: 'b)c'}),
-    '![](b\\)c)',
+    '![](b\\)c)\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'image', url: 'b\\+c'}),
-    '![](b\\\\+c)',
+    '![](b\\\\+c)\n',
     'should escape a backslash in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'image', title: 'b"c'}),
-    '![](<> "b\\"c")',
+    '![](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
   t.equal(
     to({type: 'image', title: 'b\\.c'}),
-    '![](<> "b\\\\.c")',
+    '![](<> "b\\\\.c")\n',
     'should escape a backslash in `title`'
   )
 
   t.equal(
     to({type: 'image', title: 'b'}, {quote: "'"}),
-    "![](<> 'b')",
+    "![](<> 'b')\n",
     'should support an image w/ title when `quote: "\'"`'
   )
 
   t.equal(
     to({type: 'image', title: "'"}, {quote: "'"}),
-    "![](<> '\\'')",
+    "![](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
@@ -1071,25 +1071,25 @@ test('image', function (t) {
 test('imageReference', function (t) {
   t.equal(
     to({type: 'imageReference'}),
-    '![][]',
+    '![][]\n',
     'should support a link reference (nonsensical)'
   )
 
   t.equal(
     to({type: 'imageReference', alt: 'a'}),
-    '![a][]',
+    '![a][]\n',
     'should support `alt`'
   )
 
   t.equal(
     to({type: 'imageReference', identifier: 'a'}),
-    '![][a]',
+    '![][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
   t.equal(
     to({type: 'imageReference', label: 'a'}),
-    '![][a]',
+    '![][a]\n',
     'should support a `label` (nonsensical)'
   )
 
@@ -1100,7 +1100,7 @@ test('imageReference', function (t) {
       label: 'A',
       referenceType: 'shortcut'
     }),
-    '![A]',
+    '![A]\n',
     'should support `referenceType: "shortcut"`'
   )
 
@@ -1111,7 +1111,7 @@ test('imageReference', function (t) {
       label: 'A',
       referenceType: 'collapsed'
     }),
-    '![A][]',
+    '![A][]\n',
     'should support `referenceType: "collapsed"`'
   )
 
@@ -1122,7 +1122,7 @@ test('imageReference', function (t) {
       label: 'A',
       referenceType: 'full'
     }),
-    '![A][A]',
+    '![A][A]\n',
     'should support `referenceType: "full"` (default)'
   )
 
@@ -1134,7 +1134,7 @@ test('imageReference', function (t) {
       identifier: '&amp;',
       referenceType: 'full'
     }),
-    '![&][&]',
+    '![&][&]\n',
     'should prefer label over identifier'
   )
 
@@ -1145,7 +1145,7 @@ test('imageReference', function (t) {
       identifier: '&amp;',
       referenceType: 'full'
     }),
-    '![&][&]',
+    '![&][&]\n',
     'should decode `identifier` if w/o `label`'
   )
 
@@ -1156,7 +1156,7 @@ test('imageReference', function (t) {
       identifier: '&b;',
       referenceType: 'full'
     }),
-    '![\\&a;][\\&b;]',
+    '![\\&a;][\\&b;]\n',
     'should support incorrect character references'
   )
 
@@ -1167,19 +1167,19 @@ test('imageReference', function (t) {
       identifier: '\\+',
       referenceType: 'full'
     }),
-    '![+][+]',
+    '![+][+]\n',
     'should unescape `identifier` if w/o `label`'
   )
 
   t.equal(
     to({type: 'imageReference', alt: 'a', label: 'a'}),
-    '![a][]',
+    '![a][]\n',
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
   t.equal(
     to({type: 'imageReference', alt: 'a', label: 'b'}),
-    '![a][b]',
+    '![a][b]\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
 
@@ -1187,67 +1187,71 @@ test('imageReference', function (t) {
 })
 
 test('Code text', function (t) {
-  t.equal(to({type: 'inlineCode'}), '``', 'should support an empty code text')
+  t.equal(to({type: 'inlineCode'}), '``\n', 'should support an empty code text')
 
   t.equal(
     to({type: 'inlineCode', value: 'a'}),
-    '`a`',
+    '`a`\n',
     'should support a code text'
   )
 
-  t.equal(to({type: 'inlineCode', value: ' '}), '` `', 'should support a space')
+  t.equal(
+    to({type: 'inlineCode', value: ' '}),
+    '` `\n',
+    'should support a space'
+  )
 
   t.equal(
     to({type: 'inlineCode', value: '\n'}),
-    '`\n`',
+    '`\n`\n',
     'should support an eol'
   )
 
   t.equal(
     to({type: 'inlineCode', value: '  '}),
-    '`  `',
+    '`  `\n',
     'should support several spaces'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a`b'}),
-    '``a`b``',
+    '``a`b``\n',
     'should use a fence of two grave accents if the value contains one'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a``b'}),
-    '`a``b`',
+    '`a``b`\n',
     'should use a fence of one grave accent if the value contains two'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a``b`c'}),
-    '```a``b`c```',
+    '```a``b`c```\n',
     'should use a fence of three grave accents if the value contains two and one'
   )
 
   t.equal(
     to({type: 'inlineCode', value: '`a'}),
-    '`` `a ``',
+    '`` `a ``\n',
     'should pad w/ a space if the value starts w/ a grave accent'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a`'}),
-    '`` a` ``',
+    '`` a` ``\n',
     'should pad w/ a space if the value ends w/ a grave accent'
   )
 
   t.equal(
     to({type: 'inlineCode', value: ' a'}),
-    '`  a `',
+    '`  a `\n',
     'should pad w/ a space if the value starts w/ a space'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a '}),
-    '` a  `',
+    '` a  `\n',
     'should pad w/ a space if the value ends w/ a space'
   )
 
@@ -1255,85 +1259,85 @@ test('Code text', function (t) {
 })
 
 test('link', function (t) {
-  t.equal(to({type: 'link'}), '[]()', 'should support a link')
+  t.equal(to({type: 'link'}), '[]()\n', 'should support a link')
 
   t.equal(
     to({type: 'link', children: [{type: 'text', value: 'a'}]}),
-    '[a]()',
+    '[a]()\n',
     'should support children'
   )
 
-  t.equal(to({type: 'link', url: 'a'}), '[](a)', 'should support a url')
+  t.equal(to({type: 'link', url: 'a'}), '[](a)\n', 'should support a url')
 
   t.equal(
     to({type: 'link', title: 'a'}),
-    '[](<> "a")',
+    '[](<> "a")\n',
     'should support a title'
   )
 
   t.equal(
     to({type: 'link', url: 'a', title: 'b'}),
-    '[](a "b")',
+    '[](a "b")\n',
     'should support a url and title'
   )
 
   t.equal(
     to({type: 'link', url: 'b c'}),
-    '[](<b c>)',
+    '[](<b c>)\n',
     'should support a link w/ enclosed url w/ whitespace in url'
   )
 
   t.equal(
     to({type: 'link', url: 'b <c'}),
-    '[](<b \\<c>)',
+    '[](<b \\<c>)\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'link', url: 'b >c'}),
-    '[](<b \\>c>)',
+    '[](<b \\>c>)\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'link', url: 'b \\+c'}),
-    '[](<b \\\\+c>)',
+    '[](<b \\\\+c>)\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'link', url: 'b\nc'}),
-    '[](<b&#xA;c>)',
+    '[](<b&#xA;c>)\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
   t.equal(
     to({type: 'link', url: 'b(c'}),
-    '[](b\\(c)',
+    '[](b\\(c)\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'link', url: 'b)c'}),
-    '[](b\\)c)',
+    '[](b\\)c)\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'link', url: 'b\\.c'}),
-    '[](b\\\\.c)',
+    '[](b\\\\.c)\n',
     'should escape a backslash in `url` in a raw url'
   )
 
   t.equal(
     to({type: 'link', title: 'b"c'}),
-    '[](<> "b\\"c")',
+    '[](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
   t.equal(
     to({type: 'link', title: 'b\\-c'}),
-    '[](<> "b\\\\-c")',
+    '[](<> "b\\\\-c")\n',
     'should escape a backslash in `title`'
   )
 
@@ -1343,7 +1347,7 @@ test('link', function (t) {
       url: 'tel:123',
       children: [{type: 'text', value: 'tel:123'}]
     }),
-    '<tel:123>',
+    '<tel:123>\n',
     'should use an autolink for nodes w/ a value similar to the url and a protocol'
   )
 
@@ -1353,7 +1357,7 @@ test('link', function (t) {
       url: 'a',
       children: [{type: 'text', value: 'a'}]
     }),
-    '[a](a)',
+    '[a](a)\n',
     'should use a normal link for nodes w/ a value similar to the url w/o a protocol'
   )
 
@@ -1363,7 +1367,7 @@ test('link', function (t) {
       url: 'tel:123',
       children: [{type: 'text', value: 'tel:123'}]
     }),
-    '<tel:123>',
+    '<tel:123>\n',
     'should use an autolink for nodes w/ a value similar to the url and a protocol'
   )
 
@@ -1374,7 +1378,7 @@ test('link', function (t) {
       title: 'a',
       children: [{type: 'text', value: 'tel:123'}]
     }),
-    '[tel:123](tel:123 "a")',
+    '[tel:123](tel:123 "a")\n',
     'should use a normal link for nodes w/ a value similar to the url w/ a title'
   )
 
@@ -1384,7 +1388,7 @@ test('link', function (t) {
       url: 'mailto:a@b.c',
       children: [{type: 'text', value: 'a@b.c'}]
     }),
-    '<a@b.c>',
+    '<a@b.c>\n',
     'should use an autolink for nodes w/ a value similar to the url and a protocol (email)'
   )
 
@@ -1399,19 +1403,19 @@ test('link', function (t) {
         }
       ]
     }),
-    '<a.b-c_d@a.b>',
+    '<a.b-c_d@a.b>\n',
     'should not escape in autolinks'
   )
 
   t.equal(
     to({type: 'link', title: 'b'}, {quote: "'"}),
-    "[](<> 'b')",
+    "[](<> 'b')\n",
     'should support a link w/ title when `quote: "\'"`'
   )
 
   t.equal(
     to({type: 'link', title: "'"}, {quote: "'"}),
-    "[](<> '\\'')",
+    "[](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
@@ -1429,25 +1433,25 @@ test('link', function (t) {
 test('linkReference', function (t) {
   t.equal(
     to({type: 'linkReference'}),
-    '[][]',
+    '[][]\n',
     'should support a link reference (nonsensical)'
   )
 
   t.equal(
     to({type: 'linkReference', children: [{type: 'text', value: 'a'}]}),
-    '[a][]',
+    '[a][]\n',
     'should support `children`'
   )
 
   t.equal(
     to({type: 'linkReference', identifier: 'a'}),
-    '[][a]',
+    '[][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
   t.equal(
     to({type: 'linkReference', label: 'a'}),
-    '[][a]',
+    '[][a]\n',
     'should support a `label` (nonsensical)'
   )
 
@@ -1458,7 +1462,7 @@ test('linkReference', function (t) {
       label: 'A',
       referenceType: 'shortcut'
     }),
-    '[A]',
+    '[A]\n',
     'should support `referenceType: "shortcut"`'
   )
 
@@ -1469,7 +1473,7 @@ test('linkReference', function (t) {
       label: 'A',
       referenceType: 'collapsed'
     }),
-    '[A][]',
+    '[A][]\n',
     'should support `referenceType: "collapsed"`'
   )
 
@@ -1480,7 +1484,7 @@ test('linkReference', function (t) {
       label: 'A',
       referenceType: 'full'
     }),
-    '[A][A]',
+    '[A][A]\n',
     'should support `referenceType: "full"` (default)'
   )
 
@@ -1492,7 +1496,7 @@ test('linkReference', function (t) {
       identifier: '&amp;',
       referenceType: 'full'
     }),
-    '[&][&]',
+    '[&][&]\n',
     'should prefer label over identifier'
   )
 
@@ -1503,7 +1507,7 @@ test('linkReference', function (t) {
       identifier: '&amp;',
       referenceType: 'full'
     }),
-    '[&][&]',
+    '[&][&]\n',
     'should decode `identifier` if w/o `label`'
   )
 
@@ -1514,7 +1518,7 @@ test('linkReference', function (t) {
       identifier: '&b;',
       referenceType: 'full'
     }),
-    '[\\&a;][\\&b;]',
+    '[\\&a;][\\&b;]\n',
     'should support incorrect character references'
   )
 
@@ -1525,7 +1529,7 @@ test('linkReference', function (t) {
       identifier: '\\+',
       referenceType: 'full'
     }),
-    '[+][+]',
+    '[+][+]\n',
     'should unescape `identifier` if w/o `label`'
   )
 
@@ -1535,7 +1539,7 @@ test('linkReference', function (t) {
       children: [{type: 'text', value: 'a'}],
       label: 'a'
     }),
-    '[a][]',
+    '[a][]\n',
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
@@ -1545,7 +1549,7 @@ test('linkReference', function (t) {
       children: [{type: 'text', value: 'a'}],
       label: 'b'
     }),
-    '[a][b]',
+    '[a][b]\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
 
@@ -1557,7 +1561,7 @@ test('linkReference', function (t) {
         {type: 'text', value: '(b)'}
       ]
     }),
-    '[a][]\\(b)',
+    '[a][]\\(b)\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
 
@@ -1569,7 +1573,7 @@ test('list', function (t) {
 
   t.equal(
     to({type: 'list', children: [{type: 'listItem'}]}),
-    '*',
+    '*\n',
     'should support a list w/ an item'
   )
 
@@ -1595,7 +1599,7 @@ test('list', function (t) {
         }
       ]
     }),
-    '*   a\n\n*   ***\n\n*   b',
+    '*   a\n\n*   ***\n\n*   b\n',
     'should support a list w/ items'
   )
 
@@ -1616,7 +1620,7 @@ test('list', function (t) {
         }
       ]
     }),
-    '*   a\n*   ***',
+    '*   a\n*   ***\n',
     'should not use blank lines between items for lists w/ `spread: false`'
   )
 
@@ -1638,13 +1642,13 @@ test('list', function (t) {
         }
       ]
     }),
-    '*   a\n\n    b\n*   ***',
+    '*   a\n\n    b\n*   ***\n',
     'should support a list w/ `spread: false`, w/ a spread item'
   )
 
   t.equal(
     to({type: 'list', ordered: true, children: [{type: 'listItem'}]}),
-    '1.',
+    '1.\n',
     'should support a list w/ `ordered` and an empty item'
   )
 
@@ -1671,7 +1675,7 @@ test('list', function (t) {
         }
       ]
     }),
-    '1.  a\n\n2.  ***\n\n3.  b',
+    '1.  a\n\n2.  ***\n\n3.  b\n',
     'should support a list w/ `ordered`'
   )
 
@@ -1699,7 +1703,7 @@ test('list', function (t) {
         }
       ]
     }),
-    '1.  a\n2.  ***\n3.  b',
+    '1.  a\n2.  ***\n3.  b\n',
     'should support a list w/ `ordered` and `spread: false`'
   )
 
@@ -1730,7 +1734,7 @@ test('list', function (t) {
       },
       {incrementListMarker: false}
     ),
-    '1.  a\n1.  ***\n1.  b',
+    '1.  a\n1.  ***\n1.  b\n',
     'should support a list w/ `ordered` when `incrementListMarker: false`'
   )
 
@@ -1755,7 +1759,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'one'}
     ),
-    '0. a\n\n1. ***',
+    '0. a\n\n1. ***\n',
     'should support a list w/ `ordered` and `start`'
   )
 
@@ -1781,7 +1785,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'mixed'}
     ),
-    '* a\n  b\n* c\n  d',
+    '* a\n  b\n* c\n  d\n',
     'should support a correct prefix and indent `listItemIndent: "mixed"` and a tight list'
   )
 
@@ -1807,7 +1811,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'mixed'}
     ),
-    '*   a\n    b\n\n*   c\n    d',
+    '*   a\n    b\n\n*   c\n    d\n',
     'should support a correct prefix and indent `listItemIndent: "mixed"` and a tight list'
   )
 
@@ -1835,7 +1839,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'one'}
     ),
-    '9. a\n   b\n10. c\n    d',
+    '9. a\n   b\n10. c\n    d\n',
     'should support a correct prefix and indent for items 9 and 10 when `listItemIndent: "one"`'
   )
 
@@ -1863,7 +1867,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'one'}
     ),
-    '99. a\n    b\n100. c\n     d',
+    '99. a\n    b\n100. c\n     d\n',
     'should support a correct prefix and indent for items 99 and 100 when `listItemIndent: "one"`'
   )
 
@@ -1891,7 +1895,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'one'}
     ),
-    '999. a\n     b\n1000. c\n      d',
+    '999. a\n     b\n1000. c\n      d\n',
     'should support a correct prefix and indent for items 999 and 1000 when `listItemIndent: "one"`'
   )
 
@@ -1919,7 +1923,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'tab'}
     ),
-    '9.  a\n    b\n10. c\n    d',
+    '9.  a\n    b\n10. c\n    d\n',
     'should support a correct prefix and indent for items 9 and 10 when `listItemIndent: "tab"`'
   )
 
@@ -1947,7 +1951,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'tab'}
     ),
-    '99. a\n    b\n100.    c\n        d',
+    '99. a\n    b\n100.    c\n        d\n',
     'should support a correct prefix and indent for items 99 and 100 when `listItemIndent: "tab"`'
   )
 
@@ -1975,7 +1979,7 @@ test('list', function (t) {
       },
       {listItemIndent: 'tab'}
     ),
-    '999.    a\n        b\n1000.   c\n        d',
+    '999.    a\n        b\n1000.   c\n        d\n',
     'should support a correct prefix and indent for items 999 and 1000 when `listItemIndent: "tab"`'
   )
 
@@ -1983,11 +1987,11 @@ test('list', function (t) {
 })
 
 test('listItem', function (t) {
-  t.equal(to({type: 'listItem'}), '*', 'should support a list item')
+  t.equal(to({type: 'listItem'}), '*\n', 'should support a list item')
 
   t.equal(
     to({type: 'listItem'}, {bullet: '+'}),
-    '+',
+    '+\n',
     'should serialize an item w/ a plus as bullet when `bullet: "+"`'
   )
 
@@ -2004,7 +2008,7 @@ test('listItem', function (t) {
       type: 'listItem',
       children: [{type: 'paragraph', children: [{type: 'text', value: 'a'}]}]
     }),
-    '*   a',
+    '*   a\n',
     'should support a list item w/ a child'
   )
 
@@ -2017,7 +2021,7 @@ test('listItem', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
       ]
     }),
-    '*   a\n\n    ***\n\n    b',
+    '*   a\n\n    ***\n\n    b\n',
     'should support a list item w/ children'
   )
 
@@ -2032,7 +2036,7 @@ test('listItem', function (t) {
       },
       {listItemIndent: 'one'}
     ),
-    '* a\n\n  ***',
+    '* a\n\n  ***\n',
     'should use one space after the bullet for `listItemIndent: "one"`'
   )
 
@@ -2047,7 +2051,7 @@ test('listItem', function (t) {
       },
       {listItemIndent: '1'}
     ),
-    '* a\n\n  ***',
+    '* a\n\n  ***\n',
     'should use one space after the bullet for `listItemIndent: "1"` (deprecated)'
   )
 
@@ -2059,7 +2063,7 @@ test('listItem', function (t) {
       },
       {listItemIndent: 'mixed'}
     ),
-    '* a',
+    '* a\n',
     'should use one space after the bullet for `listItemIndent: "mixed"`, when the item is not spread'
   )
 
@@ -2075,7 +2079,7 @@ test('listItem', function (t) {
       },
       {listItemIndent: 'mixed'}
     ),
-    '*   a\n\n    ***',
+    '*   a\n\n    ***\n',
     'should use a tab stop of spaces after the bullet for `listItemIndent: "mixed"`, when the item is spread'
   )
 
@@ -2096,7 +2100,7 @@ test('listItem', function (t) {
         {type: 'thematicBreak'}
       ]
     }),
-    '*   a\n    ***',
+    '*   a\n    ***\n',
     'should not use blank lines between child blocks for items w/ `spread: false`'
   )
 
@@ -2108,7 +2112,7 @@ test('paragraph', function (t) {
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\nb'}]}),
-    'a\nb',
+    'a\nb\n',
     'should support a paragraph'
   )
 
@@ -2116,7 +2120,7 @@ test('paragraph', function (t) {
 })
 
 test('strong', function (t) {
-  t.equal(to({type: 'strong'}), '****', 'should support an empty strong')
+  t.equal(to({type: 'strong'}), '****\n', 'should support an empty strong')
 
   t.throws(
     function () {
@@ -2128,13 +2132,13 @@ test('strong', function (t) {
 
   t.equal(
     to({type: 'strong', children: [{type: 'text', value: 'a'}]}),
-    '**a**',
+    '**a**\n',
     'should support a strong w/ children'
   )
 
   t.equal(
     to({type: 'strong', children: [{type: 'text', value: 'a'}]}, {strong: '_'}),
-    '__a__',
+    '__a__\n',
     'should support a strong w/ underscores when `emphasis: "_"`'
   )
 
@@ -2144,22 +2148,26 @@ test('strong', function (t) {
 test('text', function (t) {
   t.equal(to({type: 'text'}), '', 'should support a void text')
   t.equal(to({type: 'text', value: ''}), '', 'should support an empty text')
-  t.equal(to({type: 'text', value: 'a\nb'}), 'a\nb', 'should support text')
+  t.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n', 'should support text')
   t.end()
 })
 
 test('thematic break', function (t) {
-  t.equal(to({type: 'thematicBreak'}), '***', 'should support a thematic break')
+  t.equal(
+    to({type: 'thematicBreak'}),
+    '***\n',
+    'should support a thematic break'
+  )
 
   t.equal(
     to({type: 'thematicBreak'}, {rule: '-'}),
-    '---',
+    '---\n',
     'should support a thematic break w/ dashes when `rule: "-"`'
   )
 
   t.equal(
     to({type: 'thematicBreak'}, {rule: '_'}),
-    '___',
+    '___\n',
     'should support a thematic break w/ underscores when `rule: "_"`'
   )
 
@@ -2173,7 +2181,7 @@ test('thematic break', function (t) {
 
   t.equal(
     to({type: 'thematicBreak'}, {ruleRepetition: 5}),
-    '*****',
+    '*****\n',
     'should support a thematic break w/ more repetitions w/ `ruleRepetition`'
   )
 
@@ -2187,7 +2195,7 @@ test('thematic break', function (t) {
 
   t.equal(
     to({type: 'thematicBreak'}, {ruleSpaces: true}),
-    '* * *',
+    '* * *\n',
     'should support a thematic break w/ spaces w/ `ruleSpaces`'
   )
 
@@ -2197,7 +2205,7 @@ test('thematic break', function (t) {
 test('escape', function (t) {
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '> a\n> b\nc >'}]}),
-    '\\> a\n\\> b\nc >',
+    '\\> a\n\\> b\nc >\n',
     'should escape what would otherwise be a block quote in a paragraph'
   )
 
@@ -2208,7 +2216,7 @@ test('escape', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: '> a\n> b'}]}
       ]
     }),
-    '*   \\> a\n    \\> b',
+    '*   \\> a\n    \\> b\n',
     'should escape what would otherwise be a block quote in a list item'
   )
 
@@ -2219,31 +2227,31 @@ test('escape', function (t) {
         {type: 'paragraph', children: [{type: 'text', value: '> a\n> b'}]}
       ]
     }),
-    '> \\> a\n> \\> b',
+    '> \\> a\n> \\> b\n',
     'should escape what would otherwise be a block quote in a block quote'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\\\nb'}]}),
-    'a\\\\\nb',
+    'a\\\\\nb\n',
     'should escape what would otherwise be a break'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '&amp'}]}),
-    '\\&amp',
+    '\\&amp\n',
     'should escape what would otherwise be a named character reference'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '&#9;'}]}),
-    '\\&#9;',
+    '\\&#9;\n',
     'should escape what would otherwise be a numeric character reference'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\\+b'}]}),
-    'a\\\\+b',
+    'a\\\\+b\n',
     'should escape what would otherwise be a character escape'
   )
 
@@ -2259,61 +2267,61 @@ test('escape', function (t) {
         }
       ]
     }),
-    'a\\\\<https://a.b>',
+    'a\\\\<https://a.b>\n',
     'should escape what would otherwise be a character escape of an autolink'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '```js\n```'}]}),
-    '\\`\\`\\`js\n\\`\\`\\`',
+    '\\`\\`\\`js\n\\`\\`\\`\n',
     'should escape what would otherwise be code (flow)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[a]: b'}]}),
-    '\\[a]: b',
+    '\\[a]: b\n',
     'should escape what would otherwise be a definition'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '*a*'}]}),
-    '\\*a\\*',
+    '\\*a\\*\n',
     'should escape what would otherwise be emphasis (asterisk)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '_a_'}]}),
-    '\\_a\\_',
+    '\\_a\\_\n',
     'should escape what would otherwise be emphasis (underscore)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '# a'}]}),
-    '\\# a',
+    '\\# a\n',
     'should escape what would otherwise be a heading (atx)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\n='}]}),
-    'a\n\\=',
+    'a\n\\=\n',
     'should escape what would otherwise be a heading (setext, equals)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\n-'}]}),
-    'a\n\\-',
+    'a\n\\-\n',
     'should escape what would otherwise be a heading (setext, dash)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '<a\nb>'}]}),
-    '\\<a\nb>',
+    '\\<a\nb>\n',
     'should escape what would otherwise be html'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a `b`\n`c` d'}]}),
-    'a \\`b\\`\n\\`c\\` d',
+    'a \\`b\\`\n\\`c\\` d\n',
     'should escape what would otherwise be code (text)'
   )
 
@@ -2329,7 +2337,7 @@ test('escape', function (t) {
         }
       ]
     }),
-    '\\![a](b)',
+    '\\![a](b)\n',
     'should escape what would otherwise turn a link into an image'
   )
 
@@ -2345,61 +2353,61 @@ test('escape', function (t) {
         }
       ]
     }),
-    '\\![a][b]',
+    '\\![a][b]\n',
     'should escape what would otherwise turn a link reference into an image reference'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![a][b]'}]}),
-    '\\!\\[a]\\[b]',
+    '\\!\\[a]\\[b]\n',
     'should escape what would otherwise be an image (reference)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![](a.jpg)'}]}),
-    '\\!\\[]\\(a.jpg)',
+    '\\!\\[]\\(a.jpg)\n',
     'should escape what would otherwise be an image (resource)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[a][b]'}]}),
-    '\\[a]\\[b]',
+    '\\[a]\\[b]\n',
     'should escape what would otherwise be a link (reference)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[](a.jpg)'}]}),
-    '\\[]\\(a.jpg)',
+    '\\[]\\(a.jpg)\n',
     'should escape what would otherwise be a link (resource)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '+ a\n+ b'}]}),
-    '\\+ a\n\\+ b',
+    '\\+ a\n\\+ b\n',
     'should escape what would otherwise be a list item (plus)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '- a\n- b'}]}),
-    '\\- a\n\\- b',
+    '\\- a\n\\- b\n',
     'should escape what would otherwise be a list item (dash)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '* a\n* b'}]}),
-    '\\* a\n\\* b',
+    '\\* a\n\\* b\n',
     'should escape what would otherwise be a list item (asterisk)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '1. a\n2. b'}]}),
-    '1\\. a\n2\\. b',
+    '1\\. a\n2\\. b\n',
     'should escape what would otherwise be a list item (dot)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '1) a\n2) b'}]}),
-    '1\\) a\n2\\) b',
+    '1\\) a\n2\\) b\n',
     'should escape what would otherwise be a list item (paren)'
   )
 
@@ -2410,7 +2418,8 @@ test('roundtrip', function (t) {
   var doc = [
     '> *   Lorem ipsum dolor sit amet',
     '>',
-    '> *   consectetur adipisicing elit'
+    '> *   consectetur adipisicing elit',
+    ''
   ].join('\n')
 
   t.equal(to(from(doc)), doc, 'should roundtrip spread items in block quotes')
@@ -2420,7 +2429,8 @@ test('roundtrip', function (t) {
     '',
     '    1.  consectetur adipisicing elit',
     '',
-    '    2.  sed do eiusmod tempor incididunt'
+    '    2.  sed do eiusmod tempor incididunt',
+    ''
   ].join('\n')
 
   t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (1)')
@@ -2428,7 +2438,8 @@ test('roundtrip', function (t) {
   doc = [
     '*   1.  Lorem ipsum dolor sit amet',
     '',
-    '    2.  consectetur adipisicing elit'
+    '    2.  consectetur adipisicing elit',
+    ''
   ].join('\n')
 
   t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (2)')
@@ -2442,7 +2453,8 @@ test('roundtrip', function (t) {
     '        you',
     '',
     '    *   today',
-    '*   hi'
+    '*   hi',
+    ''
   ].join('\n')
 
   t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (3)')
