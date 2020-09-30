@@ -799,8 +799,8 @@ test('definition', function (t) {
     function () {
       to({type: 'definition', identifier: 'a', title: 'b'}, {quote: '.'})
     },
-    /Cannot serialize title with `\.`, expected `"`, or `'`/,
-    'should throw on when given an incorrect `emphasis`'
+    /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
+    'should throw on when given an incorrect `quote`'
   )
 
   t.end()
@@ -813,7 +813,7 @@ test('emphasis', function (t) {
     function () {
       to({type: 'emphasis'}, {emphasis: '?'})
     },
-    /Cannot serialize emphasis with `\?`, expected `\*`, or `_`/,
+    /Cannot serialize emphasis with `\?` for `options\.emphasis`, expected `\*`, or `_`/,
     'should throw on when given an incorrect `emphasis`'
   )
 
@@ -1053,8 +1053,8 @@ test('image', function (t) {
     function () {
       to({type: 'image', title: 'a'}, {quote: '.'})
     },
-    /Cannot serialize title with `\.`, expected `"`, or `'`/,
-    'should throw on when given an incorrect `emphasis`'
+    /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
+    'should throw on when given an incorrect `quote`'
   )
 
   t.end()
@@ -1411,8 +1411,8 @@ test('link', function (t) {
     function () {
       to({type: 'link', title: 'b'}, {quote: '.'})
     },
-    /Cannot serialize title with `\.`, expected `"`, or `'`/,
-    'should throw on when given an incorrect `emphasis`'
+    /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
+    'should throw on when given an incorrect `quote`'
   )
 
   t.end()
@@ -1975,7 +1975,7 @@ test('listItem', function (t) {
     function () {
       to({type: 'listItem'}, {bullet: '.'})
     },
-    /Cannot serialize items with `\.`, expected `\*`, `\+`, or `-`/,
+    /Cannot serialize items with `\.` for `options\.bullet`, expected `\*`, `\+`, or `-`/,
     'should throw on an incorrect bullet'
   )
 
@@ -2063,7 +2063,7 @@ test('listItem', function (t) {
     function () {
       to({type: 'listItem'}, {listItemIndent: 'x'})
     },
-    /Cannot serialize items with `x`, expected `tab`, `one`, or `mixed`/,
+    /Cannot serialize items with `x` for `options\.listItemIndent`, expected `tab`, `one`, or `mixed`/,
     'should throw on an incorrect `listItemIndent`'
   )
 
@@ -2102,8 +2102,8 @@ test('strong', function (t) {
     function () {
       to({type: 'strong'}, {strong: '?'})
     },
-    /Cannot serialize strong with `\?`, expected `\*`, or `_`/,
-    'should throw on when given an incorrect `emphasis`'
+    /Cannot serialize strong with `\?` for `options\.strong`, expected `\*`, or `_`/,
+    'should throw on when given an incorrect `strong`'
   )
 
   t.equal(
@@ -2147,7 +2147,7 @@ test('thematic break', function (t) {
     function () {
       to({type: 'thematicBreak'}, {rule: '.'})
     },
-    /Cannot serialize rules with `.`, expected `\*`, `-`, or `_`/,
+    /Cannot serialize rules with `.` for `options\.rule`, expected `\*`, `-`, or `_`/,
     'should throw on when given an incorrect `rule`'
   )
 
@@ -2161,8 +2161,8 @@ test('thematic break', function (t) {
     function () {
       to({type: 'thematicBreak'}, {ruleRepetition: 2})
     },
-    /Cannot serialize rules with repetition `2`, expected `3` or more/,
-    'should throw on when given an incorrect `rule`'
+    /Cannot serialize rules with repetition `2` for `options\.ruleRepetition`, expected `3` or more/,
+    'should throw on when given an incorrect `ruleRepetition`'
   )
 
   t.equal(
