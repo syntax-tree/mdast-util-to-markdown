@@ -1,4 +1,5 @@
 var test = require('tape')
+var from = require('mdast-util-from-markdown')
 var to = require('.')
 
 test('mdast-util-to-markdown', function (t) {
@@ -2381,6 +2382,50 @@ test('escape', function (t) {
     '1\\) a\n2\\) b',
     'should escape what would otherwise be a list item (paren)'
   )
+
+  t.end()
+})
+
+test('roundtrip', function (t) {
+  var doc = [
+    '> *   Lorem ipsum dolor sit amet',
+    '>',
+    '> *   consectetur adipisicing elit'
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip spread items in block quotes')
+
+  doc = [
+    '*   Lorem ipsum dolor sit amet',
+    '',
+    '    1.  consectetur adipisicing elit',
+    '',
+    '    2.  sed do eiusmod tempor incididunt'
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (1)')
+
+  doc = [
+    '*   1.  Lorem ipsum dolor sit amet',
+    '',
+    '    2.  consectetur adipisicing elit'
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (2)')
+
+  doc = [
+    '*   hello',
+    '    *   world',
+    '        how',
+    '',
+    '        are',
+    '        you',
+    '',
+    '    *   today',
+    '*   hi'
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (3)')
 
   t.end()
 })
