@@ -1156,7 +1156,7 @@ test('imageReference', function (t) {
       identifier: '&b;',
       referenceType: 'full'
     }),
-    '![&a;][&b;]',
+    '![\\&a;][\\&b;]',
     'should support incorrect character references'
   )
 
@@ -1514,7 +1514,7 @@ test('linkReference', function (t) {
       identifier: '&b;',
       referenceType: 'full'
     }),
-    '[&a;][&b;]',
+    '[\\&a;][\\&b;]',
     'should support incorrect character references'
   )
 
@@ -1546,6 +1546,18 @@ test('linkReference', function (t) {
       label: 'b'
     }),
     '[a][b]',
+    'should use a full reference if w/o `referenceType` and the label does not match the reference'
+  )
+
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'linkReference', children: [{type: 'text', value: 'a'}]},
+        {type: 'text', value: '(b)'}
+      ]
+    }),
+    '[a][]\\(b)',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
 
@@ -2345,7 +2357,7 @@ test('escape', function (t) {
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![](a.jpg)'}]}),
-    '\\!\\[](a.jpg)',
+    '\\!\\[]\\(a.jpg)',
     'should escape what would otherwise be an image (resource)'
   )
 
@@ -2357,7 +2369,7 @@ test('escape', function (t) {
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[](a.jpg)'}]}),
-    '\\[](a.jpg)',
+    '\\[]\\(a.jpg)',
     'should escape what would otherwise be a link (resource)'
   )
 
