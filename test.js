@@ -2522,5 +2522,22 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(doc)), doc, 'should roundtrip lists with break comments')
 
+  // The first one could have (up to) four spaces, but it doesn’t add anything,
+  // so we don’t roundtrip it.
+  doc = [
+    '    <h3>Header 3</h3>',
+    '',
+    '    <blockquote>',
+    '        <p>This is a blockquote.</p>',
+    '        ',
+    '        <p>This is the second paragraph in the blockquote.</p>',
+    '        ',
+    '        <h2>This is an H2 in a blockquote</h2>',
+    '    </blockquote>',
+    ''
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip indented blank lines in code')
+
   t.end()
 })
