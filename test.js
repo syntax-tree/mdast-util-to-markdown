@@ -2490,5 +2490,37 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(doc)), doc, 'should roundtrip potential prototype injections')
 
+  doc = [
+    '*   foo',
+    '*',
+    '*   bar',
+    '',
+    '*   baz',
+    '*',
+    '*   qux quux',
+    ''
+  ].join('\n')
+
+  doc = [
+    '*   foo',
+    '',
+    '*',
+    '',
+    '*   bar',
+    '',
+    '*   baz',
+    '',
+    '*',
+    '',
+    '*   qux quux',
+    ''
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip empty lists')
+
+  doc = '*   a\n\n<!---->\n\n*   b\n'
+
+  t.equal(to(from(doc)), doc, 'should roundtrip lists with break comments')
+
   t.end()
 })
