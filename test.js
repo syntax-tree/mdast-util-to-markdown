@@ -1151,12 +1151,17 @@ test('imageReference', function (t) {
 
   t.equal(
     to({
-      type: 'imageReference',
-      alt: '&a;',
-      identifier: '&b;',
-      referenceType: 'full'
+      type: 'paragraph',
+      children: [
+        {
+          type: 'imageReference',
+          alt: '&a;',
+          identifier: '&b;',
+          referenceType: 'full'
+        }
+      ]
     }),
-    '![\\&a;][\\&b;]\n',
+    '![\\&a;][&b;]\n',
     'should support incorrect character references'
   )
 
@@ -1513,12 +1518,17 @@ test('linkReference', function (t) {
 
   t.equal(
     to({
-      type: 'linkReference',
-      children: [{type: 'text', value: '&a;'}],
-      identifier: '&b;',
-      referenceType: 'full'
+      type: 'paragraph',
+      children: [
+        {
+          type: 'linkReference',
+          children: [{type: 'text', value: '&a;'}],
+          identifier: '&b;',
+          referenceType: 'full'
+        }
+      ]
     }),
-    '[\\&a;][\\&b;]\n',
+    '[\\&a;][&b;]\n',
     'should support incorrect character references'
   )
 
@@ -2466,6 +2476,19 @@ test('roundtrip', function (t) {
     doc,
     'should roundtrip autolinks w/ potentially escapable characters'
   )
+
+  doc = [
+    'A [primary][toString], [secondary][constructor], and [tertiary][__proto__] link.',
+    '',
+    '[toString]: http://primary.com',
+    '',
+    '[__proto__]: http://tertiary.com',
+    '',
+    '[constructor]: http://secondary.com',
+    ''
+  ].join('\n')
+
+  t.equal(to(from(doc)), doc, 'should roundtrip potential prototype injections')
 
   t.end()
 })
