@@ -151,9 +151,9 @@ function (left, right) {
 ###### `options.extensions`
 
 List of extensions (`Array.<ToMarkdownExtension>`).
-Each `ToMarkdownExtension` is an object with optional `unsafe` and `handlers`
-keys, mapping to the values which can also be passed in directly, documented
-below.
+Each `ToMarkdownExtension` is an object with optional `handlers`, `join`, and
+`unsafe` keys, mapping to the values which can also be passed in directly,
+documented below.
 
 ###### `options.handlers`
 
