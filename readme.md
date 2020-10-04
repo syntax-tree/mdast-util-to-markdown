@@ -135,8 +135,16 @@ Marker to use to serialize strong (`'*'` or `'_'`, default: `'*'`).
 
 ###### `options.tightDefinitions`
 
-Whether to separate definitions with a single line feed (`boolean`, default:
-`false`).
+Whether to join definitions w/o a blank line (`boolean`, default: `false`).
+Shortcut for a join function like so:
+
+```js
+function (left, right) {
+  if (left.type === 'definition' && right.type === 'definition') {
+    return 0
+  }
+}
+```
 
 ##### Extension options
 
@@ -147,17 +155,38 @@ Each `ToMarkdownExtension` is an object with optional `unsafe` and `handlers`
 keys, mapping to the values which can also be passed in directly, documented
 below.
 
-###### `options.unsafe`
-
-List of patterns to escape.
-Useful for syntax extensions.
-Take a look at [`lib/unsafe.js`][unsafe] for examples.
-
 ###### `options.handlers`
 
 Object mapping node types to custom handlers.
 Useful for syntax extensions.
 Take a look at [`lib/handle`][handlers] for examples.
+
+###### `options.join`
+
+List of functions used to determine what to place between two flow nodes.
+Often, they are joined by one blank line.
+In certain cases, it’s nicer to have them next to each other.
+Or, they can’t occur together.
+These functions receive two adjacent nodes and their parent and can return
+`number` or `boolean`, referring to how many blank lines to use between them.
+A return value of `true` is as passing `1`.
+A return value of `false` means the nodes cannot be joined by a blank line, such
+as two adjacent block quotes or indented code after a list, in which case a
+comment will be injected to break them up:
+
+```markdown
+> Quote 1
+
+<!---->
+
+> Quote 2
+```
+
+###### `options.unsafe`
+
+List of patterns to escape.
+Useful for syntax extensions.
+Take a look at [`lib/unsafe.js`][unsafe] for examples.
 
 ##### Returns
 

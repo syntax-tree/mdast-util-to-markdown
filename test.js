@@ -66,7 +66,7 @@ test('core', function (t) {
       ]
     }),
     'a\n\n*\n\n<!---->\n\n*\n\n1.\n\n<!---->\n\n1.\n\nd\n',
-    'should inject HTML comments between lists w/ the same ordered as they’d otherwise run into each other'
+    'should inject HTML comments between lists w/ the same marker'
   )
 
   t.equal(
@@ -79,7 +79,96 @@ test('core', function (t) {
       ]
     }),
     '    a\n\n*\n\n<!---->\n\n    b\n',
-    'should inject HTML comments between lists and an indented code as they’d otherwise run into each other'
+    'should inject HTML comments between lists and an indented code'
+  )
+
+  t.equal(
+    to({
+      type: 'root',
+      children: [
+        {type: 'code', value: 'a'},
+        {type: 'code', value: 'b'}
+      ]
+    }),
+    '    a\n\n<!---->\n\n    b\n',
+    'should inject HTML comments between adjacent indented code'
+  )
+
+  t.equal(
+    to({
+      type: 'root',
+      children: [
+        {
+          type: 'blockquote',
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+          ]
+        },
+        {
+          type: 'blockquote',
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+          ]
+        }
+      ]
+    }),
+    '> a\n\n<!---->\n\n> b\n',
+    'should inject HTML comments between two block quotes'
+  )
+
+  t.equal(
+    to({
+      type: 'listItem',
+      spread: false,
+      children: [
+        {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+        {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+      ]
+    }),
+    '*   a\n\n    b\n',
+    'should not honour `spread: false` for two paragraphs'
+  )
+
+  t.equal(
+    to({
+      type: 'listItem',
+      spread: false,
+      children: [
+        {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+        {type: 'definition', label: 'b', url: 'c'}
+      ]
+    }),
+    '*   a\n\n    [b]: c\n',
+    'should not honour `spread: false` for a paragraph and a definition'
+  )
+
+  t.equal(
+    to({
+      type: 'listItem',
+      spread: false,
+      children: [
+        {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+        {type: 'heading', depth: 1, children: [{type: 'text', value: 'b'}]}
+      ]
+    }),
+    '*   a\n    # b\n',
+    'should honour `spread: false` for a paragraph and a heading'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'listItem',
+        spread: false,
+        children: [
+          {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+          {type: 'heading', depth: 1, children: [{type: 'text', value: 'b'}]}
+        ]
+      },
+      {setext: true}
+    ),
+    '*   a\n\n    b\n    =\n',
+    'should not honour `spread: false` for a paragraph and a setext heading'
   )
 
   t.throws(
