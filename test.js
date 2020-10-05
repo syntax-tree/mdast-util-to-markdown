@@ -2546,6 +2546,12 @@ test('escape', function (t) {
     'should escape what would otherwise be a list item (paren)'
   )
 
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: '1.2.3. asd'}]}),
+    '1.2.3. asd\n',
+    'should not escape what can’t be a list (dot)'
+  )
+
   t.end()
 })
 
