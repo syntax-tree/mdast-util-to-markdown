@@ -1045,6 +1045,42 @@ test('heading', function (t) {
     'should serialize a with a closing sequence when `closeAtx` (content)'
   )
 
+  t.equal(
+    to({type: 'heading', depth: 2, children: [{type: 'text', value: '# a'}]}),
+    '## # a\n',
+    'should not escape a `#` at the start of phrasing in a heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 2, children: [{type: 'text', value: '1) a'}]}),
+    '## 1) a\n',
+    'should not escape a `1)` at the start of phrasing in a heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 2, children: [{type: 'text', value: '+ a'}]}),
+    '## + a\n',
+    'should not escape a `+` at the start of phrasing in a heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 2, children: [{type: 'text', value: '- a'}]}),
+    '## - a\n',
+    'should not escape a `-` at the start of phrasing in a heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 2, children: [{type: 'text', value: '= a'}]}),
+    '## = a\n',
+    'should not escape a `=` at the start of phrasing in a heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 2, children: [{type: 'text', value: '> a'}]}),
+    '## > a\n',
+    'should not escape a `>` at the start of phrasing in a heading'
+  )
+
   t.end()
 })
 
