@@ -208,6 +208,8 @@ Take a look at [`lib/unsafe.js`][unsafe] for examples.
     — serialize GFM tables
 *   [`syntax-tree/mdast-util-gfm-task-list-item`](https://github.com/syntax-tree/mdast-util-gfm-task-list-item)
     — serialize GFM task list items
+*   [`syntax-tree/mdast-util-math`](https://github.com/syntax-tree/mdast-util-math)
+    — serialize math
 
 ## Security
 
