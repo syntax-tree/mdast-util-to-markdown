@@ -53,7 +53,7 @@ declare namespace toMarkdown {
     right: Node,
     parent: Parent,
     context: Context
-  ) => boolean | null | undefined
+  ) => boolean | null | void
 
   interface Extension {
     handlers?: Handlers
