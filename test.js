@@ -96,28 +96,6 @@ test('core', function (t) {
 
   t.equal(
     to({
-      type: 'root',
-      children: [
-        {
-          type: 'blockquote',
-          children: [
-            {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
-          ]
-        },
-        {
-          type: 'blockquote',
-          children: [
-            {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
-          ]
-        }
-      ]
-    }),
-    '> a\n\n<!---->\n\n> b\n',
-    'should inject HTML comments between two block quotes'
-  )
-
-  t.equal(
-    to({
       type: 'listItem',
       spread: false,
       children: [
@@ -2669,6 +2647,10 @@ test('roundtrip', function (t) {
   ].join('\n')
 
   t.equal(to(from(doc)), doc, 'should roundtrip indented blank lines in code')
+
+  doc = '> a\n\n> b\n'
+
+  t.equal(to(from(doc)), doc, 'should roundtrip adjacent block quotes')
 
   t.end()
 })
