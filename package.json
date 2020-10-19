@@ -80,6 +80,7 @@
     "prettier": true,
     "esnext": false,
     "rules": {
+      "complexity": "off",
       "unicorn/prefer-includes": "off"
     },
     "ignores": [

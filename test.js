@@ -2472,13 +2472,13 @@ test('escape', function (t) {
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![a][b]'}]}),
-    '\\!\\[a]\\[b]\n',
+    '!\\[a]\\[b]\n',
     'should escape what would otherwise be an image (reference)'
   )
 
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![](a.jpg)'}]}),
-    '\\!\\[]\\(a.jpg)\n',
+    '!\\[]\\(a.jpg)\n',
     'should escape what would otherwise be an image (resource)'
   )
 
