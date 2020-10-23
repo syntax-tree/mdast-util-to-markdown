@@ -194,6 +194,8 @@ Take a look at [`lib/unsafe.js`][unsafe] for examples.
 
 ## List of extensions
 
+*   [`syntax-tree/mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive)
+    — serialize directives
 *   [`syntax-tree/mdast-util-footnote`](https://github.com/syntax-tree/mdast-util-footnote)
     — serialize footnotes
 *   [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
