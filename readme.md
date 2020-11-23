@@ -113,7 +113,7 @@ Marker to use to serialize titles (`'"'` or `"'"`, default: `'"'`).
 
 Marker to use for thematic breaks (`'*'`, `'-'`, or `'_'`, default: `'*'`).
 
-###### `options.ruleRepeat`
+###### `options.ruleRepetition`
 
 Number of markers to use for thematic breaks (`number`, default:
 `3`, min: `3`).
