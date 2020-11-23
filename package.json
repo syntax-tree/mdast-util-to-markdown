@@ -37,7 +37,7 @@
   "dependencies": {
     "@types/unist": "^2.0.0",
     "longest-streak": "^2.0.0",
-    "mdast-util-to-string": "^1.0.0",
+    "mdast-util-to-string": "^2.0.0",
     "parse-entities": "^2.0.0",
     "repeat-string": "^1.0.0",
     "zwitch": "^1.0.0"
