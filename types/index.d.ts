@@ -71,7 +71,7 @@ declare namespace toMarkdown {
     listItemIndent?: 'tab' | 'one' | 'mixed'
     quote?: '"' | "'"
     rule?: '-' | '_' | '*'
-    ruleRepeat?: number
+    ruleRepetition?: number
     ruleSpaces?: boolean
     setext?: boolean
     strong?: '_' | '*'
