@@ -216,6 +216,14 @@ here.
     — serialize GFM task list items
 *   [`syntax-tree/mdast-util-math`](https://github.com/syntax-tree/mdast-util-math)
     — serialize math
+*   [`syntax-tree/mdast-util-mdx`](https://github.com/syntax-tree/mdast-util-mdx)
+    — serialize MDX or MDX.js
+*   [`syntax-tree/mdast-util-mdx-expression`](https://github.com/syntax-tree/mdast-util-mdx-expression)
+    — serialize MDX or MDX.js expressions
+*   [`syntax-tree/mdast-util-mdx-jsx`](https://github.com/syntax-tree/mdast-util-mdx-jsx)
+    — serialize MDX or MDX.js JSX
+*   [`syntax-tree/mdast-util-mdxjs-esm`](https://github.com/syntax-tree/mdast-util-mdxjs-esm)
+    — serialize MDX.js ESM
 
 ## Security
 
