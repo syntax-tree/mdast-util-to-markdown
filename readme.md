@@ -109,6 +109,11 @@ otherwise) (`'one'`, `'tab'`, or `'mixed'`, default: `'tab'`).
 
 Marker to use to serialize titles (`'"'` or `"'"`, default: `'"'`).
 
+###### `options.resourceLink`
+
+Whether to use reference links always (`boolean`, default: `false`).
+The default is to use autolinks (`<https://example.com>`) when possible.
+
 ###### `options.rule`
 
 Marker to use for thematic breaks (`'*'`, `'-'`, or `'_'`, default: `'*'`).

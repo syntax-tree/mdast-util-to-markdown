@@ -64,6 +64,7 @@ declare namespace toMarkdown {
     incrementListMarker?: boolean
     listItemIndent?: 'tab' | 'one' | 'mixed'
     quote?: '"' | "'"
+    resourceLink?: boolean
     rule?: '-' | '_' | '*'
     ruleRepetition?: number
     ruleSpaces?: boolean

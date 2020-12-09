@@ -1460,6 +1460,19 @@ test('link', function (t) {
   )
 
   t.equal(
+    to(
+      {
+        type: 'link',
+        url: 'tel:123',
+        children: [{type: 'text', value: 'tel:123'}]
+      },
+      {resourceLink: true}
+    ),
+    '[tel:123](tel:123)\n',
+    'should use a resource link (`resourceLink: true`)'
+  )
+
+  t.equal(
     to({
       type: 'link',
       url: 'a',
