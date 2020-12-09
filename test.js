@@ -2530,6 +2530,61 @@ test('escape', function (t) {
     'should not escape what can’t be a list (dot)'
   )
 
+  t.equal(
+    to(
+      {
+        type: 'root',
+        children: [
+          {type: 'definition', label: 'a'},
+          {type: 'definition', label: 'b'}
+        ]
+      },
+      {extensions: [{tightDefinitions: true}]}
+    ),
+    '[a]: <>\n[b]: <>\n',
+    'should support options in extensions'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'root',
+        children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+      },
+      {
+        extensions: [
+          {strong: '_', join: null, handlers: null, extensions: null}
+        ]
+      }
+    ),
+    '__a__\n',
+    'should support empty `join`, `handlers`, `extensions` in an extension (coverage)'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'root',
+        children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+      },
+      {strong: '*', extensions: [{strong: '_'}]}
+    ),
+    '**a**\n',
+    'should prefer main options over extension options'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'root',
+        children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+      },
+      {extensions: [{strong: '*', extensions: [{strong: '_'}]}]}
+    ),
+    '**a**\n',
+    'should prefer extension options over subextension options'
+  )
+
   t.end()
 })
 

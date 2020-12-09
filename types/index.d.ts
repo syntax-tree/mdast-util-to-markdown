@@ -20,7 +20,7 @@ declare namespace toMarkdown {
     stack: string[]
     enter: (type: string) => () => void
     options: Options
-    unsafePatterns: Unsafe[]
+    unsafe: Unsafe[]
     join: Join[]
     handle: Handle
   }
@@ -55,12 +55,6 @@ declare namespace toMarkdown {
     context: Context
   ) => boolean | null | void
 
-  interface Extension {
-    handlers?: Handlers
-    join?: Join[]
-    unsafe?: Unsafe[]
-  }
-
   interface Options {
     bullet?: '-' | '*' | '+'
     closeAtx?: boolean
@@ -77,7 +71,7 @@ declare namespace toMarkdown {
     strong?: '_' | '*'
     tightDefinitions?: boolean
 
-    extensions?: Extension[]
+    extensions?: Options[]
     handlers?: Handlers
     join?: Join[]
     unsafe?: Unsafe[]

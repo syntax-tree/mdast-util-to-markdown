@@ -146,15 +146,6 @@ function (left, right) {
 }
 ```
 
-##### Extension options
-
-###### `options.extensions`
-
-List of extensions (`Array.<ToMarkdownExtension>`).
-Each `ToMarkdownExtension` is an object with optional `handlers`, `join`, and
-`unsafe` keys, mapping to the values which can also be passed in directly,
-documented below.
-
 ###### `options.handlers`
 
 Object mapping node types to custom handlers.
@@ -187,6 +178,14 @@ comment will be injected to break them up:
 List of patterns to escape.
 Useful for syntax extensions.
 Take a look at [`lib/unsafe.js`][unsafe] for examples.
+
+##### Extension options
+
+###### `options.extensions`
+
+List of extensions (`Array.<ToMarkdownExtension>`).
+Each `ToMarkdownExtension` is an object with the same interface as `options`
+here.
 
 ##### Returns
 
