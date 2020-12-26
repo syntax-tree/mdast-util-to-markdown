@@ -2720,5 +2720,9 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(doc)), doc, 'should roundtrip adjacent block quotes')
 
+  doc = '[**https://unifiedjs.com/**](https://unifiedjs.com/)\n'
+
+  t.equal(to(from(doc)), doc, 'should roundtrip formatted URLs')
+
   t.end()
 })
