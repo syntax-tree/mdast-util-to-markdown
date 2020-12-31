@@ -2724,5 +2724,11 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(doc)), doc, 'should roundtrip formatted URLs')
 
+  var step1 = '\\ \\\\ \\\\\\ \\\\\\\\'
+  var step2 = '\\ \\ \\\\\\ \\\\\\\\\n'
+
+  t.equal(to(from(step1)), step2, 'should roundtrip backslashes (1)')
+  t.equal(to(from(step2)), step2, 'should roundtrip backslashes (2)')
+
   t.end()
 })
