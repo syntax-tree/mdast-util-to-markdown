@@ -1104,6 +1104,18 @@ test('html', function (t) {
     'should prevent html (text) from becoming html (flow) (3)'
   )
 
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'html', value: '<x>'},
+        {type: 'text', value: 'a'}
+      ]
+    }),
+    '<x>a\n',
+    'should serialize html (text)'
+  )
+
   t.end()
 })
 
