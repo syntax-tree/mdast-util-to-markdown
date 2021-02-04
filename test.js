@@ -1067,6 +1067,43 @@ test('html', function (t) {
   t.equal(to({type: 'html'}), '', 'should support a void html')
   t.equal(to({type: 'html', value: ''}), '', 'should support an empty html')
   t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb\n', 'should support html')
+
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'text', value: 'a\n'},
+        {type: 'html', value: '<div>'}
+      ]
+    }),
+    'a <div>\n',
+    'should prevent html (text) from becoming html (flow) (1)'
+  )
+
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'text', value: 'a\r'},
+        {type: 'html', value: '<div>'}
+      ]
+    }),
+    'a <div>\n',
+    'should prevent html (text) from becoming html (flow) (2)'
+  )
+
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'text', value: 'a\r\n'},
+        {type: 'html', value: '<div>'}
+      ]
+    }),
+    'a <div>\n',
+    'should prevent html (text) from becoming html (flow) (3)'
+  )
+
   t.end()
 })
 
