@@ -1,4 +1,5 @@
 var test = require('tape')
+var remove = require('unist-util-remove-position')
 var from = require('mdast-util-from-markdown')
 var to = require('.')
 
@@ -2759,6 +2760,18 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(step1)), step2, 'should roundtrip backslashes (1)')
   t.equal(to(from(step2)), step2, 'should roundtrip backslashes (2)')
+
+  doc = '\\\\\\*a\n'
+
+  t.equal(to(from(doc)), doc, 'should not collapse escapes (1)')
+
+  doc = '\\\\*a\\\\\\*'
+
+  t.deepEqual(
+    remove(from(doc)),
+    remove(from(to(from(doc)))),
+    'should not collapse escapes (2)'
+  )
 
   t.end()
 })
