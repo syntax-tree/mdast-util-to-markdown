@@ -1363,6 +1363,36 @@ test('Code text', function (t) {
     'should pad w/ a space if the value ends w/ a space'
   )
 
+  t.equal(
+    to({type: 'inlineCode', value: 'a\n-'}),
+    '`a -`\n',
+    'should prevent breaking out of code (-)'
+  )
+
+  t.equal(
+    to({type: 'inlineCode', value: 'a\n#'}),
+    '`a #`\n',
+    'should prevent breaking out of code (#)'
+  )
+
+  t.equal(
+    to({type: 'inlineCode', value: 'a\n1. '}),
+    '` a 1.  `\n',
+    'should prevent breaking out of code (\\d\\.)'
+  )
+
+  t.equal(
+    to({type: 'inlineCode', value: 'a\r-'}),
+    '`a -`\n',
+    'should prevent breaking out of code (cr)'
+  )
+
+  t.equal(
+    to({type: 'inlineCode', value: 'a\r\n-'}),
+    '`a -`\n',
+    'should prevent breaking out of code (crlf)'
+  )
+
   t.end()
 })
 
