@@ -2714,6 +2714,30 @@ test('escape', function (t) {
     'should prefer extension options over subextension options'
   )
 
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'text', value: '\\'},
+        {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+      ]
+    }),
+    '\\\\*a*\n',
+    'should handle literal backslashes properly when before constructs (1)'
+  )
+
+  t.equal(
+    to({
+      type: 'paragraph',
+      children: [
+        {type: 'text', value: '\\\\'},
+        {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+      ]
+    }),
+    '\\\\\\\\*a*\n',
+    'should handle literal backslashes properly when before constructs (2)'
+  )
+
   t.end()
 })
 
