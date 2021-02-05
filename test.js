@@ -571,6 +571,24 @@ test('blockquote', function (t) {
 test('break', function (t) {
   t.equal(to({type: 'break'}), '\\\n', 'should support a break')
 
+  t.equal(
+    to(from('a  \nb\n=\n')),
+    '# a b\n',
+    'should serialize breaks in heading (atx) as a space'
+  )
+
+  t.equal(
+    to(from('a \\\nb\n=\n')),
+    '# a b\n',
+    'should serialize breaks in heading (atx) as nothing when preceded by a space'
+  )
+
+  t.equal(
+    to(from('a  \nb\n=\n'), {setext: true}),
+    'a\\\nb\n=\n',
+    'should serialize breaks in heading (setext)'
+  )
+
   t.end()
 })
 
