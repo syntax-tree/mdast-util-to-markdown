@@ -2882,5 +2882,13 @@ test('roundtrip', function (t) {
     'should not collapse escapes (2)'
   )
 
+  doc = '```\n	\n```\n'
+
+  t.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip a sole blank line in fenced code'
+  )
+
   t.end()
 })
