@@ -1078,6 +1078,24 @@ test('heading', function (t) {
     'should not escape a `>` at the start of phrasing in a heading'
   )
 
+  t.equal(
+    to({type: 'heading', children: [{type: 'text', value: 'a #'}]}),
+    '# a \\#\n',
+    'should escape a `#` at the end of a heading (1)'
+  )
+
+  t.equal(
+    to({type: 'heading', children: [{type: 'text', value: 'a ##'}]}),
+    '# a #\\#\n',
+    'should escape a `#` at the end of a heading (2)'
+  )
+
+  t.equal(
+    to({type: 'heading', children: [{type: 'text', value: 'a # b'}]}),
+    '# a # b\n',
+    'should not escape a `#` in a heading (2)'
+  )
+
   t.end()
 })
 
