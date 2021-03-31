@@ -111,7 +111,8 @@ Marker to use to serialize titles (`'"'` or `"'"`, default: `'"'`).
 
 ###### `options.resourceLink`
 
-Whether to use reference links always (`boolean`, default: `false`).
+Whether to use resource links (`[text](url)`) always (`boolean`, default:
+`false`).
 The default is to use autolinks (`<https://example.com>`) when possible.
 
 ###### `options.rule`
