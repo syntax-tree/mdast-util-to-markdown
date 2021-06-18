@@ -1,1 +1,1 @@
-module.exports = require('./lib/index.js')
+export {toMarkdown} from './lib/index.js'

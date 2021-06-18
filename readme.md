@@ -12,6 +12,9 @@
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -23,7 +26,7 @@ npm install mdast-util-to-markdown
 Say we have the following script, `example.js`:
 
 ```js
-var toMarkdown = require('mdast-util-to-markdown')
+import {toMarkdown} from 'mdast-util-to-markdown'
 
 var tree = {
   type: 'root',
@@ -62,6 +65,9 @@ would otherwise turn into a list and image respectively):
 ```
 
 ## API
+
+This package exports the following identifier: `toMarkdown`.
+There is no default export.
 
 ### `toMarkdown(tree[, options])`
 

@@ -1,7 +1,7 @@
-var test = require('tape')
-var remove = require('unist-util-remove-position')
-var from = require('mdast-util-from-markdown')
-var to = require('./index.js')
+import test from 'tape'
+import {removePosition} from 'unist-util-remove-position'
+import from from 'mdast-util-from-markdown'
+import {toMarkdown as to} from '../index.js'
 
 test('mdast-util-to-markdown', function (t) {
   t.equal(typeof to, 'function', 'should expose a function')
@@ -2877,8 +2877,8 @@ test('roundtrip', function (t) {
   doc = '\\\\*a\\\\\\*'
 
   t.deepEqual(
-    remove(from(doc)),
-    remove(from(to(from(doc)))),
+    removePosition(from(doc)),
+    removePosition(from(to(from(doc)))),
     'should not collapse escapes (2)'
   )
 
