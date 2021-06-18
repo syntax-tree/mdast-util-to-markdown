@@ -146,6 +146,7 @@ test('core', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to(false)
     },
     /Cannot handle value `false`, expected node/,
@@ -591,6 +592,7 @@ test('code (flow)', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'code'}, {fence: '+'})
     },
     /Cannot serialize code with `\+` for `options\.fence`, expected `` ` `` or `~`/,
@@ -885,6 +887,7 @@ test('definition', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'definition', identifier: 'a', title: 'b'}, {quote: '.'})
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
@@ -899,6 +902,7 @@ test('emphasis', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'emphasis'}, {emphasis: '?'})
     },
     /Cannot serialize emphasis with `\?` for `options\.emphasis`, expected `\*`, or `_`/,
@@ -1242,6 +1246,7 @@ test('image', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'image', title: 'a'}, {quote: '.'})
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
@@ -1652,6 +1657,7 @@ test('link', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'link', title: 'b'}, {quote: '.'})
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
@@ -2233,6 +2239,7 @@ test('listItem', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'listItem'}, {bullet: '.'})
     },
     /Cannot serialize items with `\.` for `options\.bullet`, expected `\*`, `\+`, or `-`/,
@@ -2285,6 +2292,7 @@ test('listItem', (t) => {
           {type: 'thematicBreak'}
         ]
       },
+      // @ts-expect-error: runtime.
       {listItemIndent: '1'}
     ),
     '* a\n\n  ***\n',
@@ -2321,6 +2329,7 @@ test('listItem', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'listItem'}, {listItemIndent: 'x'})
     },
     /Cannot serialize items with `x` for `options\.listItemIndent`, expected `tab`, `one`, or `mixed`/,
@@ -2360,6 +2369,7 @@ test('strong', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'strong'}, {strong: '?'})
     },
     /Cannot serialize strong with `\?` for `options\.strong`, expected `\*`, or `_`/,
@@ -2409,6 +2419,7 @@ test('thematic break', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: runtime.
       to({type: 'thematicBreak'}, {rule: '.'})
     },
     /Cannot serialize rules with `.` for `options\.rule`, expected `\*`, `-`, or `_`/,
@@ -2676,7 +2687,12 @@ test('escape', (t) => {
       },
       {
         extensions: [
-          {strong: '_', join: null, handlers: null, extensions: null}
+          {
+            strong: '_',
+            join: undefined,
+            handlers: undefined,
+            extensions: undefined
+          }
         ]
       }
     ),
