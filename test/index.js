@@ -3,13 +3,7 @@ import {removePosition} from 'unist-util-remove-position'
 import from from 'mdast-util-from-markdown'
 import {toMarkdown as to} from '../index.js'
 
-test('mdast-util-to-markdown', function (t) {
-  t.equal(typeof to, 'function', 'should expose a function')
-
-  t.end()
-})
-
-test('core', function (t) {
+test('core', (t) => {
   t.equal(
     to({
       type: 'root',
@@ -151,7 +145,7 @@ test('core', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to(false)
     },
     /Cannot handle value `false`, expected node/,
@@ -159,7 +153,7 @@ test('core', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'unknown'})
     },
     /Cannot handle unknown node `unknown`/,
@@ -167,7 +161,7 @@ test('core', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({
         type: 'paragraph',
         children: [{type: 'text', value: 'a'}, {type: 'unknown'}]
@@ -180,7 +174,7 @@ test('core', function (t) {
   t.end()
 })
 
-test('blockquote', function (t) {
+test('blockquote', (t) => {
   t.equal(to({type: 'blockquote'}), '>\n', 'should support a block quote')
 
   t.equal(
@@ -568,7 +562,7 @@ test('blockquote', function (t) {
   t.end()
 })
 
-test('break', function (t) {
+test('break', (t) => {
   t.equal(to({type: 'break'}), '\\\n', 'should support a break')
 
   t.equal(
@@ -592,11 +586,11 @@ test('break', function (t) {
   t.end()
 })
 
-test('code (flow)', function (t) {
+test('code (flow)', (t) => {
   t.equal(to({type: 'code'}), '```\n```\n', 'should support empty code')
 
   t.throws(
-    function () {
+    () => {
       to({type: 'code'}, {fence: '+'})
     },
     /Cannot serialize code with `\+` for `options\.fence`, expected `` ` `` or `~`/,
@@ -750,7 +744,7 @@ test('code (flow)', function (t) {
   t.end()
 })
 
-test('definition', function (t) {
+test('definition', (t) => {
   t.equal(
     to({type: 'definition'}),
     '[]: <>\n',
@@ -890,7 +884,7 @@ test('definition', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'definition', identifier: 'a', title: 'b'}, {quote: '.'})
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
@@ -900,11 +894,11 @@ test('definition', function (t) {
   t.end()
 })
 
-test('emphasis', function (t) {
+test('emphasis', (t) => {
   t.equal(to({type: 'emphasis'}), '**\n', 'should support an empty emphasis')
 
   t.throws(
-    function () {
+    () => {
       to({type: 'emphasis'}, {emphasis: '?'})
     },
     /Cannot serialize emphasis with `\?` for `options\.emphasis`, expected `\*`, or `_`/,
@@ -929,7 +923,7 @@ test('emphasis', function (t) {
   t.end()
 })
 
-test('heading', function (t) {
+test('heading', (t) => {
   t.equal(
     to({type: 'heading'}),
     '#\n',
@@ -1099,7 +1093,7 @@ test('heading', function (t) {
   t.end()
 })
 
-test('html', function (t) {
+test('html', (t) => {
   t.equal(to({type: 'html'}), '', 'should support a void html')
   t.equal(to({type: 'html', value: ''}), '', 'should support an empty html')
   t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb\n', 'should support html')
@@ -1155,7 +1149,7 @@ test('html', function (t) {
   t.end()
 })
 
-test('image', function (t) {
+test('image', (t) => {
   t.equal(to({type: 'image'}), '![]()\n', 'should support an image')
 
   t.equal(to({type: 'image', alt: 'a'}), '![a]()\n', 'should support `alt`')
@@ -1247,7 +1241,7 @@ test('image', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'image', title: 'a'}, {quote: '.'})
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
@@ -1257,7 +1251,7 @@ test('image', function (t) {
   t.end()
 })
 
-test('imageReference', function (t) {
+test('imageReference', (t) => {
   t.equal(
     to({type: 'imageReference'}),
     '![][]\n',
@@ -1380,7 +1374,7 @@ test('imageReference', function (t) {
   t.end()
 })
 
-test('Code text', function (t) {
+test('Code text', (t) => {
   t.equal(to({type: 'inlineCode'}), '``\n', 'should support an empty code text')
 
   t.equal(
@@ -1482,7 +1476,7 @@ test('Code text', function (t) {
   t.end()
 })
 
-test('link', function (t) {
+test('link', (t) => {
   t.equal(to({type: 'link'}), '[]()\n', 'should support a link')
 
   t.equal(
@@ -1657,7 +1651,7 @@ test('link', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'link', title: 'b'}, {quote: '.'})
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
@@ -1667,7 +1661,7 @@ test('link', function (t) {
   t.end()
 })
 
-test('linkReference', function (t) {
+test('linkReference', (t) => {
   t.equal(
     to({type: 'linkReference'}),
     '[][]\n',
@@ -1810,7 +1804,7 @@ test('linkReference', function (t) {
   t.end()
 })
 
-test('list', function (t) {
+test('list', (t) => {
   t.equal(to({type: 'list'}), '', 'should support an empty list')
 
   t.equal(
@@ -2228,7 +2222,7 @@ test('list', function (t) {
   t.end()
 })
 
-test('listItem', function (t) {
+test('listItem', (t) => {
   t.equal(to({type: 'listItem'}), '*\n', 'should support a list item')
 
   t.equal(
@@ -2238,7 +2232,7 @@ test('listItem', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'listItem'}, {bullet: '.'})
     },
     /Cannot serialize items with `\.` for `options\.bullet`, expected `\*`, `\+`, or `-`/,
@@ -2326,7 +2320,7 @@ test('listItem', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'listItem'}, {listItemIndent: 'x'})
     },
     /Cannot serialize items with `x` for `options\.listItemIndent`, expected `tab`, `one`, or `mixed`/,
@@ -2349,7 +2343,7 @@ test('listItem', function (t) {
   t.end()
 })
 
-test('paragraph', function (t) {
+test('paragraph', (t) => {
   t.equal(to({type: 'paragraph'}), '', 'should support an empty paragraph')
 
   t.equal(
@@ -2361,11 +2355,11 @@ test('paragraph', function (t) {
   t.end()
 })
 
-test('strong', function (t) {
+test('strong', (t) => {
   t.equal(to({type: 'strong'}), '****\n', 'should support an empty strong')
 
   t.throws(
-    function () {
+    () => {
       to({type: 'strong'}, {strong: '?'})
     },
     /Cannot serialize strong with `\?` for `options\.strong`, expected `\*`, or `_`/,
@@ -2387,14 +2381,14 @@ test('strong', function (t) {
   t.end()
 })
 
-test('text', function (t) {
+test('text', (t) => {
   t.equal(to({type: 'text'}), '', 'should support a void text')
   t.equal(to({type: 'text', value: ''}), '', 'should support an empty text')
   t.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n', 'should support text')
   t.end()
 })
 
-test('thematic break', function (t) {
+test('thematic break', (t) => {
   t.equal(
     to({type: 'thematicBreak'}),
     '***\n',
@@ -2414,7 +2408,7 @@ test('thematic break', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'thematicBreak'}, {rule: '.'})
     },
     /Cannot serialize rules with `.` for `options\.rule`, expected `\*`, `-`, or `_`/,
@@ -2428,7 +2422,7 @@ test('thematic break', function (t) {
   )
 
   t.throws(
-    function () {
+    () => {
       to({type: 'thematicBreak'}, {ruleRepetition: 2})
     },
     /Cannot serialize rules with repetition `2` for `options\.ruleRepetition`, expected `3` or more/,
@@ -2444,7 +2438,7 @@ test('thematic break', function (t) {
   t.end()
 })
 
-test('escape', function (t) {
+test('escape', (t) => {
   t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '> a\n> b\nc >'}]}),
     '\\> a\n\\> b\nc >\n',
@@ -2741,8 +2735,8 @@ test('escape', function (t) {
   t.end()
 })
 
-test('roundtrip', function (t) {
-  var doc = [
+test('roundtrip', (t) => {
+  let doc = [
     '> *   Lorem ipsum dolor sit amet',
     '>',
     '> *   consectetur adipisicing elit',
@@ -2864,8 +2858,8 @@ test('roundtrip', function (t) {
 
   t.equal(to(from(doc)), doc, 'should roundtrip formatted URLs')
 
-  var step1 = '\\ \\\\ \\\\\\ \\\\\\\\'
-  var step2 = '\\ \\ \\\\\\ \\\\\\\\\n'
+  const step1 = '\\ \\\\ \\\\\\ \\\\\\\\'
+  const step2 = '\\ \\ \\\\\\ \\\\\\\\\n'
 
   t.equal(to(from(step1)), step2, 'should roundtrip backslashes (1)')
   t.equal(to(from(step2)), step2, 'should roundtrip backslashes (2)')
