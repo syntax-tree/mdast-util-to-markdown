@@ -1,7 +1,7 @@
 var test = require('tape')
 var remove = require('unist-util-remove-position')
 var from = require('mdast-util-from-markdown')
-var to = require('.')
+var to = require('./index.js')
 
 test('mdast-util-to-markdown', function (t) {
   t.equal(typeof to, 'function', 'should expose a function')
