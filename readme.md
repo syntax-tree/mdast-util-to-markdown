@@ -10,6 +10,12 @@
 
 **[mdast][]** utility to parse markdown.
 
+## When to use this
+
+Use this if you have direct access to an AST and need to serialize it.
+Use **[remark][]** instead, which includes this, but has a nice interface and
+hundreds of plugins.
+
 ## Install
 
 This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
@@ -317,3 +323,5 @@ abide by its terms.
 [handlers]: lib/handle
 
 [unsafe]: lib/unsafe.js
+
+[remark]: https://github.com/remarkjs/remark
