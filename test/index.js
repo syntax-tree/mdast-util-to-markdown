@@ -1,6 +1,6 @@
 import test from 'tape'
 import {removePosition} from 'unist-util-remove-position'
-import from from 'mdast-util-from-markdown'
+import {fromMarkdown as from} from 'mdast-util-from-markdown'
 import {toMarkdown as to} from '../index.js'
 
 test('core', (t) => {
