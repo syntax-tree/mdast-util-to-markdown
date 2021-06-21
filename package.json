@@ -90,6 +90,9 @@
     "atLeast": 100,
     "detail": true,
     "strict": true,
-    "ignoreCatch": true
+    "ignoreCatch": true,
+    "ignoreFiles": [
+      "lib/types.d.ts"
+    ]
   }
 }
