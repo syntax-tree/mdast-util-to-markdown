@@ -1,6 +1,6 @@
 {
   "name": "mdast-util-to-markdown",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "mdast utility to serialize markdown",
   "license": "MIT",
   "keywords": [
