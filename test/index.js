@@ -2700,64 +2700,63 @@ test('escape', (t) => {
     'should support empty `join`, `handlers`, `extensions` in an extension (coverage)'
   )
 
-
   t.equal(
     to(
       {
-        "type": "root",
-        "children": [
-            {
-                "type": "list",
-                "ordered": true,
-                "start": 1,
-                "spread": false,
-                "children": [
-                    {
-                        "type": "listItem",
-                        "spread": true,
-                        "checked": null,
-                        "children": [
-                            {
-                                "type": "paragraph",
-                                "children": [
-                                    {
-                                        "type": "text",
-                                        "value": "foo"
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "list",
-                                "ordered": false,
-                                "start": null,
-                                "spread": false,
-                                "children": [
-                                    {
-                                        "type": "listItem",
-                                        "spread": false,
-                                        "checked": null,
-                                        "children": [
-                                            {
-                                                "type": "paragraph",
-                                                "children": [
-                                                    {
-                                                        "type": "text",
-                                                        "value": "bar"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+        type: 'root',
+        children: [
+          {
+            type: 'list',
+            ordered: true,
+            start: 1,
+            spread: false,
+            children: [
+              {
+                type: 'listItem',
+                spread: true,
+                checked: null,
+                children: [
+                  {
+                    type: 'paragraph',
+                    children: [
+                      {
+                        type: 'text',
+                        value: 'foo'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'list',
+                    ordered: false,
+                    start: null,
+                    spread: false,
+                    children: [
+                      {
+                        type: 'listItem',
+                        spread: false,
+                        checked: null,
+                        children: [
+                          {
+                            type: 'paragraph',
+                            children: [
+                              {
+                                type: 'text',
+                                value: 'bar'
+                              }
+                            ]
+                          }
                         ]
-                    }
+                      }
+                    ]
+                  }
                 ]
-            }
+              }
+            ]
+          }
         ]
-    },
+      },
       {
-        join: [() => 0],
+        join: [() => 0]
       }
     ),
     '1.  foo\n    *   bar\n',
