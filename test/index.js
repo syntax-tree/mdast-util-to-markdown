@@ -322,7 +322,7 @@ test('blockquote', (t) => {
         }
       ]
     }),
-    '> a\n> `  b\n> c  `\n> d\n',
+    '> a\n> ` b\n> c `\n> d\n',
     'should support padded code (text) in a block quote'
   )
 
@@ -1426,26 +1426,26 @@ test('Code text', (t) => {
 
   t.equal(
     to({type: 'inlineCode', value: '`a'}),
-    '`` `a ``\n',
+    '`` `a``\n',
     'should pad w/ a space if the value starts w/ a grave accent'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a`'}),
-    '`` a` ``\n',
+    '``a` ``\n',
     'should pad w/ a space if the value ends w/ a grave accent'
   )
 
   t.equal(
     to({type: 'inlineCode', value: ' a'}),
-    '`  a `\n',
-    'should pad w/ a space if the value starts w/ a space'
+    '` a`\n',
+    'should not pad extra spaces if the value starts w/ a space'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a '}),
-    '` a  `\n',
-    'should pad w/ a space if the value ends w/ a space'
+    '`a `\n',
+    'should not pad extra spaces if the value ends w/ a space'
   )
 
   t.equal(
@@ -1462,7 +1462,7 @@ test('Code text', (t) => {
 
   t.equal(
     to({type: 'inlineCode', value: 'a\n1. '}),
-    '` a 1.  `\n',
+    '`a 1. `\n',
     'should prevent breaking out of code (\\d\\.)'
   )
 
@@ -2700,64 +2700,63 @@ test('escape', (t) => {
     'should support empty `join`, `handlers`, `extensions` in an extension (coverage)'
   )
 
-
   t.equal(
     to(
       {
-        "type": "root",
-        "children": [
-            {
-                "type": "list",
-                "ordered": true,
-                "start": 1,
-                "spread": false,
-                "children": [
-                    {
-                        "type": "listItem",
-                        "spread": true,
-                        "checked": null,
-                        "children": [
-                            {
-                                "type": "paragraph",
-                                "children": [
-                                    {
-                                        "type": "text",
-                                        "value": "foo"
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "list",
-                                "ordered": false,
-                                "start": null,
-                                "spread": false,
-                                "children": [
-                                    {
-                                        "type": "listItem",
-                                        "spread": false,
-                                        "checked": null,
-                                        "children": [
-                                            {
-                                                "type": "paragraph",
-                                                "children": [
-                                                    {
-                                                        "type": "text",
-                                                        "value": "bar"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+        type: 'root',
+        children: [
+          {
+            type: 'list',
+            ordered: true,
+            start: 1,
+            spread: false,
+            children: [
+              {
+                type: 'listItem',
+                spread: true,
+                checked: null,
+                children: [
+                  {
+                    type: 'paragraph',
+                    children: [
+                      {
+                        type: 'text',
+                        value: 'foo'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'list',
+                    ordered: false,
+                    start: null,
+                    spread: false,
+                    children: [
+                      {
+                        type: 'listItem',
+                        spread: false,
+                        checked: null,
+                        children: [
+                          {
+                            type: 'paragraph',
+                            children: [
+                              {
+                                type: 'text',
+                                value: 'bar'
+                              }
+                            ]
+                          }
                         ]
-                    }
+                      }
+                    ]
+                  }
                 ]
-            }
+              }
+            ]
+          }
         ]
-    },
+      },
       {
-        join: [() => 0],
+        join: [() => 0]
       }
     ),
     '1.  foo\n    *   bar\n',
