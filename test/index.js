@@ -2768,6 +2768,69 @@ test('escape', (t) => {
     to(
       {
         type: 'root',
+        children: [
+          {
+            type: 'list',
+            ordered: true,
+            start: 1,
+            spread: false,
+            children: [
+              {
+                type: 'listItem',
+                spread: true,
+                checked: null,
+                children: [
+                  {
+                    type: 'paragraph',
+                    children: [
+                      {
+                        type: 'text',
+                        value: 'foo'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'list',
+                    ordered: false,
+                    start: null,
+                    spread: false,
+                    children: [
+                      {
+                        type: 'listItem',
+                        spread: false,
+                        checked: null,
+                        children: [
+                          {
+                            type: 'paragraph',
+                            children: [
+                              {
+                                type: 'text',
+                                value: 'bar'
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        join: [() => 0]
+      }
+    ),
+    '1.  foo\n    *   bar\n',
+    'should make `join` from options highest priority'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'root',
         children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
       },
       {strong: '*', extensions: [{strong: '_'}]}
