@@ -2686,11 +2686,14 @@ test('escape', (t) => {
         children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
       },
       {
+        handlers: undefined,
+        originalHandlers: undefined,
         extensions: [
           {
             strong: '_',
             join: undefined,
             handlers: undefined,
+            originalHandlers: undefined,
             extensions: undefined
           }
         ]
