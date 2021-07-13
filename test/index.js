@@ -363,6 +363,7 @@ test('blockquote', (t) => {
     to({
       type: 'blockquote',
       children: [
+        // @ts-expect-error missing depth
         {
           type: 'heading',
           children: [{type: 'text', value: 'a\nb'}]
@@ -378,6 +379,7 @@ test('blockquote', (t) => {
       {
         type: 'blockquote',
         children: [
+          // @ts-expect-error missing depth
           {
             type: 'heading',
             children: [{type: 'text', value: 'a\nb'}]
@@ -443,6 +445,7 @@ test('blockquote', (t) => {
           type: 'paragraph',
           children: [
             {type: 'text', value: 'a\n'},
+            // @ts-expect-error missing reference type and identifier
             {type: 'imageReference', alt: 'b\nc', label: 'd\ne'},
             {type: 'text', value: '\nf'}
           ]
@@ -484,6 +487,7 @@ test('blockquote', (t) => {
           type: 'paragraph',
           children: [
             {type: 'text', value: 'a\n'},
+            // @ts-expect-error missing reference type and identifier
             {
               type: 'linkReference',
               children: [{type: 'text', value: 'b\nc'}],
@@ -588,6 +592,7 @@ test('break', (t) => {
 })
 
 test('code (flow)', (t) => {
+  // @ts-expect-error missing value
   t.equal(to({type: 'code'}), '```\n```\n', 'should support empty code')
 
   t.throws(
@@ -612,78 +617,91 @@ test('code (flow)', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a'}),
     '```a\n```\n',
     'should support code w/ a lang'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', meta: 'a'}),
     '```\n```\n',
     'should support (ignore) code w/ only a meta'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a', meta: 'b'}),
     '```a b\n```\n',
     'should support code w/ lang and meta'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a b'}),
     '```a&#x20;b\n```\n',
     'should encode a space in `lang`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a\nb'}),
     '```a&#xA;b\n```\n',
     'should encode a line ending in `lang`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a`b'}),
     '```a&#x60;b\n```\n',
     'should encode a grave accent in `lang`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a\\-b'}),
     '```a\\\\-b\n```\n',
     'should escape a backslash in `lang`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'x', meta: 'a b'}),
     '```x a b\n```\n',
     'should not encode a space in `meta`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'x', meta: 'a\nb'}),
     '```x a&#xA;b\n```\n',
     'should encode a line ending in `meta`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'x', meta: 'a`b'}),
     '```x a&#x60;b\n```\n',
     'should encode a grave accent in `meta`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'x', meta: 'a\\-b'}),
     '```x a\\\\-b\n```\n',
     'should escape a backslash in `meta`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code'}, {fence: '~'}),
     '~~~\n~~~\n',
     'should support fenced code w/ tildes when `fence: "~"`'
   )
 
   t.equal(
+    // @ts-expect-error missing value
     to({type: 'code', lang: 'a`b'}, {fence: '~'}),
     '~~~a`b\n~~~\n',
     'should not encode a grave accent when using tildes for fences'
@@ -748,54 +766,63 @@ test('code (flow)', (t) => {
 
 test('definition', (t) => {
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition'}),
     '[]: <>\n',
     'should support a definition w/o label'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', label: 'a'}),
     '[a]: <>\n',
     'should support a definition w/ label'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', label: '\\'}),
     '[\\\\]: <>\n',
     'should escape a backslash in `label`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', label: '['}),
     '[\\[]: <>\n',
     'should escape an opening bracket in `label`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', label: ']'}),
     '[\\]]: <>\n',
     'should escape a closing bracket in `label`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: 'a'}),
     '[a]: <>\n',
     'should support a definition w/ identifier'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: '\\'}),
     '[\\\\]: <>\n',
     'should escape a backslash in `identifier`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: '['}),
     '[\\[]: <>\n',
     'should escape an opening bracket in `identifier`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: ']'}),
     '[\\]]: <>\n',
     'should escape a closing bracket in `identifier`'
@@ -856,30 +883,35 @@ test('definition', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: 'a', title: 'b'}),
     '[a]: <> "b"\n',
     'should support a definition w/ title'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: 'a', title: '"'}),
     '[a]: <> "\\""\n',
     'should escape a quote in `title` in a title'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: 'a', title: '\\'}),
     '[a]: <> "\\\\"\n',
     'should escape a backslash in `title` in a title'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: 'a', title: 'b'}, {quote: "'"}),
     "[a]: <> 'b'\n",
     'should support a definition w/ title when `quote: "\'"`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'definition', identifier: 'a', title: "'"}, {quote: "'"}),
     "[a]: <> '\\''\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
@@ -898,6 +930,7 @@ test('definition', (t) => {
 })
 
 test('emphasis', (t) => {
+  // @ts-expect-error missing children
   t.equal(to({type: 'emphasis'}), '**\n', 'should support an empty emphasis')
 
   t.throws(
@@ -929,30 +962,35 @@ test('emphasis', (t) => {
 
 test('heading', (t) => {
   t.equal(
+    // @ts-expect-error missing depth and children
     to({type: 'heading'}),
     '#\n',
     'should serialize a heading w/o rank as a heading of rank 1'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'heading', depth: 1}),
     '#\n',
     'should serialize a heading w/ rank 1'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'heading', depth: 6}),
     '######\n',
     'should serialize a heading w/ rank 6'
   )
 
   t.equal(
+    // @ts-expect-error missing children and invalid depth
     to({type: 'heading', depth: 7}),
     '######\n',
     'should serialize a heading w/ rank 7 as 6'
   )
 
   t.equal(
+    // @ts-expect-error missing children and invalid depth
     to({type: 'heading', depth: 0}),
     '#\n',
     'should serialize a heading w/ rank 0 as 1'
@@ -1014,18 +1052,21 @@ test('heading', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'heading', depth: 1}, {setext: true}),
     '#\n',
     'should serialize an empty heading w/ rank 1 as atx when `setext: true`'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'heading', depth: 2}, {setext: true}),
     '##\n',
     'should serialize an empty heading w/ rank 2 as atx when `setext: true`'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'heading'}, {closeAtx: true}),
     '# #\n',
     'should serialize a with a closing sequence when `closeAtx` (empty)'
@@ -1077,18 +1118,21 @@ test('heading', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing depth
     to({type: 'heading', children: [{type: 'text', value: 'a #'}]}),
     '# a \\#\n',
     'should escape a `#` at the end of a heading (1)'
   )
 
   t.equal(
+    // @ts-expect-error missing depth
     to({type: 'heading', children: [{type: 'text', value: 'a ##'}]}),
     '# a #\\#\n',
     'should escape a `#` at the end of a heading (2)'
   )
 
   t.equal(
+    // @ts-expect-error missing depth
     to({type: 'heading', children: [{type: 'text', value: 'a # b'}]}),
     '# a # b\n',
     'should not escape a `#` in a heading (2)'
@@ -1098,6 +1142,7 @@ test('heading', (t) => {
 })
 
 test('html', (t) => {
+  // @ts-expect-error missing value
   t.equal(to({type: 'html'}), '', 'should support a void html')
   t.equal(to({type: 'html', value: ''}), '', 'should support an empty html')
   t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb\n', 'should support html')
@@ -1154,13 +1199,16 @@ test('html', (t) => {
 })
 
 test('image', (t) => {
+  // @ts-expect-error missing url
   t.equal(to({type: 'image'}), '![]()\n', 'should support an image')
 
+  // @ts-expect-error missing url
   t.equal(to({type: 'image', alt: 'a'}), '![a]()\n', 'should support `alt`')
 
   t.equal(to({type: 'image', url: 'a'}), '![](a)\n', 'should support a url')
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'image', title: 'a'}),
     '![](<> "a")\n',
     'should support a title'
@@ -1221,24 +1269,28 @@ test('image', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'image', title: 'b"c'}),
     '![](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'image', title: 'b\\.c'}),
     '![](<> "b\\\\.c")\n',
     'should escape a backslash in `title`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'image', title: 'b'}, {quote: "'"}),
     "![](<> 'b')\n",
     'should support an image w/ title when `quote: "\'"`'
   )
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'image', title: "'"}, {quote: "'"}),
     "![](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
@@ -1258,30 +1310,35 @@ test('image', (t) => {
 
 test('imageReference', (t) => {
   t.equal(
+    // @ts-expect-error missing referenceType and identifier
     to({type: 'imageReference'}),
     '![][]\n',
     'should support a link reference (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error missing referenceType and identifier
     to({type: 'imageReference', alt: 'a'}),
     '![a][]\n',
     'should support `alt`'
   )
 
   t.equal(
+    // @ts-expect-error missing referenceType
     to({type: 'imageReference', identifier: 'a'}),
     '![][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error missing referenceType and identifier
     to({type: 'imageReference', label: 'a'}),
     '![][a]\n',
     'should support a `label` (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error missing identifier
     to({
       type: 'imageReference',
       alt: 'A',
@@ -1293,6 +1350,7 @@ test('imageReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing identifier
     to({
       type: 'imageReference',
       alt: 'A',
@@ -1304,6 +1362,7 @@ test('imageReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing identifier
     to({
       type: 'imageReference',
       alt: 'A',
@@ -1365,12 +1424,14 @@ test('imageReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing referenceType and identifier
     to({type: 'imageReference', alt: 'a', label: 'a'}),
     '![a][]\n',
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
   t.equal(
+    // @ts-expect-error missing referenceType and identifier
     to({type: 'imageReference', alt: 'a', label: 'b'}),
     '![a][b]\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
@@ -1380,6 +1441,7 @@ test('imageReference', (t) => {
 })
 
 test('Code text', (t) => {
+  // @ts-expect-error missing value
   t.equal(to({type: 'inlineCode'}), '``\n', 'should support an empty code text')
 
   t.equal(
@@ -1482,83 +1544,98 @@ test('Code text', (t) => {
 })
 
 test('link', (t) => {
+  // @ts-expect-error missing children and url
   t.equal(to({type: 'link'}), '[]()\n', 'should support a link')
 
   t.equal(
+    // @ts-expect-error missing url
     to({type: 'link', children: [{type: 'text', value: 'a'}]}),
     '[a]()\n',
     'should support children'
   )
 
+  // @ts-expect-error missing children
   t.equal(to({type: 'link', url: 'a'}), '[](a)\n', 'should support a url')
 
   t.equal(
+    // @ts-expect-error missing children and url
     to({type: 'link', title: 'a'}),
     '[](<> "a")\n',
     'should support a title'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'a', title: 'b'}),
     '[](a "b")\n',
     'should support a url and title'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b c'}),
     '[](<b c>)\n',
     'should support a link w/ enclosed url w/ whitespace in url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b <c'}),
     '[](<b \\<c>)\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b >c'}),
     '[](<b \\>c>)\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b \\+c'}),
     '[](<b \\\\+c>)\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b\nc'}),
     '[](<b&#xA;c>)\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b(c'}),
     '[](b\\(c)\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b)c'}),
     '[](b\\)c)\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', url: 'b\\.c'}),
     '[](b\\\\.c)\n',
     'should escape a backslash in `url` in a raw url'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', title: 'b"c'}),
     '[](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
   t.equal(
+    // @ts-expect-error missing children
     to({type: 'link', title: 'b\\-c'}),
     '[](<> "b\\\\-c")\n',
     'should escape a backslash in `title`'
@@ -1644,12 +1721,14 @@ test('link', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error missing children and url
     to({type: 'link', title: 'b'}, {quote: "'"}),
     "[](<> 'b')\n",
     'should support a link w/ title when `quote: "\'"`'
   )
 
   t.equal(
+    // @ts-expect-error missing children and url
     to({type: 'link', title: "'"}, {quote: "'"}),
     "[](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
