@@ -38,8 +38,8 @@
     "index.js"
   ],
   "dependencies": {
-    "@types/mdast": "^3.0.0",
-    "@types/unist": "^2.0.0",
+    "@types/mdast": "3.0.3",
+    "@types/unist": "2.0.4",
     "longest-streak": "^3.0.0",
     "mdast-util-to-string": "^3.0.0",
     "parse-entities": "^3.0.0",
