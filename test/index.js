@@ -1437,15 +1437,21 @@ test('Code text', (t) => {
   )
 
   t.equal(
+    to({type: 'inlineCode', value: ' a '}),
+    '`  a  `\n',
+    'should pad w/ a space if the value starts and ends w/ a space'
+  )
+
+  t.equal(
     to({type: 'inlineCode', value: ' a'}),
-    '`  a `\n',
-    'should pad w/ a space if the value starts w/ a space'
+    '` a`\n',
+    'should not pad w/ spaces if the value ends w/ a non-space'
   )
 
   t.equal(
     to({type: 'inlineCode', value: 'a '}),
-    '` a  `\n',
-    'should pad w/ a space if the value ends w/ a space'
+    '`a `\n',
+    'should not pad w/ spaces if the value starts w/ a non-space'
   )
 
   t.equal(
@@ -1462,7 +1468,7 @@ test('Code text', (t) => {
 
   t.equal(
     to({type: 'inlineCode', value: 'a\n1. '}),
-    '` a 1.  `\n',
+    '`a 1. `\n',
     'should prevent breaking out of code (\\d\\.)'
   )
 
