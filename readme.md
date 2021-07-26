@@ -34,7 +34,7 @@ Say we have the following script, `example.js`:
 ```js
 import {toMarkdown} from 'mdast-util-to-markdown'
 
-var tree = {
+const tree = {
   type: 'root',
   children: [
     {
