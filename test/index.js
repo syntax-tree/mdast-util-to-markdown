@@ -18,6 +18,7 @@ test('core', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `identifier`, `url` missing.
     to({
       type: 'root',
       children: [
@@ -33,6 +34,7 @@ test('core', (t) => {
 
   t.equal(
     to(
+      // @ts-expect-error: `identifier`, `url` missing.
       {
         type: 'root',
         children: [
@@ -49,6 +51,7 @@ test('core', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({
       type: 'root',
       children: [
@@ -65,6 +68,7 @@ test('core', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({
       type: 'root',
       children: [
@@ -103,6 +107,7 @@ test('core', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `definition` in `listItem` is fine.
     to({
       type: 'listItem',
       spread: false,
@@ -155,6 +160,7 @@ test('core', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: custom node.
       to({type: 'unknown'})
     },
     /Cannot handle unknown node `unknown`/,
@@ -163,6 +169,7 @@ test('core', (t) => {
 
   t.throws(
     () => {
+      // @ts-expect-error: custom node.
       to({
         type: 'paragraph',
         children: [{type: 'text', value: 'a'}, {type: 'unknown'}]
@@ -176,6 +183,7 @@ test('core', (t) => {
 })
 
 test('blockquote', (t) => {
+  // @ts-expect-error: `children` missing.
   t.equal(to({type: 'blockquote'}), '>\n', 'should support a block quote')
 
   t.equal(
@@ -247,6 +255,7 @@ test('blockquote', (t) => {
             },
             {
               type: 'heading',
+              depth: 1,
               children: [{type: 'text', value: 'a b'}]
             }
           ]
@@ -327,6 +336,7 @@ test('blockquote', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `definition` is fine in `blockquote`.
     to({
       type: 'blockquote',
       children: [
@@ -365,6 +375,7 @@ test('blockquote', (t) => {
       children: [
         {
           type: 'heading',
+          depth: 1,
           children: [{type: 'text', value: 'a\nb'}]
         }
       ]
@@ -380,6 +391,7 @@ test('blockquote', (t) => {
         children: [
           {
             type: 'heading',
+            depth: 1,
             children: [{type: 'text', value: 'a\nb'}]
           }
         ]
@@ -443,13 +455,19 @@ test('blockquote', (t) => {
           type: 'paragraph',
           children: [
             {type: 'text', value: 'a\n'},
-            {type: 'imageReference', alt: 'b\nc', label: 'd\ne'},
-            {type: 'text', value: '\nf'}
+            {
+              type: 'imageReference',
+              alt: 'b\nc',
+              label: 'd\ne',
+              identifier: 'f',
+              referenceType: 'collapsed'
+            },
+            {type: 'text', value: '\ng'}
           ]
         }
       ]
     }),
-    '> a\n> ![b\n> c][d\n> e]\n> f\n',
+    '> a\n> ![b\n> c][d\n> e]\n> g\n',
     'should support an image (reference) in a block quote'
   )
 
@@ -487,14 +505,16 @@ test('blockquote', (t) => {
             {
               type: 'linkReference',
               children: [{type: 'text', value: 'b\nc'}],
-              label: 'd\ne'
+              label: 'd\ne',
+              identifier: 'f',
+              referenceType: 'collapsed'
             },
-            {type: 'text', value: '\nf'}
+            {type: 'text', value: '\ng'}
           ]
         }
       ]
     }),
-    '> a\n> [b\n> c][d\n> e]\n> f\n',
+    '> a\n> [b\n> c][d\n> e]\n> g\n',
     'should support a link (reference) in a block quote'
   )
 
@@ -588,12 +608,13 @@ test('break', (t) => {
 })
 
 test('code (flow)', (t) => {
+  // @ts-expect-error: `value` missing.
   t.equal(to({type: 'code'}), '```\n```\n', 'should support empty code')
 
   t.throws(
     () => {
       // @ts-expect-error: runtime.
-      to({type: 'code'}, {fence: '+'})
+      to({type: 'code', value: ''}, {fence: '+'})
     },
     /Cannot serialize code with `\+` for `options\.fence`, expected `` ` `` or `~`/,
     'should throw on when given an incorrect `fence`'
@@ -612,79 +633,79 @@ test('code (flow)', (t) => {
   )
 
   t.equal(
-    to({type: 'code', lang: 'a'}),
+    to({type: 'code', lang: 'a', value: ''}),
     '```a\n```\n',
     'should support code w/ a lang'
   )
 
   t.equal(
-    to({type: 'code', meta: 'a'}),
+    to({type: 'code', meta: 'a', value: ''}),
     '```\n```\n',
     'should support (ignore) code w/ only a meta'
   )
 
   t.equal(
-    to({type: 'code', lang: 'a', meta: 'b'}),
+    to({type: 'code', lang: 'a', meta: 'b', value: ''}),
     '```a b\n```\n',
     'should support code w/ lang and meta'
   )
 
   t.equal(
-    to({type: 'code', lang: 'a b'}),
+    to({type: 'code', lang: 'a b', value: ''}),
     '```a&#x20;b\n```\n',
     'should encode a space in `lang`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'a\nb'}),
+    to({type: 'code', lang: 'a\nb', value: ''}),
     '```a&#xA;b\n```\n',
     'should encode a line ending in `lang`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'a`b'}),
+    to({type: 'code', lang: 'a`b', value: ''}),
     '```a&#x60;b\n```\n',
     'should encode a grave accent in `lang`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'a\\-b'}),
+    to({type: 'code', lang: 'a\\-b', value: ''}),
     '```a\\\\-b\n```\n',
     'should escape a backslash in `lang`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'x', meta: 'a b'}),
+    to({type: 'code', lang: 'x', meta: 'a b', value: ''}),
     '```x a b\n```\n',
     'should not encode a space in `meta`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'x', meta: 'a\nb'}),
+    to({type: 'code', lang: 'x', meta: 'a\nb', value: ''}),
     '```x a&#xA;b\n```\n',
     'should encode a line ending in `meta`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'x', meta: 'a`b'}),
+    to({type: 'code', lang: 'x', meta: 'a`b', value: ''}),
     '```x a&#x60;b\n```\n',
     'should encode a grave accent in `meta`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'x', meta: 'a\\-b'}),
+    to({type: 'code', lang: 'x', meta: 'a\\-b', value: ''}),
     '```x a\\\\-b\n```\n',
     'should escape a backslash in `meta`'
   )
 
   t.equal(
-    to({type: 'code'}, {fence: '~'}),
+    to({type: 'code', value: ''}, {fence: '~'}),
     '~~~\n~~~\n',
     'should support fenced code w/ tildes when `fence: "~"`'
   )
 
   t.equal(
-    to({type: 'code', lang: 'a`b'}, {fence: '~'}),
+    to({type: 'code', lang: 'a`b', value: ''}, {fence: '~'}),
     '~~~a`b\n~~~\n',
     'should not encode a grave accent when using tildes for fences'
   )
@@ -748,54 +769,63 @@ test('code (flow)', (t) => {
 
 test('definition', (t) => {
   t.equal(
+    // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition'}),
     '[]: <>\n',
     'should support a definition w/o label'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: 'a'}),
     '[a]: <>\n',
     'should support a definition w/ label'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: '\\'}),
     '[\\\\]: <>\n',
     'should escape a backslash in `label`'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: '['}),
     '[\\[]: <>\n',
     'should escape an opening bracket in `label`'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: ']'}),
     '[\\]]: <>\n',
     'should escape a closing bracket in `label`'
   )
 
   t.equal(
+    // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: 'a'}),
     '[a]: <>\n',
     'should support a definition w/ identifier'
   )
 
   t.equal(
+    // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: '\\'}),
     '[\\\\]: <>\n',
     'should escape a backslash in `identifier`'
   )
 
   t.equal(
+    // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: '['}),
     '[\\[]: <>\n',
     'should escape an opening bracket in `identifier`'
   )
 
   t.equal(
+    // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: ']'}),
     '[\\]]: <>\n',
     'should escape a closing bracket in `identifier`'
@@ -856,39 +886,48 @@ test('definition', (t) => {
   )
 
   t.equal(
-    to({type: 'definition', identifier: 'a', title: 'b'}),
+    to({type: 'definition', identifier: 'a', url: '', title: 'b'}),
     '[a]: <> "b"\n',
     'should support a definition w/ title'
   )
 
   t.equal(
-    to({type: 'definition', identifier: 'a', title: '"'}),
+    to({type: 'definition', identifier: 'a', url: '', title: '"'}),
     '[a]: <> "\\""\n',
     'should escape a quote in `title` in a title'
   )
 
   t.equal(
-    to({type: 'definition', identifier: 'a', title: '\\'}),
+    to({type: 'definition', identifier: 'a', url: '', title: '\\'}),
     '[a]: <> "\\\\"\n',
     'should escape a backslash in `title` in a title'
   )
 
   t.equal(
-    to({type: 'definition', identifier: 'a', title: 'b'}, {quote: "'"}),
+    to(
+      {type: 'definition', identifier: 'a', url: '', title: 'b'},
+      {quote: "'"}
+    ),
     "[a]: <> 'b'\n",
     'should support a definition w/ title when `quote: "\'"`'
   )
 
   t.equal(
-    to({type: 'definition', identifier: 'a', title: "'"}, {quote: "'"}),
+    to(
+      {type: 'definition', identifier: 'a', url: '', title: "'"},
+      {quote: "'"}
+    ),
     "[a]: <> '\\''\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
   t.throws(
     () => {
-      // @ts-expect-error: runtime.
-      to({type: 'definition', identifier: 'a', title: 'b'}, {quote: '.'})
+      to(
+        {type: 'definition', identifier: 'a', url: '', title: 'b'},
+        // @ts-expect-error: runtime.
+        {quote: '.'}
+      )
     },
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
     'should throw on when given an incorrect `quote`'
@@ -898,6 +937,7 @@ test('definition', (t) => {
 })
 
 test('emphasis', (t) => {
+  // @ts-expect-error: `children` missing.
   t.equal(to({type: 'emphasis'}), '**\n', 'should support an empty emphasis')
 
   t.throws(
@@ -929,30 +969,35 @@ test('emphasis', (t) => {
 
 test('heading', (t) => {
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'heading'}),
     '#\n',
     'should serialize a heading w/o rank as a heading of rank 1'
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 1}),
     '#\n',
     'should serialize a heading w/ rank 1'
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 6}),
     '######\n',
     'should serialize a heading w/ rank 6'
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 7}),
     '######\n',
     'should serialize a heading w/ rank 7 as 6'
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 0}),
     '#\n',
     'should serialize a heading w/ rank 0 as 1'
@@ -1014,21 +1059,22 @@ test('heading', (t) => {
   )
 
   t.equal(
-    to({type: 'heading', depth: 1}, {setext: true}),
+    to({type: 'heading', depth: 1, children: []}, {setext: true}),
     '#\n',
     'should serialize an empty heading w/ rank 1 as atx when `setext: true`'
   )
 
   t.equal(
-    to({type: 'heading', depth: 2}, {setext: true}),
+    to({type: 'heading', depth: 2, children: []}, {setext: true}),
     '##\n',
     'should serialize an empty heading w/ rank 2 as atx when `setext: true`'
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'heading'}, {closeAtx: true}),
     '# #\n',
-    'should serialize a with a closing sequence when `closeAtx` (empty)'
+    'should serialize a heading with a closing sequence when `closeAtx` (empty)'
   )
 
   t.equal(
@@ -1077,19 +1123,19 @@ test('heading', (t) => {
   )
 
   t.equal(
-    to({type: 'heading', children: [{type: 'text', value: 'a #'}]}),
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a #'}]}),
     '# a \\#\n',
     'should escape a `#` at the end of a heading (1)'
   )
 
   t.equal(
-    to({type: 'heading', children: [{type: 'text', value: 'a ##'}]}),
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a ##'}]}),
     '# a #\\#\n',
     'should escape a `#` at the end of a heading (2)'
   )
 
   t.equal(
-    to({type: 'heading', children: [{type: 'text', value: 'a # b'}]}),
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a # b'}]}),
     '# a # b\n',
     'should not escape a `#` in a heading (2)'
   )
@@ -1098,6 +1144,7 @@ test('heading', (t) => {
 })
 
 test('html', (t) => {
+  // @ts-expect-error: `value` missing
   t.equal(to({type: 'html'}), '', 'should support a void html')
   t.equal(to({type: 'html', value: ''}), '', 'should support an empty html')
   t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb\n', 'should support html')
@@ -1154,14 +1201,16 @@ test('html', (t) => {
 })
 
 test('image', (t) => {
+  // @ts-expect-error: `url` missing
   t.equal(to({type: 'image'}), '![]()\n', 'should support an image')
 
+  // @ts-expect-error: `url` missing
   t.equal(to({type: 'image', alt: 'a'}), '![a]()\n', 'should support `alt`')
 
   t.equal(to({type: 'image', url: 'a'}), '![](a)\n', 'should support a url')
 
   t.equal(
-    to({type: 'image', title: 'a'}),
+    to({type: 'image', url: '', title: 'a'}),
     '![](<> "a")\n',
     'should support a title'
   )
@@ -1221,25 +1270,25 @@ test('image', (t) => {
   )
 
   t.equal(
-    to({type: 'image', title: 'b"c'}),
+    to({type: 'image', url: '', title: 'b"c'}),
     '![](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
   t.equal(
-    to({type: 'image', title: 'b\\.c'}),
+    to({type: 'image', url: '', title: 'b\\.c'}),
     '![](<> "b\\\\.c")\n',
     'should escape a backslash in `title`'
   )
 
   t.equal(
-    to({type: 'image', title: 'b'}, {quote: "'"}),
+    to({type: 'image', url: '', title: 'b'}, {quote: "'"}),
     "![](<> 'b')\n",
     'should support an image w/ title when `quote: "\'"`'
   )
 
   t.equal(
-    to({type: 'image', title: "'"}, {quote: "'"}),
+    to({type: 'image', url: '', title: "'"}, {quote: "'"}),
     "![](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
@@ -1258,30 +1307,35 @@ test('image', (t) => {
 
 test('imageReference', (t) => {
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference'}),
     '![][]\n',
     'should support a link reference (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', alt: 'a'}),
     '![a][]\n',
     'should support `alt`'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType` missing.
     to({type: 'imageReference', identifier: 'a'}),
     '![][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', label: 'a'}),
     '![][a]\n',
     'should support a `label` (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier` missing.
     to({
       type: 'imageReference',
       alt: 'A',
@@ -1293,6 +1347,7 @@ test('imageReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `identifier` missing.
     to({
       type: 'imageReference',
       alt: 'A',
@@ -1304,6 +1359,7 @@ test('imageReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `identifier` missing.
     to({
       type: 'imageReference',
       alt: 'A',
@@ -1365,12 +1421,14 @@ test('imageReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', alt: 'a', label: 'a'}),
     '![a][]\n',
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', alt: 'a', label: 'b'}),
     '![a][b]\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
@@ -1380,6 +1438,7 @@ test('imageReference', (t) => {
 })
 
 test('Code text', (t) => {
+  // @ts-expect-error: `value` missing.
   t.equal(to({type: 'inlineCode'}), '``\n', 'should support an empty code text')
 
   t.equal(
@@ -1488,84 +1547,90 @@ test('Code text', (t) => {
 })
 
 test('link', (t) => {
+  // @ts-expect-error: `children`, `url` missing.
   t.equal(to({type: 'link'}), '[]()\n', 'should support a link')
 
   t.equal(
+    // @ts-expect-error: `url` missing.
     to({type: 'link', children: [{type: 'text', value: 'a'}]}),
     '[a]()\n',
     'should support children'
   )
 
-  t.equal(to({type: 'link', url: 'a'}), '[](a)\n', 'should support a url')
+  t.equal(
+    to({type: 'link', url: 'a', children: []}),
+    '[](a)\n',
+    'should support a url'
+  )
 
   t.equal(
-    to({type: 'link', title: 'a'}),
+    to({type: 'link', url: '', title: 'a', children: []}),
     '[](<> "a")\n',
     'should support a title'
   )
 
   t.equal(
-    to({type: 'link', url: 'a', title: 'b'}),
+    to({type: 'link', url: 'a', title: 'b', children: []}),
     '[](a "b")\n',
     'should support a url and title'
   )
 
   t.equal(
-    to({type: 'link', url: 'b c'}),
+    to({type: 'link', url: 'b c', children: []}),
     '[](<b c>)\n',
     'should support a link w/ enclosed url w/ whitespace in url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b <c'}),
+    to({type: 'link', url: 'b <c', children: []}),
     '[](<b \\<c>)\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b >c'}),
+    to({type: 'link', url: 'b >c', children: []}),
     '[](<b \\>c>)\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b \\+c'}),
+    to({type: 'link', url: 'b \\+c', children: []}),
     '[](<b \\\\+c>)\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b\nc'}),
+    to({type: 'link', url: 'b\nc', children: []}),
     '[](<b&#xA;c>)\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b(c'}),
+    to({type: 'link', url: 'b(c', children: []}),
     '[](b\\(c)\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b)c'}),
+    to({type: 'link', url: 'b)c', children: []}),
     '[](b\\)c)\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
   t.equal(
-    to({type: 'link', url: 'b\\.c'}),
+    to({type: 'link', url: 'b\\.c', children: []}),
     '[](b\\\\.c)\n',
     'should escape a backslash in `url` in a raw url'
   )
 
   t.equal(
-    to({type: 'link', title: 'b"c'}),
+    to({type: 'link', url: '', title: 'b"c', children: []}),
     '[](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
   t.equal(
-    to({type: 'link', title: 'b\\-c'}),
+    to({type: 'link', url: '', title: 'b\\-c', children: []}),
     '[](<> "b\\\\-c")\n',
     'should escape a backslash in `title`'
   )
@@ -1650,13 +1715,13 @@ test('link', (t) => {
   )
 
   t.equal(
-    to({type: 'link', title: 'b'}, {quote: "'"}),
+    to({type: 'link', url: '', title: 'b', children: []}, {quote: "'"}),
     "[](<> 'b')\n",
     'should support a link w/ title when `quote: "\'"`'
   )
 
   t.equal(
-    to({type: 'link', title: "'"}, {quote: "'"}),
+    to({type: 'link', url: '', title: "'", children: []}, {quote: "'"}),
     "[](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
@@ -1675,30 +1740,35 @@ test('link', (t) => {
 
 test('linkReference', (t) => {
   t.equal(
+    // @ts-expect-error: `children`, `referenceType`, `identifier` missing.
     to({type: 'linkReference'}),
     '[][]\n',
     'should support a link reference (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'linkReference', children: [{type: 'text', value: 'a'}]}),
     '[a][]\n',
     'should support `children`'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier` missing.
     to({type: 'linkReference', identifier: 'a'}),
     '[][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error: `children`, `referenceType`, `identifier` missing.
     to({type: 'linkReference', label: 'a'}),
     '[][a]\n',
     'should support a `label` (nonsensical)'
   )
 
   t.equal(
+    // @ts-expect-error: `identifier` missing.
     to({
       type: 'linkReference',
       children: [{type: 'text', value: 'A'}],
@@ -1714,6 +1784,7 @@ test('linkReference', (t) => {
       type: 'linkReference',
       children: [{type: 'text', value: 'A'}],
       label: 'A',
+      identifier: 'a',
       referenceType: 'collapsed'
     }),
     '[A][]\n',
@@ -1725,6 +1796,7 @@ test('linkReference', (t) => {
       type: 'linkReference',
       children: [{type: 'text', value: 'A'}],
       label: 'A',
+      identifier: 'a',
       referenceType: 'full'
     }),
     '[A][A]\n',
@@ -1782,26 +1854,31 @@ test('linkReference', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType` missing.
     to({
       type: 'linkReference',
       children: [{type: 'text', value: 'a'}],
-      label: 'a'
+      label: 'a',
+      identifier: 'a'
     }),
     '[a][]\n',
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType` missing.
     to({
       type: 'linkReference',
       children: [{type: 'text', value: 'a'}],
-      label: 'b'
+      label: 'b',
+      identifier: 'b'
     }),
     '[a][b]\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
 
   t.equal(
+    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({
       type: 'paragraph',
       children: [
@@ -1817,9 +1894,11 @@ test('linkReference', (t) => {
 })
 
 test('list', (t) => {
+  // @ts-expect-error: `children` missing.
   t.equal(to({type: 'list'}), '', 'should support an empty list')
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'list', children: [{type: 'listItem'}]}),
     '*\n',
     'should support a list w/ an item'
@@ -1895,6 +1974,7 @@ test('list', (t) => {
   )
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'list', ordered: true, children: [{type: 'listItem'}]}),
     '1.\n',
     'should support a list w/ `ordered` and an empty item'
@@ -2235,9 +2315,11 @@ test('list', (t) => {
 })
 
 test('listItem', (t) => {
+  // @ts-expect-error: `children` missing.
   t.equal(to({type: 'listItem'}), '*\n', 'should support a list item')
 
   t.equal(
+    // @ts-expect-error: `children` missing.
     to({type: 'listItem'}, {bullet: '+'}),
     '+\n',
     'should serialize an item w/ a plus as bullet when `bullet: "+"`'
@@ -2359,6 +2441,7 @@ test('listItem', (t) => {
 })
 
 test('paragraph', (t) => {
+  // @ts-expect-error: `children` missing.
   t.equal(to({type: 'paragraph'}), '', 'should support an empty paragraph')
 
   t.equal(
@@ -2371,6 +2454,7 @@ test('paragraph', (t) => {
 })
 
 test('strong', (t) => {
+  // @ts-expect-error: `children` missing.
   t.equal(to({type: 'strong'}), '****\n', 'should support an empty strong')
 
   t.throws(
@@ -2398,6 +2482,7 @@ test('strong', (t) => {
 })
 
 test('text', (t) => {
+  // @ts-expect-error: `value` missing.
   t.equal(to({type: 'text'}), '', 'should support a void text')
   t.equal(to({type: 'text', value: ''}), '', 'should support an empty text')
   t.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n', 'should support text')
@@ -2602,7 +2687,9 @@ test('escape', (t) => {
         {
           type: 'linkReference',
           children: [{type: 'text', value: 'a'}],
-          label: 'b'
+          label: 'b',
+          identifier: 'b',
+          referenceType: 'shortcut'
         }
       ]
     }),
@@ -2675,8 +2762,8 @@ test('escape', (t) => {
       {
         type: 'root',
         children: [
-          {type: 'definition', label: 'a'},
-          {type: 'definition', label: 'b'}
+          {type: 'definition', url: '', label: 'a', identifier: 'a'},
+          {type: 'definition', url: '', label: 'b', identifier: 'b'}
         ]
       },
       {extensions: [{tightDefinitions: true}]}
@@ -2708,6 +2795,7 @@ test('escape', (t) => {
 
   t.equal(
     to(
+      // @ts-expect-error: `null` for `checked` is what we’ve always used.
       {
         type: 'root',
         children: [
