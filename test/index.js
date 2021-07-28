@@ -18,12 +18,13 @@ test('core', (t) => {
   )
 
   t.equal(
-    // @ts-expect-error: `identifier`, `url` missing.
     to({
       type: 'root',
       children: [
         {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+        // @ts-expect-error: `identifier`, `url` missing.
         {type: 'definition', label: 'b'},
+        // @ts-expect-error: `identifier`, `url` missing.
         {type: 'definition', label: 'c'},
         {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
       ]
@@ -34,12 +35,13 @@ test('core', (t) => {
 
   t.equal(
     to(
-      // @ts-expect-error: `identifier`, `url` missing.
       {
         type: 'root',
         children: [
           {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+          // @ts-expect-error: `identifier`, `url` missing.
           {type: 'definition', label: 'b'},
+          // @ts-expect-error: `identifier`, `url` missing.
           {type: 'definition', label: 'c'},
           {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
         ]
@@ -51,14 +53,17 @@ test('core', (t) => {
   )
 
   t.equal(
-    // @ts-expect-error: `children` missing.
     to({
       type: 'root',
       children: [
         {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+        // @ts-expect-error: `children` missing.
         {type: 'list', children: [{type: 'listItem'}]},
+        // @ts-expect-error: `children` missing.
         {type: 'list', children: [{type: 'listItem'}]},
+        // @ts-expect-error: `children` missing.
         {type: 'list', ordered: true, children: [{type: 'listItem'}]},
+        // @ts-expect-error: `children` missing.
         {type: 'list', ordered: true, children: [{type: 'listItem'}]},
         {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
       ]
@@ -68,11 +73,11 @@ test('core', (t) => {
   )
 
   t.equal(
-    // @ts-expect-error: `children` missing.
     to({
       type: 'root',
       children: [
         {type: 'code', value: 'a'},
+        // @ts-expect-error: `children` missing.
         {type: 'list', children: [{type: 'listItem'}]},
         {type: 'code', value: 'b'}
       ]
@@ -107,12 +112,12 @@ test('core', (t) => {
   )
 
   t.equal(
-    // @ts-expect-error: `definition` in `listItem` is fine.
     to({
       type: 'listItem',
       spread: false,
       children: [
         {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+        // @ts-expect-error: `definition` in `listItem` is fine.
         {type: 'definition', label: 'b', url: 'c'}
       ]
     }),
@@ -169,9 +174,9 @@ test('core', (t) => {
 
   t.throws(
     () => {
-      // @ts-expect-error: custom node.
       to({
         type: 'paragraph',
+        // @ts-expect-error: custom node.
         children: [{type: 'text', value: 'a'}, {type: 'unknown'}]
       })
     },
@@ -336,10 +341,10 @@ test('blockquote', (t) => {
   )
 
   t.equal(
-    // @ts-expect-error: `definition` is fine in `blockquote`.
     to({
       type: 'blockquote',
       children: [
+        // @ts-expect-error: `definition` is fine in `blockquote`.
         {type: 'definition', label: 'a\nb', url: 'c\nd', title: 'e\nf'},
         {
           type: 'paragraph',
@@ -1878,10 +1883,10 @@ test('linkReference', (t) => {
   )
 
   t.equal(
-    // @ts-expect-error: `referenceType`, `identifier` missing.
     to({
       type: 'paragraph',
       children: [
+        // @ts-expect-error: `referenceType`, `identifier` missing.
         {type: 'linkReference', children: [{type: 'text', value: 'a'}]},
         {type: 'text', value: '(b)'}
       ]
@@ -2795,7 +2800,6 @@ test('escape', (t) => {
 
   t.equal(
     to(
-      // @ts-expect-error: `null` for `checked` is what we’ve always used.
       {
         type: 'root',
         children: [
@@ -2808,6 +2812,7 @@ test('escape', (t) => {
               {
                 type: 'listItem',
                 spread: true,
+                // @ts-expect-error: `null` for `checked` is what we’ve always used.
                 checked: null,
                 children: [
                   {
@@ -2822,12 +2827,14 @@ test('escape', (t) => {
                   {
                     type: 'list',
                     ordered: false,
+                    // @ts-expect-error: `null` for `start` is what we’ve always used.
                     start: null,
                     spread: false,
                     children: [
                       {
                         type: 'listItem',
                         spread: false,
+                        // @ts-expect-error: `null` for `checked` is what we’ve always used.
                         checked: null,
                         children: [
                           {
