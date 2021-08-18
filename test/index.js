@@ -1,3 +1,8 @@
+/**
+ * @typedef {import('mdast').BlockContent} BlockContent
+ * @typedef {import('mdast').List} List
+ */
+
 import test from 'tape'
 import {removePosition} from 'unist-util-remove-position'
 import {fromMarkdown as from} from 'mdast-util-from-markdown'
@@ -554,7 +559,7 @@ test('blockquote', (t) => {
         }
       ]
     }),
-    '> a\n> b\n>\n> *   c\n>     d\n>\n> *   ***\n>\n> *   e\n>     f\n',
+    '> a\n> b\n>\n> -   c\n>     d\n>\n> -   ***\n>\n> -   e\n>     f\n',
     'should support a list in a block quote'
   )
 
@@ -1931,7 +1936,7 @@ test('list', (t) => {
         }
       ]
     }),
-    '*   a\n\n*   ***\n\n*   b\n',
+    '-   a\n\n-   ***\n\n-   b\n',
     'should support a list w/ items'
   )
 
@@ -1952,7 +1957,7 @@ test('list', (t) => {
         }
       ]
     }),
-    '*   a\n*   ***\n',
+    '-   a\n-   ***\n',
     'should not use blank lines between items for lists w/ `spread: false`'
   )
 
@@ -1974,7 +1979,7 @@ test('list', (t) => {
         }
       ]
     }),
-    '*   a\n\n    b\n*   ***\n',
+    '-   a\n\n    b\n-   ***\n',
     'should support a list w/ `spread: false`, w/ a spread item'
   )
 
@@ -2440,6 +2445,122 @@ test('listItem', (t) => {
     }),
     '*   a\n    ***\n',
     'should not use blank lines between child blocks for items w/ `spread: false`'
+  )
+
+  /**
+   * @param {BlockContent|BlockContent[]} [d]
+   * @returns {List}
+   */
+  function createList(d) {
+    return {
+      type: 'list',
+      children: [
+        {type: 'listItem', children: Array.isArray(d) ? d : d ? [d] : []}
+      ]
+    }
+  }
+
+  t.equal(
+    to(createList(createList(createList())), {otherBullet: '+'}),
+    '*   *   +\n',
+    'should support `otherBullet`'
+  )
+
+  t.equal(
+    to(createList(createList(createList())), {bullet: '-'}),
+    '-   -   *\n',
+    'should default to an `otherBullet` different from `bullet` (1)'
+  )
+
+  t.equal(
+    to(createList(createList(createList())), {bullet: '*'}),
+    '*   *   -\n',
+    'should default to an `otherBullet` different from `bullet` (2)'
+  )
+
+  t.throws(
+    () => {
+      // @ts-expect-error: runtime.
+      to(createList(createList(createList())), {otherBullet: '?'})
+    },
+    /Cannot serialize items with `\?` for `options\.otherBullet`, expected/,
+    'should throw when given an incorrect `otherBullet`'
+  )
+
+  t.throws(
+    () => {
+      to(createList(createList(createList())), {bullet: '-', otherBullet: '-'})
+    },
+    /Expected `bullet` \(`-`\) and `otherBullet` \(`-`\) to be different/,
+    'should throw when an `otherBullet` is given equal to `bullet`'
+  )
+
+  t.equal(
+    to({
+      type: 'list',
+      children: [{type: 'listItem', children: [{type: 'thematicBreak'}]}]
+    }),
+    '-   ***\n',
+    'should use a different bullet than a thematic rule marker, if the first child of a list item is a thematic break (1)'
+  )
+
+  t.equal(
+    to({
+      type: 'list',
+      children: [
+        {
+          type: 'listItem',
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+          ]
+        },
+        {type: 'listItem', children: [{type: 'thematicBreak'}]}
+      ]
+    }),
+    '-   a\n\n-   ***\n',
+    'should use a different bullet than a thematic rule marker, if the first child of a list item is a thematic break (2)'
+  )
+
+  t.equal(
+    to(createList(createList())),
+    '*   *\n',
+    'should *not* use a different bullet for an empty list item in two lists'
+  )
+
+  t.equal(
+    to(createList(createList(createList()))),
+    '*   *   -\n',
+    'should use a different bullet for an empty list item in three lists'
+  )
+
+  t.equal(
+    to(createList(createList(createList(createList())))),
+    '*   *   *   -\n',
+    'should use a different bullet for an empty list item in four lists'
+  )
+
+  t.equal(
+    to(createList(createList(createList(createList(createList()))))),
+    '*   *   *   *   -\n',
+    'should use a different bullet for an empty list item in five lists'
+  )
+
+  // Note: this case isn’t needed, but there’s no way to check in the code
+  // that each list item is the head of its parental list.
+  t.equal(
+    to(
+      createList(
+        createList([
+          createList({
+            type: 'paragraph',
+            children: [{type: 'text', value: 'a'}]
+          }),
+          createList()
+        ])
+      )
+    ),
+    '*   *   *   a\n\n        <!---->\n\n        -\n',
+    'should use a different bullet for an empty list item at non-head in two lists'
   )
 
   t.end()
@@ -3062,6 +3183,22 @@ test('roundtrip', (t) => {
     to(from(doc)),
     doc,
     'should roundtrip a sole blank line in fenced code'
+  )
+
+  doc = '*   *   -\n'
+
+  t.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip an empty list item in two more lists'
+  )
+
+  doc = '-   ***\n'
+
+  t.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip a thematic break at the start of a list item'
   )
 
   t.end()
