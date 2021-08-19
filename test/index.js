@@ -385,12 +385,12 @@ test('blockquote', (t) => {
       children: [
         {
           type: 'heading',
-          depth: 1,
+          depth: 3,
           children: [{type: 'text', value: 'a\nb'}]
         }
       ]
     }),
-    '> # a&#xA;b\n',
+    '> ### a&#xA;b\n',
     'should support a heading (atx) in a block quote'
   )
 
@@ -597,15 +597,31 @@ test('break', (t) => {
   t.equal(to({type: 'break'}), '\\\n', 'should support a break')
 
   t.equal(
-    to(from('a  \nb\n=\n')),
-    '# a b\n',
+    to({
+      type: 'heading',
+      depth: 3,
+      children: [
+        {type: 'text', value: 'a'},
+        {type: 'break'},
+        {type: 'text', value: 'b'}
+      ]
+    }),
+    '### a b\n',
     'should serialize breaks in heading (atx) as a space'
   )
 
   t.equal(
-    to(from('a \\\nb\n=\n')),
-    '# a b\n',
-    'should serialize breaks in heading (atx) as nothing when preceded by a space'
+    to({
+      type: 'heading',
+      depth: 3,
+      children: [
+        {type: 'text', value: 'a '},
+        {type: 'break'},
+        {type: 'text', value: 'b'}
+      ]
+    }),
+    '### a b\n',
+    'should serialize breaks in heading (atx) as a space'
   )
 
   t.equal(
@@ -1078,6 +1094,50 @@ test('heading', (t) => {
     to({type: 'heading', depth: 2, children: []}, {setext: true}),
     '##\n',
     'should serialize an empty heading w/ rank 2 as atx when `setext: true`'
+  )
+
+  t.equal(
+    to({
+      type: 'heading',
+      depth: 1,
+      children: [{type: 'inlineCode', value: '\n'}]
+    }),
+    '`\n`\n=\n',
+    'should serialize an heading w/ rank 1 and code w/ a line ending as setext'
+  )
+
+  t.equal(
+    to({
+      type: 'heading',
+      depth: 1,
+      children: [{type: 'html', value: '<a\n/>'}]
+    }),
+    '<a\n/>\n==\n',
+    'should serialize an heading w/ rank 1 and html w/ a line ending as setext'
+  )
+
+  t.equal(
+    to({
+      type: 'heading',
+      depth: 1,
+      children: [{type: 'text', value: 'a\nb'}]
+    }),
+    'a\nb\n=\n',
+    'should serialize an heading w/ rank 1 and text w/ a line ending as setext'
+  )
+
+  t.equal(
+    to({
+      type: 'heading',
+      depth: 1,
+      children: [
+        {type: 'text', value: 'a'},
+        {type: 'break'},
+        {type: 'text', value: 'b'}
+      ]
+    }),
+    'a\\\nb\n=\n',
+    'should serialize an heading w/ rank 1 and a break as setext'
   )
 
   t.equal(

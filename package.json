@@ -43,6 +43,7 @@
     "longest-streak": "^3.0.0",
     "mdast-util-to-string": "^3.0.0",
     "parse-entities": "^3.0.0",
+    "unist-util-visit": "^4.0.0",
     "zwitch": "^2.0.0"
   },
   "devDependencies": {
