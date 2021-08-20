@@ -2521,38 +2521,38 @@ test('listItem', (t) => {
   }
 
   t.equal(
-    to(createList(createList(createList())), {otherBullet: '+'}),
+    to(createList(createList(createList())), {bulletOther: '+'}),
     '*   *   +\n',
-    'should support `otherBullet`'
+    'should support `bulletOther`'
   )
 
   t.equal(
     to(createList(createList(createList())), {bullet: '-'}),
     '-   -   *\n',
-    'should default to an `otherBullet` different from `bullet` (1)'
+    'should default to an `bulletOther` different from `bullet` (1)'
   )
 
   t.equal(
     to(createList(createList(createList())), {bullet: '*'}),
     '*   *   -\n',
-    'should default to an `otherBullet` different from `bullet` (2)'
+    'should default to an `bulletOther` different from `bullet` (2)'
   )
 
   t.throws(
     () => {
       // @ts-expect-error: runtime.
-      to(createList(createList(createList())), {otherBullet: '?'})
+      to(createList(createList(createList())), {bulletOther: '?'})
     },
-    /Cannot serialize items with `\?` for `options\.otherBullet`, expected/,
-    'should throw when given an incorrect `otherBullet`'
+    /Cannot serialize items with `\?` for `options\.bulletOther`, expected/,
+    'should throw when given an incorrect `bulletOther`'
   )
 
   t.throws(
     () => {
-      to(createList(createList(createList())), {bullet: '-', otherBullet: '-'})
+      to(createList(createList(createList())), {bullet: '-', bulletOther: '-'})
     },
-    /Expected `bullet` \(`-`\) and `otherBullet` \(`-`\) to be different/,
-    'should throw when an `otherBullet` is given equal to `bullet`'
+    /Expected `bullet` \(`-`\) and `bulletOther` \(`-`\) to be different/,
+    'should throw when an `bulletOther` is given equal to `bullet`'
   )
 
   t.equal(
@@ -2594,6 +2594,12 @@ test('listItem', (t) => {
   )
 
   t.equal(
+    to(createList(createList(createList())), {bullet: '+'}),
+    '+   +   +\n',
+    'should not use a different bullet for an empty list item in three lists if `bullet` isn’t a thematic rule marker'
+  )
+
+  t.equal(
     to(createList(createList(createList(createList())))),
     '*   *   *   -\n',
     'should use a different bullet for an empty list item in four lists'
@@ -2605,8 +2611,6 @@ test('listItem', (t) => {
     'should use a different bullet for an empty list item in five lists'
   )
 
-  // Note: this case isn’t needed, but there’s no way to check in the code
-  // that each list item is the head of its parental list.
   t.equal(
     to(
       createList(
@@ -2619,8 +2623,8 @@ test('listItem', (t) => {
         ])
       )
     ),
-    '*   *   *   a\n\n        <!---->\n\n        -\n',
-    'should use a different bullet for an empty list item at non-head in two lists'
+    '*   *   *   a\n\n        <!---->\n\n        *\n',
+    'should not use a different bullet for an empty list item at non-head in two lists'
   )
 
   t.end()
@@ -2993,7 +2997,6 @@ test('escape', (t) => {
               {
                 type: 'listItem',
                 spread: true,
-                // @ts-expect-error: `null` for `checked` is what we’ve always used.
                 checked: null,
                 children: [
                   {
@@ -3008,14 +3011,12 @@ test('escape', (t) => {
                   {
                     type: 'list',
                     ordered: false,
-                    // @ts-expect-error: `null` for `start` is what we’ve always used.
                     start: null,
                     spread: false,
                     children: [
                       {
                         type: 'listItem',
                         spread: false,
-                        // @ts-expect-error: `null` for `checked` is what we’ve always used.
                         checked: null,
                         children: [
                           {
@@ -3259,6 +3260,62 @@ test('roundtrip', (t) => {
     to(from(doc)),
     doc,
     'should roundtrip a thematic break at the start of a list item'
+  )
+
+  let tree = from('* a\n- b')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther`'
+  )
+
+  tree = from('* ---\n- - +\n+ b')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (1)'
+  )
+
+  tree = from('- - +\n* ---\n+ b')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (2)'
+  )
+
+  tree = from('- - +\n- -')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (3)'
+  )
+
+  tree = from('* - +\n    *\n    -\n    +')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (4)'
+  )
+
+  tree = from('* - +\n  - *\n    -\n    +')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (5)'
+  )
+
+  tree = from('- +\n- *\n  -\n  +')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (6)'
   )
 
   t.end()

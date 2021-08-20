@@ -83,8 +83,34 @@ Serialize **[mdast][]** to markdown.
 
 ###### `options.bullet`
 
-Marker to use to for bullets of items in unordered lists (`'*'`, `'+'`, or `'-'`,
+Marker to use for bullets of items in unordered lists (`'*'`, `'+'`, or `'-'`,
 default: `'*'`).
+
+###### `options.bulletOther`
+
+Marker to use in certain cases where the primary bullet doesn’t work (`'*'`,
+`'+'`, or `'-'`, default: depends).
+
+There are three cases where the primary bullet can’t be used:
+
+*   When three list items are on their own, the last one is empty, and `bullet`
+    is also a valid `rule`: `* - +`.
+    This would turn into a thematic break if serialized with three primary
+    bullets.
+    As this is an edge case unlikely to appear in normal markdown, the last list
+    item will be given a different bullet.
+*   When a thematic break is the first child of one of the list items, and
+    `bullet` is the same character as `rule`: `- ***`.
+    This would turn into a single thematic break if serialized with primary
+    bullets.
+    As this is an edge case unlikely to appear in normal markdown this markup is
+    always fixed, even if `bulletOther` is not passed
+*   When two unordered lists appear next to each other: `* a\n- b`.
+    CommonMark sees different bullets as different lists, but several markdown
+    parsers parse it as one list.
+    To solve for both, we instead inject an empty comment between the two lists:
+    `* a\n<!---->\n* b`, but if `bulletOther` is given explicitly, it will be
+    used instead
 
 ###### `options.closeAtx`
 
