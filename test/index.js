@@ -2627,6 +2627,99 @@ test('listItem', (t) => {
     'should not use a different bullet for an empty list item at non-head in two lists'
   )
 
+  t.equal(
+    to(
+      {
+        type: 'list',
+        ordered: true,
+        children: [{type: 'listItem', children: []}]
+      },
+      {bulletOrdered: ')'}
+    ),
+    '1)\n',
+    'should support `bulletOrdered`'
+  )
+
+  t.throws(
+    () => {
+      to(
+        {
+          type: 'list',
+          ordered: true,
+          children: [{type: 'listItem', children: []}]
+        },
+        // @ts-expect-error: runtime.
+        {bulletOrdered: '~'}
+      )
+    },
+    /Cannot serialize items with `~` for `options.bulletOrdered`/,
+    'should throw on a `bulletOrdered` that is invalid'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'root',
+        children: [
+          {
+            type: 'list',
+            ordered: true,
+            children: [{type: 'listItem', children: []}]
+          },
+          {
+            type: 'list',
+            ordered: true,
+            children: [{type: 'listItem', children: []}]
+          }
+        ]
+      },
+      {bulletOrdered: '.', bulletOrderedOther: ')'}
+    ),
+    '1.\n\n1)\n',
+    'should support `bulletOrderedOther`'
+  )
+
+  t.throws(
+    () => {
+      to(
+        {
+          type: 'list',
+          ordered: true,
+          children: [{type: 'listItem', children: []}]
+        },
+        // @ts-expect-error: runtime.
+        {bulletOrderedOther: '~'}
+      )
+    },
+    /Cannot serialize items with `~` for `options.bulletOrderedOther`/,
+    'should throw on a `bulletOrderedOther` that is invalid'
+  )
+
+  t.throws(
+    () => {
+      to(
+        {
+          type: 'root',
+          children: [
+            {
+              type: 'list',
+              ordered: true,
+              children: [{type: 'listItem', children: []}]
+            },
+            {
+              type: 'list',
+              ordered: true,
+              children: [{type: 'listItem', children: []}]
+            }
+          ]
+        },
+        {bulletOrdered: '.', bulletOrderedOther: '.'}
+      )
+    },
+    /Expected `bulletOrdered` \(`.`\) and `bulletOrderedOther` \(`.`\) to be different/,
+    'should throw on a `bulletOrderedOther` that matches `bulletOrdered`'
+  )
+
   t.end()
 })
 
@@ -3316,6 +3409,83 @@ test('roundtrip', (t) => {
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (6)'
+  )
+
+  tree = from('1. a\n1) b')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther`'
+  )
+
+  tree = from('1. ---\n1) 1. 1)\n1. b')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (1)'
+  )
+
+  tree = from('1. 1. 1)\n1) ---\n1. b')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (2)'
+  )
+
+  tree = from('1. 1. 1)\n1. 1.')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (3)'
+  )
+
+  tree = from('1. 1) 1.\n      1.\n      1)\n    1.')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (4)'
+  )
+
+  tree = from('1. 1) 1.\n   1) 1.\n     1)\n     1.')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (5)'
+  )
+
+  tree = from('1. 1)\n1. 1.\n   1)\n   1.')
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(
+      from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
+      true
+    ),
+    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (6)'
   )
 
   t.end()

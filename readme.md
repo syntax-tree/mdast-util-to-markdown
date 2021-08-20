@@ -112,6 +112,25 @@ There are three cases where the primary bullet can’t be used:
     `* a\n<!---->\n* b`, but if `bulletOther` is given explicitly, it will be
     used instead
 
+###### `options.bulletOrdered`
+
+Marker to use for bullets of items in ordered lists (`'.'` or `')'`, default:
+`'.'`).
+
+###### `options.bulletOrderedOther`
+
+Marker to use in certain cases where the primary bullet for ordered items
+doesn’t work (`'.'` or `')'`, default: none).
+
+There is one case where the primary bullet for ordered items can’t be used:
+
+*   When two ordered lists appear next to each other: `1. a\n2) b`.
+    CommonMark added support for `)` as a marker, but other markdown parsers
+    do not support it.
+    To solve for both, we instead inject an empty comment between the two lists:
+    `1. a\n<!---->\n1. b`, but if `bulletOrderedOther` is given explicitly, it
+    will be used instead
+
 ###### `options.closeAtx`
 
 Whether to add the same number of number signs (`#`) at the end of an ATX
