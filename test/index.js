@@ -1210,6 +1210,50 @@ test('heading', (t) => {
     'should not escape a `#` in a heading (2)'
   )
 
+  t.equal(
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: '  a'}]}),
+    '# &#x20; a\n',
+    'should encode a space at the start of an atx heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: '\t\ta'}]}),
+    '# &#x9;\ta\n',
+    'should encode a tab at the start of an atx heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a  '}]}),
+    '# a &#x20;\n',
+    'should encode a space at the end of an atx heading'
+  )
+
+  t.equal(
+    to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a\t\t'}]}),
+    '# a\t&#x9;\n',
+    'should encode a tab at the end of an atx heading'
+  )
+
+  t.equal(
+    to({
+      type: 'heading',
+      depth: 1,
+      children: [{type: 'text', value: 'a \n b'}]
+    }),
+    'a&#x20;\n&#x20;b\n=======\n',
+    'should encode spaces around a line ending in a setext heading'
+  )
+
+  t.equal(
+    to({
+      type: 'heading',
+      depth: 3,
+      children: [{type: 'text', value: 'a \n b'}]
+    }),
+    '### a &#xA; b\n',
+    'should not need to encode spaces around a line ending in an atx heading (because the line ending is encoded)'
+  )
+
   t.end()
 })
 
@@ -1507,7 +1551,7 @@ test('imageReference', (t) => {
   t.end()
 })
 
-test('Code text', (t) => {
+test('code (text)', (t) => {
   // @ts-expect-error: `value` missing.
   t.equal(to({type: 'inlineCode'}), '``\n', 'should support an empty code text')
 
@@ -2733,6 +2777,42 @@ test('paragraph', (t) => {
     'should support a paragraph'
   )
 
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: '  a'}]}),
+    '&#x20; a\n',
+    'should encode spaces at the start of paragraphs'
+  )
+
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: 'a  '}]}),
+    'a &#x20;\n',
+    'should encode spaces at the end of paragraphs'
+  )
+
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: '\t\ta'}]}),
+    '&#x9;\ta\n',
+    'should encode tabs at the start of paragraphs'
+  )
+
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: 'a\t\t'}]}),
+    'a\t&#x9;\n',
+    'should encode tabs at the end of paragraphs'
+  )
+
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: 'a  \n  b'}]}),
+    'a &#x20;\n&#x20; b\n',
+    'should encode spaces around line endings in paragraphs'
+  )
+
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: 'a\t\t\n\t\tb'}]}),
+    'a\t&#x9;\n&#x9;\tb\n',
+    'should encode spaces around line endings in paragraphs'
+  )
+
   t.end()
 })
 
@@ -2769,6 +2849,7 @@ test('text', (t) => {
   t.equal(to({type: 'text'}), '', 'should support a void text')
   t.equal(to({type: 'text', value: ''}), '', 'should support an empty text')
   t.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n', 'should support text')
+
   t.end()
 })
 
@@ -3486,6 +3567,22 @@ test('roundtrip', (t) => {
       true
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (6)'
+  )
+
+  doc = '&#x20;\n'
+
+  t.equal(to(from(doc)), doc, 'should roundtrip a single encoded space')
+
+  doc = '&#x9;\n'
+
+  t.equal(to(from(doc)), doc, 'should roundtrip a single encoded tab')
+
+  doc = '&#x20; a &#x20;\n&#x9;\tb\t&#x9;\n'
+
+  t.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip encoded spaces and tabs where needed'
   )
 
   t.end()
