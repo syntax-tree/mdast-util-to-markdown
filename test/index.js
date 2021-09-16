@@ -3585,5 +3585,75 @@ test('roundtrip', (t) => {
     'should roundtrip encoded spaces and tabs where needed'
   )
 
+  doc = `Separate paragraphs:
+
+a * is this emphasis? *
+
+a ** is this emphasis? **
+
+a *** is this emphasis? ***
+
+a *\\* is this emphasis? *\\*
+
+a \\** is this emphasis? \\**
+
+a **\\* is this emphasis? **\\*
+
+a *\\** is this emphasis? *\\**
+
+One paragraph:
+
+a * is this emphasis? *
+a ** is this emphasis? **
+a *** is this emphasis? ***
+a *\\* is this emphasis? *\\*
+a \\** is this emphasis? \\**
+a **\\* is this emphasis? **\\*
+a *\\** is this emphasis? *\\**`
+  tree = from(doc)
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree)), true),
+    'should roundtrip asterisks (tree)'
+  )
+
+  doc = `Separate paragraphs:
+
+a _ is this emphasis? _
+
+a __ is this emphasis? __
+
+a ___ is this emphasis? ___
+
+a _\\_ is this emphasis? _\\_
+
+a \\__ is this emphasis? \\__
+
+a __\\_ is this emphasis? __\\_
+
+a _\\__ is this emphasis? _\\__
+
+One paragraph:
+
+a _ is this emphasis? _
+a __ is this emphasis? __
+a ___ is this emphasis? ___
+a _\\_ is this emphasis? _\\_
+a \\__ is this emphasis? \\__
+a __\\_ is this emphasis? __\\_
+a _\\__ is this emphasis? _\\__`
+  tree = from(doc)
+
+  t.deepEqual(
+    removePosition(tree, true),
+    removePosition(from(to(tree)), true),
+    'should roundtrip underscores (tree)'
+  )
+
+  doc = to(from(`(____`))
+
+  t.equal(doc, to(from(doc)), 'should roundtrip attention-like plain text')
+
   t.end()
 })
