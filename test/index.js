@@ -3655,5 +3655,11 @@ a _\\__ is this emphasis? _\\__`
 
   t.equal(doc, to(from(doc)), 'should roundtrip attention-like plain text')
 
+  doc = to(
+    from('Once activated, a service worker ______, then transitions to idle…')
+  )
+
+  t.equal(doc, to(from(doc)), 'should roundtrip faux “fill in the blank” spans')
+
   t.end()
 })
