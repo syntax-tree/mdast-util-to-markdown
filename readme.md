@@ -258,14 +258,14 @@ here.
 
 *   [`syntax-tree/mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive)
     — serialize directives
-*   [`syntax-tree/mdast-util-footnote`](https://github.com/syntax-tree/mdast-util-footnote)
-    — serialize footnotes
 *   [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
     — serialize frontmatter (YAML, TOML, more)
 *   [`syntax-tree/mdast-util-gfm`](https://github.com/syntax-tree/mdast-util-gfm)
     — serialize GFM
 *   [`syntax-tree/mdast-util-gfm-autolink-literal`](https://github.com/syntax-tree/mdast-util-gfm-autolink-literal)
     — serialize GFM autolink literals
+*   [`syntax-tree/mdast-util-gfm-footnote`](https://github.com/syntax-tree/mdast-util-gfm-footnote)
+    — serialize GFM footnotes
 *   [`syntax-tree/mdast-util-gfm-strikethrough`](https://github.com/syntax-tree/mdast-util-gfm-strikethrough)
     — serialize GFM strikethrough
 *   [`syntax-tree/mdast-util-gfm-table`](https://github.com/syntax-tree/mdast-util-gfm-table)
