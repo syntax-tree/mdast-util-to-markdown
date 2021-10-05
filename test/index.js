@@ -26,6 +26,100 @@ test('core', (t) => {
     to({
       type: 'root',
       children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'linkReference',
+              children: [
+                {
+                  type: 'inlineCode',
+                  value: 'code',
+                  position: {
+                    start: {
+                      line: 1,
+                      column: 2,
+                      offset: 1
+                    },
+                    end: {
+                      line: 1,
+                      column: 8,
+                      offset: 7
+                    }
+                  }
+                }
+              ],
+              position: {
+                start: {
+                  line: 1,
+                  column: 1,
+                  offset: 0
+                },
+                end: {
+                  line: 1,
+                  column: 11,
+                  offset: 10
+                }
+              },
+              identifier: '`code`',
+              label: 'code',
+              referenceType: 'collapsed'
+            }
+          ],
+          position: {
+            start: {
+              line: 1,
+              column: 1,
+              offset: 0
+            },
+            end: {
+              line: 1,
+              column: 11,
+              offset: 10
+            }
+          }
+        },
+        {
+          type: 'definition',
+          identifier: '`code`',
+          label: '`code`',
+          title: null,
+          url: 'about:blank',
+          position: {
+            start: {
+              line: 3,
+              column: 1,
+              offset: 12
+            },
+            end: {
+              line: 3,
+              column: 22,
+              offset: 33
+            }
+          }
+        }
+      ],
+      position: {
+        start: {
+          line: 1,
+          column: 1,
+          offset: 0
+        },
+        end: {
+          line: 4,
+          column: 1,
+          offset: 34
+        }
+      }
+    }),
+    '[`code`][]\n\n[`code`]: about:blank\n',
+    'should support inline code inside link references'
+  )
+
+  t.equal(
+    to({
+      type: 'root',
+      children: [
         {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
         // @ts-expect-error: `identifier`, `url` missing.
         {type: 'definition', label: 'b'},
