@@ -89,7 +89,7 @@ test('core', (t) => {
         }
       ]
     }),
-    '[_code_][]\n\n[_code_]: about:blank\n',
+    '[*code*][_code_]\n\n[_code_]: about:blank\n',
     'should support emphasis inside link references'
   )
 
@@ -202,8 +202,92 @@ test('core', (t) => {
         }
       ]
     }),
-    '[__code__][]\n\n[__code__]: about:blank\n',
+    '[**code**][__code__]\n\n[__code__]: about:blank\n',
     'should support strong inside link references'
+  )
+
+  t.equal(
+    to({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'linkReference',
+              children: [
+                {
+                  type: 'html',
+                  value: '<b>'
+                },
+                {
+                  type: 'text',
+                  value: 'html'
+                },
+                {
+                  type: 'html',
+                  value: '</b>'
+                }
+              ],
+              identifier: '__code__',
+              label: 'code',
+              referenceType: 'collapsed'
+            }
+          ]
+        },
+        {
+          type: 'definition',
+          identifier: '<b>html</b>',
+          label: '<b>html</b>',
+          title: null,
+          url: 'about:blank'
+        }
+      ]
+    }),
+    '[<b>html</b>][]\n\n[<b>html</b>]: about:blank\n',
+    'should support html inside link references'
+  )
+
+  t.equal(
+    to({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'linkReference',
+              children: [
+                {
+                  type: 'html',
+                  value: '<b>'
+                },
+                {
+                  type: 'text',
+                  value: 'html'
+                },
+                {
+                  type: 'html',
+                  value: '</b>'
+                }
+              ],
+              identifier: '__code__',
+              label: 'code',
+              referenceType: 'collapsed'
+            }
+          ]
+        },
+        {
+          type: 'definition',
+          identifier: '<b>html</b>',
+          label: '<b>html</b>',
+          title: null,
+          url: 'about:blank'
+        }
+      ]
+    }),
+    '[<b>html</b>][]\n\n[<b>html</b>]: about:blank\n',
+    'should support html inside link references'
   )
 
   t.equal(
