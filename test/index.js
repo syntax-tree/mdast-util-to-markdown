@@ -790,6 +790,44 @@ test('code (flow)', (t) => {
     'should use an indent if the value is indented'
   )
 
+  t.equal(
+    to({type: 'link', url: 'a b![c](d*e_f[g_h`i', children: []}),
+    '[](<a b![c](d*e_f[g_h`i>)\n',
+    'should not escape unneeded characters in a `destinationLiteral`'
+  )
+
+  t.equal(
+    to({type: 'link', url: 'a![b](c*d_e[f_g`h<i</j', children: []}),
+    '[](a![b]\\(c*d_e[f_g`h<i</j)\n',
+    'should not escape unneeded characters in a `destinationRaw`'
+  )
+
+  t.equal(
+    to({
+      type: 'linkReference',
+      identifier: 'a![b](c*d_e[f_g`h<i</j',
+      referenceType: 'full',
+      children: []
+    }),
+    '[][a!\\[b\\](c*d_e\\[f_g`h<i</j]\n',
+    'should not escape unneeded characters in a `reference`'
+  )
+
+  t.equal(
+    to({type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []}),
+    '[](# "a![b](c*d_e[f_g`h<i</j")\n',
+    'should not escape unneeded characters in a `title` (double quotes)'
+  )
+
+  t.equal(
+    to(
+      {type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []},
+      {quote: "'"}
+    ),
+    "[](# 'a![b](c*d_e[f_g`h<i</j')\n",
+    'should not escape unneeded characters in a `title` (single quotes)'
+  )
+
   t.end()
 })
 
@@ -3195,12 +3233,7 @@ test('escape', (t) => {
                         children: [
                           {
                             type: 'paragraph',
-                            children: [
-                              {
-                                type: 'text',
-                                value: 'bar'
-                              }
-                            ]
+                            children: [{type: 'text', value: 'bar'}]
                           }
                         ]
                       }
