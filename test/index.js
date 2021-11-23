@@ -1428,6 +1428,12 @@ test('image', (t) => {
   )
 
   t.equal(
+    to({type: 'image', url: '\f'}),
+    '![](<\f>)\n',
+    'should support control characters in images'
+  )
+
+  t.equal(
     to({type: 'image', url: '', title: 'b"c'}),
     '![](<> "b\\"c")\n',
     'should escape a double quote in `title`'
@@ -1779,6 +1785,12 @@ test('link', (t) => {
     to({type: 'link', url: 'b\\.c', children: []}),
     '[](b\\\\.c)\n',
     'should escape a backslash in `url` in a raw url'
+  )
+
+  t.equal(
+    to({type: 'link', url: '\f', children: []}),
+    '[](<\f>)\n',
+    'should support control characters in links'
   )
 
   t.equal(
