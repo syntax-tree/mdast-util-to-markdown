@@ -932,6 +932,12 @@ test('definition', (t) => {
   )
 
   t.equal(
+    to({type: 'definition', identifier: 'a', url: '\f'}),
+    '[a]: <\f>\n',
+    'should encode a line ending in `url` in an enclosed url'
+  )
+
+  t.equal(
     to({type: 'definition', identifier: 'a', url: 'b(c'}),
     '[a]: b\\(c\n',
     'should escape an opening paren in `url` in a raw url'
@@ -3646,8 +3652,8 @@ a *\\** is this emphasis? *\\**`
   tree = from(doc)
 
   t.deepEqual(
-    removePosition(tree, true),
     removePosition(from(to(tree)), true),
+    removePosition(tree, true),
     'should roundtrip asterisks (tree)'
   )
 
@@ -3679,20 +3685,20 @@ a _\\__ is this emphasis? _\\__`
   tree = from(doc)
 
   t.deepEqual(
-    removePosition(tree, true),
     removePosition(from(to(tree)), true),
+    removePosition(tree, true),
     'should roundtrip underscores (tree)'
   )
 
   doc = to(from(`(____`))
 
-  t.equal(doc, to(from(doc)), 'should roundtrip attention-like plain text')
+  t.equal(to(from(doc)), doc, 'should roundtrip attention-like plain text')
 
   doc = to(
     from('Once activated, a service worker ______, then transitions to idle…')
   )
 
-  t.equal(doc, to(from(doc)), 'should roundtrip faux “fill in the blank” spans')
+  t.equal(to(from(doc)), doc, 'should roundtrip faux “fill in the blank” spans')
 
   t.end()
 })
