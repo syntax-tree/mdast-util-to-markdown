@@ -2690,7 +2690,19 @@ test('listItem', (t) => {
   t.equal(
     to(createList(createList(createList()))),
     '*   *   -\n',
-    'should use a different bullet for an empty list item in three lists'
+    'should use a different bullet for an empty list item in three lists (1)'
+  )
+
+  t.equal(
+    to({
+      type: 'list',
+      children: [
+        {type: 'listItem', children: []},
+        {type: 'listItem', children: [createList(createList())]}
+      ]
+    }),
+    '*\n\n*   *   -\n',
+    'should use a different bullet for an empty list item in three lists (2)'
   )
 
   t.equal(
