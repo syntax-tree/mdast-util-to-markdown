@@ -2608,7 +2608,7 @@ test('listItem', (t) => {
   )
 
   /**
-   * @param {BlockContent|BlockContent[]} [d]
+   * @param {BlockContent|Array<BlockContent>} [d]
    * @returns {List}
    */
   function createList(d) {

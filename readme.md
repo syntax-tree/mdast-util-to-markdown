@@ -246,7 +246,7 @@ Take a look at [`lib/unsafe.js`][unsafe] for examples.
 
 ###### `options.extensions`
 
-List of extensions (`Array.<ToMarkdownExtension>`).
+List of extensions (`Array<ToMarkdownExtension>`).
 Each `ToMarkdownExtension` is an object with the same interface as `options`
 here.
 
