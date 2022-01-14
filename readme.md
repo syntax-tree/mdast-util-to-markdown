@@ -8,32 +8,70 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-**[mdast][]** utility to parse markdown.
+**[mdast][]** utility that turns a syntax tree into markdown.
 
-## When to use this
+## Contents
 
-Use this if you have direct access to an AST and need to serialize it.
-Use **[remark][]** instead, which includes this, but has a nice interface and
-hundreds of plugins.
+*   [What is this?](#what-is-this)
+*   [When should I use this?](#when-should-i-use-this)
+*   [Install](#install)
+*   [Use](#use)
+*   [API](#api)
+    *   [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
+*   [List of extensions](#list-of-extensions)
+*   [Syntax](#syntax)
+*   [Syntax tree](#syntax-tree)
+*   [Types](#types)
+*   [Security](#security)
+*   [Related](#related)
+*   [Contribute](#contribute)
+*   [License](#license)
+
+## What is this?
+
+This package is a utility that takes an [mdast][] syntax tree as input and turns
+it into serialized markdown.
+
+This utility is a low level project.
+It’s used in [`remark-stringify`][remark-stringify], which focusses on making it
+easier to transform content by abstracting these internals away.
+
+## When should I use this?
+
+If you want to handle syntax trees manually, use this.
+For an easier time processing content, use the **[remark][]** ecosystem instead.
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
-Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
-
-[npm][]:
+This package is [ESM only][esm].
+In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 
 ```sh
 npm install mdast-util-to-markdown
 ```
 
+In Deno with [Skypack][]:
+
+```js
+import {toMarkdown} from 'https://cdn.skypack.dev/mdast-util-to-markdown@1?dts'
+```
+
+In browsers with [Skypack][]:
+
+```html
+<script type="module">
+  import {toMarkdown} from 'https://cdn.skypack.dev/mdast-util-to-markdown@1?min'
+</script>
+```
+
 ## Use
 
-Say we have the following script, `example.js`:
+Say our module `example.js` looks as follows:
 
 ```js
 import {toMarkdown} from 'mdast-util-to-markdown'
 
+/** @type {import('mdast').Root} */
 const tree = {
   type: 'root',
   children: [
@@ -60,8 +98,7 @@ const tree = {
 console.log(toMarkdown(tree))
 ```
 
-Now, running `node example` yields (note the properly escaped characters which
-would otherwise turn into a list and image respectively):
+…now running `node example.js` yields:
 
 ```markdown
 > ***
@@ -70,6 +107,9 @@ would otherwise turn into a list and image respectively):
 > b \![d](example.com)
 ```
 
+> 👉 **Note**: observe the properly escaped characters which would otherwise
+> turn into a list and image respectively.
+
 ## API
 
 This package exports the following identifier: `toMarkdown`.
@@ -77,7 +117,7 @@ There is no default export.
 
 ### `toMarkdown(tree[, options])`
 
-Serialize **[mdast][]** to markdown.
+Turn an **[mdast][]** syntax tree into markdown.
 
 ##### Formatting options
 
@@ -138,39 +178,40 @@ heading as the opening sequence (`boolean`, default: `false`).
 
 ###### `options.emphasis`
 
-Marker to use to serialize emphasis (`'*'` or `'_'`, default: `'*'`).
+Marker to use for emphasis (`'*'` or `'_'`, default: `'*'`).
 
 ###### `options.fence`
 
-Marker to use to serialize fenced code (``'`'`` or `'~'`, default: ``'`'``).
+Marker to use for fenced code (``'`'`` or `'~'`, default: ``'`'``).
 
 ###### `options.fences`
 
 Whether to use fenced code always (`boolean`, default: `false`).
-The default is to fenced code if there is a language defined, if the code is
-empty, or if it starts or ends in empty lines.
+The default is to use fenced code if there is a language defined, if the code is
+empty, or if it starts or ends in blank lines.
 
 ###### `options.incrementListMarker`
 
-Whether to increment the value of bullets of items in ordered lists (`boolean`,
-default: `true`).
+Whether to increment the counter of ordered lists items (`boolean`, default:
+`true`).
 
 ###### `options.listItemIndent`
 
-Whether to indent the content of list items with the size of the bullet plus one
-space (when `'one'`) or a tab stop (`'tab'`), or depending on the item and its
-parent list (`'mixed'`, uses `'one'` if the item and list are tight and `'tab'`
-otherwise) (`'one'`, `'tab'`, or `'mixed'`, default: `'tab'`).
+How to indent the content of list items (`'one'`, `'tab'`, or `'mixed'`,
+default: `'tab'`).
+Either with the size of the bullet plus one space (when `'one'`), a tab stop
+(`'tab'`), or depending on the item and its parent list (`'mixed'`, uses `'one'`
+if the item and list are tight and `'tab'` otherwise).
 
 ###### `options.quote`
 
-Marker to use to serialize titles (`'"'` or `"'"`, default: `'"'`).
+Marker to use for titles (`'"'` or `"'"`, default: `'"'`).
 
 ###### `options.resourceLink`
 
-Whether to use resource links (`[text](url)`) always (`boolean`, default:
-`false`).
-The default is to use autolinks (`<https://example.com>`) when possible.
+Whether to always use resource links (`boolean`, default: `false`).
+The default is to use autolinks (`<https://example.com>`) when possible
+and resource links (`[text](url)`) otherwise.
 
 ###### `options.rule`
 
@@ -178,8 +219,7 @@ Marker to use for thematic breaks (`'*'`, `'-'`, or `'_'`, default: `'*'`).
 
 ###### `options.ruleRepetition`
 
-Number of markers to use for thematic breaks (`number`, default:
-`3`, min: `3`).
+Number of markers to use for thematic breaks (`number`, default: `3`, min: `3`).
 
 ###### `options.ruleSpaces`
 
@@ -189,20 +229,23 @@ Whether to add spaces between markers in thematic breaks (`boolean`, default:
 ###### `options.setext`
 
 Whether to use setext headings when possible (`boolean`, default: `false`).
-Setext headings are not possible for headings with a rank more than 2 or when
-they’re empty.
+The default is to always use ATX headings (`# heading`) instead of setext
+headings (`heading\n=======`).
+Setext headings can’t be used for empty headings or headings with a rank of
+three or more.
 
 ###### `options.strong`
 
-Marker to use to serialize strong (`'*'` or `'_'`, default: `'*'`).
+Marker to use for strong (`'*'` or `'_'`, default: `'*'`).
 
 ###### `options.tightDefinitions`
 
-Whether to join definitions w/o a blank line (`boolean`, default: `false`).
-Shortcut for a join function like so:
+Whether to join definitions without a blank line (`boolean`, default: `false`).
+The default is to add blank lines between any flow (“block”) construct.
+Turning this option on is a shortcut for a join function like so:
 
 ```js
-function (left, right) {
+function joinTightDefinitions(left, right) {
   if (left.type === 'definition' && right.type === 'definition') {
     return 0
   }
@@ -211,18 +254,23 @@ function (left, right) {
 
 ###### `options.handlers`
 
-Object mapping node types to custom handlers.
+Object mapping node types to custom handlers (`Record<string, Handle>`, default:
+`{}`).
 Useful for syntax extensions.
-Take a look at [`lib/handle`][handlers] for examples.
+
+This option is a bit advanced.
+It’s recommended to look at the code in [`lib/handle/`][handlers] for examples.
 
 ###### `options.join`
 
-List of functions used to determine what to place between two flow nodes.
-Often, they are joined by one blank line.
-In certain cases, it’s nicer to have them next to each other.
-Or, they can’t occur together.
-These functions receive two adjacent nodes and their parent and can return
-`number` or `boolean`, referring to how many blank lines to use between them.
+List of functions used to determine what to place between two flow nodes
+(`Array<Join>`, default: `[]`).
+
+“Blocks” are typically joined by one blank line.
+Sometimes it’s nicer to have them flush next to each other, yet other times
+they can’t occur together at all.
+Join functions receive two adjacent siblings and their parent and can return
+`number` or `boolean`, to signal how many blank lines to use between them.
 A return value of `true` is as passing `1`.
 A return value of `false` means the nodes cannot be joined by a blank line, such
 as two adjacent block quotes or indented code after a list, in which case a
@@ -238,50 +286,69 @@ comment will be injected to break them up:
 
 ###### `options.unsafe`
 
-List of patterns to escape.
+List of patterns to escape (`Array<Unsafe>`).
 Useful for syntax extensions.
-Take a look at [`lib/unsafe.js`][unsafe] for examples.
+
+This option is quite advanced.
+It’s recommended to look at the code in [`lib/unsafe.js`][unsafe] for examples.
 
 ##### Extension options
 
 ###### `options.extensions`
 
-List of extensions (`Array<ToMarkdownExtension>`).
+List of extensions (`Array<ToMarkdownExtension>`, default: `[]`).
 Each `ToMarkdownExtension` is an object with the same interface as `options`
 here.
 
 ##### Returns
 
-`string` — Serialized markdown.
+Serialized markdown (`string`).
 
 ## List of extensions
 
 *   [`syntax-tree/mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive)
-    — serialize directives
+    — directives
 *   [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
-    — serialize frontmatter (YAML, TOML, more)
+    — frontmatter (YAML, TOML, more)
 *   [`syntax-tree/mdast-util-gfm`](https://github.com/syntax-tree/mdast-util-gfm)
-    — serialize GFM
+    — GFM
 *   [`syntax-tree/mdast-util-gfm-autolink-literal`](https://github.com/syntax-tree/mdast-util-gfm-autolink-literal)
-    — serialize GFM autolink literals
+    — GFM autolink literals
 *   [`syntax-tree/mdast-util-gfm-footnote`](https://github.com/syntax-tree/mdast-util-gfm-footnote)
-    — serialize GFM footnotes
+    — GFM footnotes
 *   [`syntax-tree/mdast-util-gfm-strikethrough`](https://github.com/syntax-tree/mdast-util-gfm-strikethrough)
-    — serialize GFM strikethrough
+    — GFM strikethrough
 *   [`syntax-tree/mdast-util-gfm-table`](https://github.com/syntax-tree/mdast-util-gfm-table)
-    — serialize GFM tables
+    — GFM tables
 *   [`syntax-tree/mdast-util-gfm-task-list-item`](https://github.com/syntax-tree/mdast-util-gfm-task-list-item)
-    — serialize GFM task list items
+    — GFM task list items
 *   [`syntax-tree/mdast-util-math`](https://github.com/syntax-tree/mdast-util-math)
-    — serialize math
+    — math
 *   [`syntax-tree/mdast-util-mdx`](https://github.com/syntax-tree/mdast-util-mdx)
-    — serialize MDX or MDX.js
+    — MDX
 *   [`syntax-tree/mdast-util-mdx-expression`](https://github.com/syntax-tree/mdast-util-mdx-expression)
-    — serialize MDX or MDX.js expressions
+    — MDX expressions
 *   [`syntax-tree/mdast-util-mdx-jsx`](https://github.com/syntax-tree/mdast-util-mdx-jsx)
-    — serialize MDX or MDX.js JSX
+    — MDX JSX
 *   [`syntax-tree/mdast-util-mdxjs-esm`](https://github.com/syntax-tree/mdast-util-mdxjs-esm)
-    — serialize MDX.js ESM
+    — MDX ESM
+
+## Syntax
+
+Markdown is serialized according to CommonMark but care is taken to format in
+such a way that the resulting markdown should work with most markdown parsers.
+Extensions can add support for custom syntax.
+
+## Syntax tree
+
+The syntax tree is [mdast][].
+
+## Types
+
+This package is fully typed with [TypeScript][].
+It exports the types `Options`, `Map`, `Unsafe`, `Join`, `Handlers`, `Handle`,
+`Context`, `SafeOptions`, which model the interfaces used by options and
+extensions.
 
 ## Security
 
@@ -290,20 +357,20 @@ syntax tree, but there are several cases where that is impossible.
 It’ll do its best, but complete roundtripping is impossible given that any value
 could be injected into the tree.
 
-As Markdown is sometimes used for HTML, and improper use of HTML can open you up
+As markdown is sometimes used for HTML, and improper use of HTML can open you up
 to a [cross-site scripting (XSS)][xss] attack, use of `mdast-util-to-markdown`
 and parsing it again later could potentially be unsafe.
 When parsing markdown afterwards and then going to HTML, use something like
-[`hast-util-sanitize`][sanitize] to make the tree safe.
+[`hast-util-sanitize`][hast-util-sanitize] to make the tree safe.
 
 ## Related
 
-*   [`micromark/micromark`](https://github.com/micromark/micromark)
-    — the smallest commonmark-compliant markdown parser that exists
-*   [`remarkjs/remark`](https://github.com/remarkjs/remark)
-    — markdown processor powered by plugins
 *   [`syntax-tree/mdast-util-from-markdown`](https://github.com/syntax-tree/mdast-util-from-markdown)
     — parse markdown to mdast
+*   [`micromark/micromark`](https://github.com/micromark/micromark)
+    — parse markdown
+*   [`remarkjs/remark`](https://github.com/remarkjs/remark)
+    — process markdown
 
 ## Contribute
 
@@ -349,6 +416,8 @@ abide by its terms.
 
 [npm]: https://docs.npmjs.com/cli/install
 
+[skypack]: https://www.skypack.dev
+
 [license]: license
 
 [author]: https://wooorm.com
@@ -359,14 +428,20 @@ abide by its terms.
 
 [coc]: https://github.com/syntax-tree/.github/blob/HEAD/code-of-conduct.md
 
+[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[typescript]: https://www.typescriptlang.org
+
 [mdast]: https://github.com/syntax-tree/mdast
 
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 
-[sanitize]: https://github.com/syntax-tree/hast-util-sanitize
+[hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
 
 [handlers]: lib/handle
 
 [unsafe]: lib/unsafe.js
 
 [remark]: https://github.com/remarkjs/remark
+
+[remark-stringify]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify
