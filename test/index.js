@@ -790,44 +790,6 @@ test('code (flow)', (t) => {
     'should use an indent if the value is indented'
   )
 
-  t.equal(
-    to({type: 'link', url: 'a b![c](d*e_f[g_h`i', children: []}),
-    '[](<a b![c](d*e_f[g_h`i>)\n',
-    'should not escape unneeded characters in a `destinationLiteral`'
-  )
-
-  t.equal(
-    to({type: 'link', url: 'a![b](c*d_e[f_g`h<i</j', children: []}),
-    '[](a![b]\\(c*d_e[f_g`h<i</j)\n',
-    'should not escape unneeded characters in a `destinationRaw`'
-  )
-
-  t.equal(
-    to({
-      type: 'linkReference',
-      identifier: 'a![b](c*d_e[f_g`h<i</j',
-      referenceType: 'full',
-      children: []
-    }),
-    '[][a!\\[b\\](c*d_e\\[f_g`h<i</j]\n',
-    'should not escape unneeded characters in a `reference`'
-  )
-
-  t.equal(
-    to({type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []}),
-    '[](# "a![b](c*d_e[f_g`h<i</j")\n',
-    'should not escape unneeded characters in a `title` (double quotes)'
-  )
-
-  t.equal(
-    to(
-      {type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []},
-      {quote: "'"}
-    ),
-    "[](# 'a![b](c*d_e[f_g`h<i</j')\n",
-    'should not escape unneeded characters in a `title` (single quotes)'
-  )
-
   t.end()
 })
 
@@ -959,6 +921,12 @@ test('definition', (t) => {
     to({type: 'definition', identifier: 'a', url: '', title: 'b'}),
     '[a]: <> "b"\n',
     'should support a definition w/ title'
+  )
+
+  t.equal(
+    to({type: 'definition', identifier: 'a', url: 'b', title: 'c'}),
+    '[a]: b "c"\n',
+    'should support a definition w/ url & title'
   )
 
   t.equal(
@@ -1896,6 +1864,33 @@ test('link', (t) => {
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
+  t.equal(
+    to({type: 'link', url: 'a b![c](d*e_f[g_h`i', children: []}),
+    '[](<a b![c](d*e_f[g_h`i>)\n',
+    'should not escape unneeded characters in a `destinationLiteral`'
+  )
+
+  t.equal(
+    to({type: 'link', url: 'a![b](c*d_e[f_g`h<i</j', children: []}),
+    '[](a![b]\\(c*d_e[f_g`h<i</j)\n',
+    'should not escape unneeded characters in a `destinationRaw`'
+  )
+
+  t.equal(
+    to({type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []}),
+    '[](# "a![b](c*d_e[f_g`h<i</j")\n',
+    'should not escape unneeded characters in a `title` (double quotes)'
+  )
+
+  t.equal(
+    to(
+      {type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []},
+      {quote: "'"}
+    ),
+    "[](# 'a![b](c*d_e[f_g`h<i</j')\n",
+    'should not escape unneeded characters in a `title` (single quotes)'
+  )
+
   t.throws(
     () => {
       // @ts-expect-error: runtime.
@@ -2010,6 +2005,17 @@ test('linkReference', (t) => {
     }),
     '[\\&a;][&b;]\n',
     'should support incorrect character references'
+  )
+
+  t.equal(
+    to({
+      type: 'linkReference',
+      identifier: 'a![b](c*d_e[f_g`h<i</j',
+      referenceType: 'full',
+      children: []
+    }),
+    '[][a!\\[b\\](c*d_e\\[f_g`h<i</j]\n',
+    'should not escape unneeded characters in a `reference`'
   )
 
   t.equal(
@@ -3723,6 +3729,78 @@ a _\\__ is this emphasis? _\\__`
   )
 
   t.equal(to(from(doc)), doc, 'should roundtrip faux “fill in the blank” spans')
+
+  t.end()
+})
+
+test('position (output)', function (t) {
+  t.equal(
+    to(
+      {
+        type: 'blockquote',
+        children: [
+          {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+          // @ts-expect-error
+          {type: 'unknown'}
+        ]
+      },
+      {
+        handlers: {
+          /** @param {unknown} _ */
+          unknown(_, _2, _3, info) {
+            const {now, lineShift} = info
+            t.deepEqual(
+              {now, lineShift},
+              {now: {line: 3, column: 3}, lineShift: 2},
+              'should track output positions (1)'
+            )
+            return 'x'
+          }
+        }
+      }
+    ),
+    '> a\n>\n> x\n',
+    'should track output positions (2)'
+  )
+
+  t.equal(
+    to(
+      {
+        type: 'blockquote',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a\n'},
+              {
+                type: 'emphasis',
+                children: [
+                  // @ts-expect-error
+                  {type: 'unknown'}
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        handlers: {
+          /** @param {unknown} _ */
+          unknown(_, _2, _3, info) {
+            const {now, lineShift} = info
+            t.deepEqual(
+              {now, lineShift},
+              {now: {line: 2, column: 4}, lineShift: 2},
+              'should track output positions (3)'
+            )
+            return 'b'
+          }
+        }
+      }
+    ),
+    '> a\n> *b*\n',
+    'should track output positions (4)'
+  )
 
   t.end()
 })
