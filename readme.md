@@ -50,17 +50,17 @@ In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 npm install mdast-util-to-markdown
 ```
 
-In Deno with [Skypack][]:
+In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {toMarkdown} from 'https://cdn.skypack.dev/mdast-util-to-markdown@1?dts'
+import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@1'
 ```
 
-In browsers with [Skypack][]:
+In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {toMarkdown} from 'https://cdn.skypack.dev/mdast-util-to-markdown@1?min'
+  import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@1?bundle'
 </script>
 ```
 
@@ -416,7 +416,7 @@ abide by its terms.
 
 [npm]: https://docs.npmjs.com/cli/install
 
-[skypack]: https://www.skypack.dev
+[esmsh]: https://esm.sh
 
 [license]: license
 
