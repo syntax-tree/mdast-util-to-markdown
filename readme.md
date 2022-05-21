@@ -41,6 +41,14 @@ easier to transform content by abstracting these internals away.
 If you want to handle syntax trees manually, use this.
 For an easier time processing content, use the **[remark][]** ecosystem instead.
 
+You can combine this utility with other utilities to add syntax extensions.
+Notable examples that deeply integrate with it are
+[`mdast-util-gfm`][mdast-util-gfm],
+[`mdast-util-mdx`][mdast-util-mdx],
+[`mdast-util-frontmatter`][mdast-util-frontmatter],
+[`mdast-util-math`][mdast-util-math], and
+[`mdast-util-directive`][mdast-util-directive].
+
 ## Install
 
 This package is [ESM only][esm].
@@ -112,7 +120,7 @@ console.log(toMarkdown(tree))
 
 ## API
 
-This package exports the following identifier: `toMarkdown`.
+This package exports the identifier `toMarkdown`.
 There is no default export.
 
 ### `toMarkdown(tree[, options])`
@@ -346,9 +354,9 @@ The syntax tree is [mdast][].
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the types `Options`, `Map`, `Unsafe`, `Join`, `Handlers`, `Handle`,
-`Context`, `SafeOptions`, which model the interfaces used by options and
-extensions.
+It exports the additional types `Options`, `Map`, `Unsafe`, `Join`, `Handlers`,
+`Handle`, `Context`, `SafeOptions`, which model the interfaces used by options
+and extensions.
 
 ## Security
 
@@ -374,8 +382,8 @@ When parsing markdown afterwards and then going to HTML, use something like
 
 ## Contribute
 
-See [`contributing.md` in `syntax-tree/.github`][contributing] for ways to get
-started.
+See [`contributing.md`][contributing] in [`syntax-tree/.github`][health] for
+ways to get started.
 See [`support.md`][support] for ways to get help.
 
 This project has a [code of conduct][coc].
@@ -422,21 +430,33 @@ abide by its terms.
 
 [author]: https://wooorm.com
 
-[contributing]: https://github.com/syntax-tree/.github/blob/HEAD/contributing.md
+[health]: https://github.com/syntax-tree/.github
 
-[support]: https://github.com/syntax-tree/.github/blob/HEAD/support.md
+[contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
 
-[coc]: https://github.com/syntax-tree/.github/blob/HEAD/code-of-conduct.md
+[support]: https://github.com/syntax-tree/.github/blob/main/support.md
+
+[coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
 
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 
 [typescript]: https://www.typescriptlang.org
 
-[mdast]: https://github.com/syntax-tree/mdast
-
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 
 [hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
+
+[mdast]: https://github.com/syntax-tree/mdast
+
+[mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
+
+[mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
+
+[mdast-util-frontmatter]: https://github.com/syntax-tree/mdast-util-frontmatter
+
+[mdast-util-math]: https://github.com/syntax-tree/mdast-util-math
+
+[mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
 
 [handlers]: lib/handle
 
