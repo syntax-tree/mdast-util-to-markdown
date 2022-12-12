@@ -3032,6 +3032,12 @@ test('escape', (t) => {
   )
 
   t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: '+a'}]}),
+    '+a\n',
+    'should not escape a `+` if it is not followed by a whitespace'
+  )
+
+  t.equal(
     to({
       type: 'paragraph',
       children: [
