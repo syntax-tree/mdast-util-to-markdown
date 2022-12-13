@@ -1646,8 +1646,8 @@ test('code (text)', (t) => {
   )
 
   t.equal(
-    to({type: 'inlineCode', value: 'a\n-'}),
-    '`a -`\n',
+    to({type: 'inlineCode', value: 'a\n- b'}),
+    '`a - b`\n',
     'should prevent breaking out of code (-)'
   )
 
@@ -1664,14 +1664,14 @@ test('code (text)', (t) => {
   )
 
   t.equal(
-    to({type: 'inlineCode', value: 'a\r-'}),
-    '`a -`\n',
+    to({type: 'inlineCode', value: 'a\r- b'}),
+    '`a - b`\n',
     'should prevent breaking out of code (cr)'
   )
 
   t.equal(
-    to({type: 'inlineCode', value: 'a\r\n-'}),
-    '`a -`\n',
+    to({type: 'inlineCode', value: 'a\r\n- b'}),
+    '`a - b`\n',
     'should prevent breaking out of code (crlf)'
   )
 
@@ -3032,12 +3032,6 @@ test('escape', (t) => {
   )
 
   t.equal(
-    to({type: 'paragraph', children: [{type: 'text', value: '+a'}]}),
-    '+a\n',
-    'should not escape a `+` if it is not followed by a whitespace'
-  )
-
-  t.equal(
     to({
       type: 'paragraph',
       children: [
@@ -3172,15 +3166,47 @@ test('escape', (t) => {
   )
 
   t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: '+a'}]}),
+    '+a\n',
+    'should not escape `+` when not followed by whitespace'
+  )
+
+  t.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '- a\n- b'}]}),
     '\\- a\n\\- b\n',
     'should escape what would otherwise be a list item (dash)'
   )
 
   t.equal(
-    to({type: 'paragraph', children: [{type: 'text', value: '* a\n* b'}]}),
-    '\\* a\n\\* b\n',
+    to({type: 'paragraph', children: [{type: 'text', value: '-a'}]}),
+    '-a\n',
+    'should not escape `-` when not followed by whitespace'
+  )
+
+  t.equal(
+    to({type: 'paragraph', children: [{type: 'text', value: '--a'}]}),
+    '\\--a\n',
+    'should escape `-` when followed by another `-` (as it looks like a thematic break, setext underline)'
+  )
+
+  // Note: these are in titles, because the `*` case here is about flow nodes,
+  // not phrasing (emphasis).
+  t.equal(
+    to({type: 'definition', identifier: 'x', url: 'y', title: 'a\n* b\n* c'}),
+    '[x]: y "a\n\\* b\n\\* c"\n',
     'should escape what would otherwise be a list item (asterisk)'
+  )
+
+  t.equal(
+    to({type: 'definition', identifier: 'x', url: 'y', title: 'a\n*b'}),
+    '[x]: y "a\n*b"\n',
+    'should not escape `*` when not followed by whitespace'
+  )
+
+  t.equal(
+    to({type: 'definition', identifier: 'x', url: 'y', title: 'a\n**b'}),
+    '[x]: y "a\n\\**b"\n',
+    'should escape `*` when followed by another `*` (as it looks like a thematic break)'
   )
 
   t.equal(
