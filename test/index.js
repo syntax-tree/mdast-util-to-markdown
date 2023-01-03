@@ -27,6 +27,19 @@ test('core', () => {
     to({
       type: 'root',
       children: [
+        {type: 'text', value: 'a'},
+        {type: 'break'},
+        {type: 'text', value: 'b'}
+      ]
+    }),
+    'a\\\nb\n',
+    'should not use blank lines between nodes when given phrasing'
+  )
+
+  assert.equal(
+    to({
+      type: 'root',
+      children: [
         {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
         // @ts-expect-error: `identifier`, `url` missing.
         {type: 'definition', label: 'b'},
