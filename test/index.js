@@ -3,13 +3,14 @@
  * @typedef {import('mdast').List} List
  */
 
-import test from 'tape'
+import assert from 'node:assert/strict'
+import test from 'node:test'
 import {removePosition} from 'unist-util-remove-position'
 import {fromMarkdown as from} from 'mdast-util-from-markdown'
 import {toMarkdown as to} from '../index.js'
 
-test('core', (t) => {
-  t.equal(
+test('core', () => {
+  assert.equal(
     to({
       type: 'root',
       children: [
@@ -22,7 +23,7 @@ test('core', (t) => {
     'should support a `root`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'root',
       children: [
@@ -38,7 +39,7 @@ test('core', (t) => {
     'should support adjacent definitions'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -57,7 +58,7 @@ test('core', (t) => {
     'should support tight adjacent definitions when `tightDefinitions: true`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'root',
       children: [
@@ -77,7 +78,7 @@ test('core', (t) => {
     'should inject HTML comments between lists w/ the same marker'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'root',
       children: [
@@ -91,7 +92,7 @@ test('core', (t) => {
     'should inject HTML comments between lists and an indented code'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'root',
       children: [
@@ -103,7 +104,7 @@ test('core', (t) => {
     'should inject HTML comments between adjacent indented code'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       spread: false,
@@ -116,7 +117,7 @@ test('core', (t) => {
     'should not honour `spread: false` for two paragraphs'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       spread: false,
@@ -130,7 +131,7 @@ test('core', (t) => {
     'should not honour `spread: false` for a paragraph and a definition'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       spread: false,
@@ -143,7 +144,7 @@ test('core', (t) => {
     'should honour `spread: false` for a paragraph and a heading'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'listItem',
@@ -159,7 +160,7 @@ test('core', (t) => {
     'should not honour `spread: false` for a paragraph and a setext heading'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to(false)
@@ -168,7 +169,7 @@ test('core', (t) => {
     'should throw on a non-node'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: custom node.
       to({type: 'unknown'})
@@ -177,7 +178,7 @@ test('core', (t) => {
     'should throw on an unknown node'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to({
         type: 'paragraph',
@@ -188,15 +189,13 @@ test('core', (t) => {
     /Cannot handle unknown node `unknown`/,
     'should throw on an unknown node in a tree'
   )
-
-  t.end()
 })
 
-test('blockquote', (t) => {
+test('blockquote', () => {
   // @ts-expect-error: `children` missing.
-  t.equal(to({type: 'blockquote'}), '>\n', 'should support a block quote')
+  assert.equal(to({type: 'blockquote'}), '>\n', 'should support a block quote')
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [{type: 'paragraph', children: [{type: 'text', value: 'a'}]}]
@@ -205,7 +204,7 @@ test('blockquote', (t) => {
     'should support a block quote w/ a child'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -218,7 +217,7 @@ test('blockquote', (t) => {
     'should support a block quote w/ children'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [{type: 'paragraph', children: [{type: 'text', value: 'a\nb'}]}]
@@ -227,7 +226,7 @@ test('blockquote', (t) => {
     'should support text w/ a line ending in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -244,7 +243,7 @@ test('blockquote', (t) => {
     'should support adjacent texts in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -276,7 +275,7 @@ test('blockquote', (t) => {
     'should support a block quote in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -294,13 +293,13 @@ test('blockquote', (t) => {
     'should support a break in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'blockquote', children: [{type: 'code', value: 'a\nb\n\nc'}]}),
     '>     a\n>     b\n>\n>     c\n',
     'should support code (flow, indented) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [{type: 'code', lang: 'a\nb', value: 'c\nd\n\ne'}]
@@ -309,7 +308,7 @@ test('blockquote', (t) => {
     'should support code (flow, fenced) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -327,7 +326,7 @@ test('blockquote', (t) => {
     'should support code (text) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -345,7 +344,7 @@ test('blockquote', (t) => {
     'should support padded code (text) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -361,7 +360,7 @@ test('blockquote', (t) => {
     'should support a definition in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -379,7 +378,7 @@ test('blockquote', (t) => {
     'should support an emphasis in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -394,7 +393,7 @@ test('blockquote', (t) => {
     'should support a heading (atx) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'blockquote',
@@ -412,7 +411,7 @@ test('blockquote', (t) => {
     'should support a heading (setext) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [{type: 'html', value: '<div\nhidden>'}]
@@ -421,7 +420,7 @@ test('blockquote', (t) => {
     'should support html (flow) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -439,7 +438,7 @@ test('blockquote', (t) => {
     'should support html (text) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -457,7 +456,7 @@ test('blockquote', (t) => {
     'should support an image (resource) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -481,7 +480,7 @@ test('blockquote', (t) => {
     'should support an image (reference) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -504,7 +503,7 @@ test('blockquote', (t) => {
     'should support a link (resource) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -528,7 +527,7 @@ test('blockquote', (t) => {
     'should support a link (reference) in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -563,7 +562,7 @@ test('blockquote', (t) => {
     'should support a list in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -581,7 +580,7 @@ test('blockquote', (t) => {
     'should support a strong in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [{type: 'thematicBreak'}, {type: 'thematicBreak'}]
@@ -589,14 +588,12 @@ test('blockquote', (t) => {
     '> ***\n>\n> ***\n',
     'should support a thematic break in a block quote'
   )
-
-  t.end()
 })
 
-test('break', (t) => {
-  t.equal(to({type: 'break'}), '\\\n', 'should support a break')
+test('break', () => {
+  assert.equal(to({type: 'break'}), '\\\n', 'should support a break')
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 3,
@@ -610,7 +607,7 @@ test('break', (t) => {
     'should serialize breaks in heading (atx) as a space'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 3,
@@ -624,20 +621,18 @@ test('break', (t) => {
     'should serialize breaks in heading (atx) as a space'
   )
 
-  t.equal(
+  assert.equal(
     to(from('a  \nb\n=\n'), {setext: true}),
     'a\\\nb\n=\n',
     'should serialize breaks in heading (setext)'
   )
-
-  t.end()
 })
 
-test('code (flow)', (t) => {
+test('code (flow)', () => {
   // @ts-expect-error: `value` missing.
-  t.equal(to({type: 'code'}), '```\n```\n', 'should support empty code')
+  assert.equal(to({type: 'code'}), '```\n```\n', 'should support empty code')
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'code', value: ''}, {fence: '+'})
@@ -646,302 +641,300 @@ test('code (flow)', (t) => {
     'should throw on when given an incorrect `fence`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: 'a'}),
     '    a\n',
     'should support code w/ a value (indent)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: 'a'}, {fences: true}),
     '```\na\n```\n',
     'should support code w/ a value (fences)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a', value: ''}),
     '```a\n```\n',
     'should support code w/ a lang'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', meta: 'a', value: ''}),
     '```\n```\n',
     'should support (ignore) code w/ only a meta'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a', meta: 'b', value: ''}),
     '```a b\n```\n',
     'should support code w/ lang and meta'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a b', value: ''}),
     '```a&#x20;b\n```\n',
     'should encode a space in `lang`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a\nb', value: ''}),
     '```a&#xA;b\n```\n',
     'should encode a line ending in `lang`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a`b', value: ''}),
     '```a&#x60;b\n```\n',
     'should encode a grave accent in `lang`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a\\-b', value: ''}),
     '```a\\\\-b\n```\n',
     'should escape a backslash in `lang`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'x', meta: 'a b', value: ''}),
     '```x a b\n```\n',
     'should not encode a space in `meta`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'x', meta: 'a\nb', value: ''}),
     '```x a&#xA;b\n```\n',
     'should encode a line ending in `meta`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'x', meta: 'a`b', value: ''}),
     '```x a&#x60;b\n```\n',
     'should encode a grave accent in `meta`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'x', meta: 'a\\-b', value: ''}),
     '```x a\\\\-b\n```\n',
     'should escape a backslash in `meta`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: ''}, {fence: '~'}),
     '~~~\n~~~\n',
     'should support fenced code w/ tildes when `fence: "~"`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a`b', value: ''}, {fence: '~'}),
     '~~~a`b\n~~~\n',
     'should not encode a grave accent when using tildes for fences'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: '```\nasd\n```'}, {fences: true}),
     '````\n```\nasd\n```\n````\n',
     'should use more grave accents for fences if there are streaks of grave accents in the value (fences)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: '~~~\nasd\n~~~'}, {fence: '~', fences: true}),
     '~~~~\n~~~\nasd\n~~~\n~~~~\n',
     'should use more tildes for fences if there are streaks of tildes in the value (fences)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', lang: 'a', value: 'b'}),
     '```a\nb\n```\n',
     'should use a fence if there is an info'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: ' '}),
     '```\n \n```\n',
     'should use a fence if there is only whitespace'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: '\na'}),
     '```\n\na\n```\n',
     'should use a fence if there first line is blank (void)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: ' \na'}),
     '```\n \na\n```\n',
     'should use a fence if there first line is blank (filled)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: 'a\n'}),
     '```\na\n\n```\n',
     'should use a fence if there last line is blank (void)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: 'a\n '}),
     '```\na\n \n```\n',
     'should use a fence if there last line is blank (filled)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'code', value: '  a\n\n b'}),
     '      a\n\n     b\n',
     'should use an indent if the value is indented'
   )
-
-  t.end()
 })
 
-test('definition', (t) => {
-  t.equal(
+test('definition', () => {
+  assert.equal(
     // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition'}),
     '[]: <>\n',
     'should support a definition w/o label'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: 'a'}),
     '[a]: <>\n',
     'should support a definition w/ label'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: '\\'}),
     '[\\\\]: <>\n',
     'should escape a backslash in `label`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: '['}),
     '[\\[]: <>\n',
     'should escape an opening bracket in `label`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier`, `url` missing.
     to({type: 'definition', label: ']'}),
     '[\\]]: <>\n',
     'should escape a closing bracket in `label`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: 'a'}),
     '[a]: <>\n',
     'should support a definition w/ identifier'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: '\\'}),
     '[\\\\]: <>\n',
     'should escape a backslash in `identifier`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: '['}),
     '[\\[]: <>\n',
     'should escape an opening bracket in `identifier`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `url` missing.
     to({type: 'definition', identifier: ']'}),
     '[\\]]: <>\n',
     'should escape a closing bracket in `identifier`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b'}),
     '[a]: b\n',
     'should support a definition w/ url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b c'}),
     '[a]: <b c>\n',
     'should support a definition w/ enclosed url w/ whitespace in url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b <c'}),
     '[a]: <b \\<c>\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b >c'}),
     '[a]: <b \\>c>\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b \\.c'}),
     '[a]: <b \\\\.c>\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b\nc'}),
     '[a]: <b&#xA;c>\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: '\f'}),
     '[a]: <\f>\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b(c'}),
     '[a]: b\\(c\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b)c'}),
     '[a]: b\\)c\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b\\?c'}),
     '[a]: b\\\\?c\n',
     'should escape a backslash in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: '', title: 'b'}),
     '[a]: <> "b"\n',
     'should support a definition w/ title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: 'b', title: 'c'}),
     '[a]: b "c"\n',
     'should support a definition w/ url & title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: '', title: '"'}),
     '[a]: <> "\\""\n',
     'should escape a quote in `title` in a title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'a', url: '', title: '\\'}),
     '[a]: <> "\\\\"\n',
     'should escape a backslash in `title` in a title'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'definition', identifier: 'a', url: '', title: 'b'},
       {quote: "'"}
@@ -950,7 +943,7 @@ test('definition', (t) => {
     'should support a definition w/ title when `quote: "\'"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'definition', identifier: 'a', url: '', title: "'"},
       {quote: "'"}
@@ -959,7 +952,7 @@ test('definition', (t) => {
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to(
         {type: 'definition', identifier: 'a', url: '', title: 'b'},
@@ -970,15 +963,17 @@ test('definition', (t) => {
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
     'should throw on when given an incorrect `quote`'
   )
-
-  t.end()
 })
 
-test('emphasis', (t) => {
-  // @ts-expect-error: `children` missing.
-  t.equal(to({type: 'emphasis'}), '**\n', 'should support an empty emphasis')
+test('emphasis', () => {
+  assert.equal(
+    // @ts-expect-error: `children` missing.
+    to({type: 'emphasis'}),
+    '**\n',
+    'should support an empty emphasis'
+  )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'emphasis'}, {emphasis: '?'})
@@ -987,13 +982,13 @@ test('emphasis', (t) => {
     'should throw on when given an incorrect `emphasis`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'emphasis', children: [{type: 'text', value: 'a'}]}),
     '*a*\n',
     'should support an emphasis w/ children'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
       {emphasis: '_'}
@@ -1001,53 +996,51 @@ test('emphasis', (t) => {
     '_a_\n',
     'should support an emphasis w/ underscores when `emphasis: "_"`'
   )
-
-  t.end()
 })
 
-test('heading', (t) => {
-  t.equal(
+test('heading', () => {
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'heading'}),
     '#\n',
     'should serialize a heading w/o rank as a heading of rank 1'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 1}),
     '#\n',
     'should serialize a heading w/ rank 1'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 6}),
     '######\n',
     'should serialize a heading w/ rank 6'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 7}),
     '######\n',
     'should serialize a heading w/ rank 7 as 6'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'heading', depth: 0}),
     '#\n',
     'should serialize a heading w/ rank 0 as 1'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a'}]}),
     '# a\n',
     'should serialize a heading w/ content'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'heading', depth: 1, children: [{type: 'text', value: 'a'}]},
       {setext: true}
@@ -1056,7 +1049,7 @@ test('heading', (t) => {
     'should serialize a heading w/ rank 1 as setext when `setext: true`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'heading', depth: 2, children: [{type: 'text', value: 'a'}]},
       {setext: true}
@@ -1065,7 +1058,7 @@ test('heading', (t) => {
     'should serialize a heading w/ rank 2 as setext when `setext: true`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'heading', depth: 3, children: [{type: 'text', value: 'a'}]},
       {setext: true}
@@ -1074,7 +1067,7 @@ test('heading', (t) => {
     'should serialize a heading w/ rank 3 as atx when `setext: true`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'heading', depth: 2, children: [{type: 'text', value: 'aa\rb'}]},
       {setext: true}
@@ -1083,7 +1076,7 @@ test('heading', (t) => {
     'should serialize a setext underline as long as the last line (1)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'heading',
@@ -1096,19 +1089,19 @@ test('heading', (t) => {
     'should serialize a setext underline as long as the last line (2)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: []}, {setext: true}),
     '#\n',
     'should serialize an empty heading w/ rank 1 as atx when `setext: true`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: []}, {setext: true}),
     '##\n',
     'should serialize an empty heading w/ rank 2 as atx when `setext: true`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 1,
@@ -1118,7 +1111,7 @@ test('heading', (t) => {
     'should serialize an heading w/ rank 1 and code w/ a line ending as setext'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 1,
@@ -1128,7 +1121,7 @@ test('heading', (t) => {
     'should serialize an heading w/ rank 1 and html w/ a line ending as setext'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 1,
@@ -1138,7 +1131,7 @@ test('heading', (t) => {
     'should serialize an heading w/ rank 1 and text w/ a line ending as setext'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 1,
@@ -1152,14 +1145,14 @@ test('heading', (t) => {
     'should serialize an heading w/ rank 1 and a break as setext'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'heading'}, {closeAtx: true}),
     '# #\n',
     'should serialize a heading with a closing sequence when `closeAtx` (empty)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'heading', depth: 3, children: [{type: 'text', value: 'a'}]},
       {closeAtx: true}
@@ -1168,85 +1161,85 @@ test('heading', (t) => {
     'should serialize a with a closing sequence when `closeAtx` (content)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: [{type: 'text', value: '# a'}]}),
     '## # a\n',
     'should not escape a `#` at the start of phrasing in a heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: [{type: 'text', value: '1) a'}]}),
     '## 1) a\n',
     'should not escape a `1)` at the start of phrasing in a heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: [{type: 'text', value: '+ a'}]}),
     '## + a\n',
     'should not escape a `+` at the start of phrasing in a heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: [{type: 'text', value: '- a'}]}),
     '## - a\n',
     'should not escape a `-` at the start of phrasing in a heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: [{type: 'text', value: '= a'}]}),
     '## = a\n',
     'should not escape a `=` at the start of phrasing in a heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 2, children: [{type: 'text', value: '> a'}]}),
     '## > a\n',
     'should not escape a `>` at the start of phrasing in a heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a #'}]}),
     '# a \\#\n',
     'should escape a `#` at the end of a heading (1)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a ##'}]}),
     '# a #\\#\n',
     'should escape a `#` at the end of a heading (2)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a # b'}]}),
     '# a # b\n',
     'should not escape a `#` in a heading (2)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: '  a'}]}),
     '# &#x20; a\n',
     'should encode a space at the start of an atx heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: '\t\ta'}]}),
     '# &#x9;\ta\n',
     'should encode a tab at the start of an atx heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a  '}]}),
     '# a &#x20;\n',
     'should encode a space at the end of an atx heading'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'heading', depth: 1, children: [{type: 'text', value: 'a\t\t'}]}),
     '# a\t&#x9;\n',
     'should encode a tab at the end of an atx heading'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 1,
@@ -1256,7 +1249,7 @@ test('heading', (t) => {
     'should encode spaces around a line ending in a setext heading'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'heading',
       depth: 3,
@@ -1265,17 +1258,23 @@ test('heading', (t) => {
     '### a &#xA; b\n',
     'should not need to encode spaces around a line ending in an atx heading (because the line ending is encoded)'
   )
-
-  t.end()
 })
 
-test('html', (t) => {
+test('html', () => {
   // @ts-expect-error: `value` missing
-  t.equal(to({type: 'html'}), '', 'should support a void html')
-  t.equal(to({type: 'html', value: ''}), '', 'should support an empty html')
-  t.equal(to({type: 'html', value: 'a\nb'}), 'a\nb\n', 'should support html')
+  assert.equal(to({type: 'html'}), '', 'should support a void html')
+  assert.equal(
+    to({type: 'html', value: ''}),
+    '',
+    'should support an empty html'
+  )
+  assert.equal(
+    to({type: 'html', value: 'a\nb'}),
+    'a\nb\n',
+    'should support html'
+  )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -1287,7 +1286,7 @@ test('html', (t) => {
     'should prevent html (text) from becoming html (flow) (1)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -1299,7 +1298,7 @@ test('html', (t) => {
     'should prevent html (text) from becoming html (flow) (2)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -1311,7 +1310,7 @@ test('html', (t) => {
     'should prevent html (text) from becoming html (flow) (3)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -1322,110 +1321,116 @@ test('html', (t) => {
     '<x>a\n',
     'should serialize html (text)'
   )
-
-  t.end()
 })
 
-test('image', (t) => {
+test('image', () => {
   // @ts-expect-error: `url` missing
-  t.equal(to({type: 'image'}), '![]()\n', 'should support an image')
+  assert.equal(to({type: 'image'}), '![]()\n', 'should support an image')
 
-  // @ts-expect-error: `url` missing
-  t.equal(to({type: 'image', alt: 'a'}), '![a]()\n', 'should support `alt`')
+  assert.equal(
+    // @ts-expect-error: `url` missing
+    to({type: 'image', alt: 'a'}),
+    '![a]()\n',
+    'should support `alt`'
+  )
 
-  t.equal(to({type: 'image', url: 'a'}), '![](a)\n', 'should support a url')
+  assert.equal(
+    to({type: 'image', url: 'a'}),
+    '![](a)\n',
+    'should support a url'
+  )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: '', title: 'a'}),
     '![](<> "a")\n',
     'should support a title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'a', title: 'b'}),
     '![](a "b")\n',
     'should support a url and title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b c'}),
     '![](<b c>)\n',
     'should support an image w/ enclosed url w/ whitespace in url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b <c'}),
     '![](<b \\<c>)\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b >c'}),
     '![](<b \\>c>)\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b \\+c'}),
     '![](<b \\\\+c>)\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b\nc'}),
     '![](<b&#xA;c>)\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b(c'}),
     '![](b\\(c)\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b)c'}),
     '![](b\\)c)\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: 'b\\+c'}),
     '![](b\\\\+c)\n',
     'should escape a backslash in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: '\f'}),
     '![](<\f>)\n',
     'should support control characters in images'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: '', title: 'b"c'}),
     '![](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: '', title: 'b\\.c'}),
     '![](<> "b\\\\.c")\n',
     'should escape a backslash in `title`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: '', title: 'b'}, {quote: "'"}),
     "![](<> 'b')\n",
     'should support an image w/ title when `quote: "\'"`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'image', url: '', title: "'"}, {quote: "'"}),
     "![](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'image', title: 'a'}, {quote: '.'})
@@ -1433,40 +1438,38 @@ test('image', (t) => {
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
     'should throw on when given an incorrect `quote`'
   )
-
-  t.end()
 })
 
-test('imageReference', (t) => {
-  t.equal(
+test('imageReference', () => {
+  assert.equal(
     // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference'}),
     '![][]\n',
     'should support a link reference (nonsensical)'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', alt: 'a'}),
     '![a][]\n',
     'should support `alt`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType` missing.
     to({type: 'imageReference', identifier: 'a'}),
     '![][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', label: 'a'}),
     '![][a]\n',
     'should support a `label` (nonsensical)'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier` missing.
     to({
       type: 'imageReference',
@@ -1478,7 +1481,7 @@ test('imageReference', (t) => {
     'should support `referenceType: "shortcut"`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier` missing.
     to({
       type: 'imageReference',
@@ -1490,7 +1493,7 @@ test('imageReference', (t) => {
     'should support `referenceType: "collapsed"`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier` missing.
     to({
       type: 'imageReference',
@@ -1502,7 +1505,7 @@ test('imageReference', (t) => {
     'should support `referenceType: "full"` (default)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'imageReference',
       alt: '&',
@@ -1514,7 +1517,7 @@ test('imageReference', (t) => {
     'should prefer label over identifier'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'imageReference',
       alt: '&',
@@ -1525,7 +1528,7 @@ test('imageReference', (t) => {
     'should decode `identifier` if w/o `label`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -1541,7 +1544,7 @@ test('imageReference', (t) => {
     'should support incorrect character references'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'imageReference',
       alt: '+',
@@ -1552,228 +1555,228 @@ test('imageReference', (t) => {
     'should unescape `identifier` if w/o `label`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', alt: 'a', label: 'a'}),
     '![a][]\n',
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'imageReference', alt: 'a', label: 'b'}),
     '![a][b]\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
-
-  t.end()
 })
 
-test('code (text)', (t) => {
-  // @ts-expect-error: `value` missing.
-  t.equal(to({type: 'inlineCode'}), '``\n', 'should support an empty code text')
+test('code (text)', () => {
+  assert.equal(
+    // @ts-expect-error: `value` missing.
+    to({type: 'inlineCode'}),
+    '``\n',
+    'should support an empty code text'
+  )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a'}),
     '`a`\n',
     'should support a code text'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: ' '}),
     '` `\n',
     'should support a space'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: '\n'}),
     '`\n`\n',
     'should support an eol'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: '  '}),
     '`  `\n',
     'should support several spaces'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a`b'}),
     '``a`b``\n',
     'should use a fence of two grave accents if the value contains one'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a``b'}),
     '`a``b`\n',
     'should use a fence of one grave accent if the value contains two'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a``b`c'}),
     '```a``b`c```\n',
     'should use a fence of three grave accents if the value contains two and one'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: '`a'}),
     '`` `a ``\n',
     'should pad w/ a space if the value starts w/ a grave accent'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a`'}),
     '`` a` ``\n',
     'should pad w/ a space if the value ends w/ a grave accent'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: ' a '}),
     '`  a  `\n',
     'should pad w/ a space if the value starts and ends w/ a space'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: ' a'}),
     '` a`\n',
     'should not pad w/ spaces if the value ends w/ a non-space'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a '}),
     '`a `\n',
     'should not pad w/ spaces if the value starts w/ a non-space'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a\n- b'}),
     '`a - b`\n',
     'should prevent breaking out of code (-)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a\n#'}),
     '`a #`\n',
     'should prevent breaking out of code (#)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a\n1. '}),
     '`a 1. `\n',
     'should prevent breaking out of code (\\d\\.)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a\r- b'}),
     '`a - b`\n',
     'should prevent breaking out of code (cr)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'inlineCode', value: 'a\r\n- b'}),
     '`a - b`\n',
     'should prevent breaking out of code (crlf)'
   )
-
-  t.end()
 })
 
-test('link', (t) => {
+test('link', () => {
   // @ts-expect-error: `children`, `url` missing.
-  t.equal(to({type: 'link'}), '[]()\n', 'should support a link')
+  assert.equal(to({type: 'link'}), '[]()\n', 'should support a link')
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `url` missing.
     to({type: 'link', children: [{type: 'text', value: 'a'}]}),
     '[a]()\n',
     'should support children'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'a', children: []}),
     '[](a)\n',
     'should support a url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '', title: 'a', children: []}),
     '[](<> "a")\n',
     'should support a title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'a', title: 'b', children: []}),
     '[](a "b")\n',
     'should support a url and title'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b c', children: []}),
     '[](<b c>)\n',
     'should support a link w/ enclosed url w/ whitespace in url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b <c', children: []}),
     '[](<b \\<c>)\n',
     'should escape an opening angle bracket in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b >c', children: []}),
     '[](<b \\>c>)\n',
     'should escape a closing angle bracket in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b \\+c', children: []}),
     '[](<b \\\\+c>)\n',
     'should escape a backslash in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b\nc', children: []}),
     '[](<b&#xA;c>)\n',
     'should encode a line ending in `url` in an enclosed url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b(c', children: []}),
     '[](b\\(c)\n',
     'should escape an opening paren in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b)c', children: []}),
     '[](b\\)c)\n',
     'should escape a closing paren in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'b\\.c', children: []}),
     '[](b\\\\.c)\n',
     'should escape a backslash in `url` in a raw url'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '\f', children: []}),
     '[](<\f>)\n',
     'should support control characters in links'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '', title: 'b"c', children: []}),
     '[](<> "b\\"c")\n',
     'should escape a double quote in `title`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '', title: 'b\\-c', children: []}),
     '[](<> "b\\\\-c")\n',
     'should escape a backslash in `title`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'link',
       url: 'tel:123',
@@ -1783,7 +1786,7 @@ test('link', (t) => {
     'should use an autolink for nodes w/ a value similar to the url and a protocol'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'link',
@@ -1796,7 +1799,7 @@ test('link', (t) => {
     'should use a resource link (`resourceLink: true`)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'link',
       url: 'a',
@@ -1806,7 +1809,7 @@ test('link', (t) => {
     'should use a normal link for nodes w/ a value similar to the url w/o a protocol'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'link',
       url: 'tel:123',
@@ -1816,7 +1819,7 @@ test('link', (t) => {
     'should use an autolink for nodes w/ a value similar to the url and a protocol'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'link',
       url: 'tel:123',
@@ -1827,7 +1830,7 @@ test('link', (t) => {
     'should use a normal link for nodes w/ a value similar to the url w/ a title'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'link',
       url: 'mailto:a@b.c',
@@ -1837,7 +1840,7 @@ test('link', (t) => {
     'should use an autolink for nodes w/ a value similar to the url and a protocol (email)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     to({
       type: 'paragraph',
       children: [
@@ -1852,37 +1855,37 @@ test('link', (t) => {
     'should not escape in autolinks'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '', title: 'b', children: []}, {quote: "'"}),
     "[](<> 'b')\n",
     'should support a link w/ title when `quote: "\'"`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '', title: "'", children: []}, {quote: "'"}),
     "[](<> '\\'')\n",
     'should escape a quote in `title` in a title when `quote: "\'"`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'a b![c](d*e_f[g_h`i', children: []}),
     '[](<a b![c](d*e_f[g_h`i>)\n',
     'should not escape unneeded characters in a `destinationLiteral`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: 'a![b](c*d_e[f_g`h<i</j', children: []}),
     '[](a![b]\\(c*d_e[f_g`h<i</j)\n',
     'should not escape unneeded characters in a `destinationRaw`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []}),
     '[](# "a![b](c*d_e[f_g`h<i</j")\n',
     'should not escape unneeded characters in a `title` (double quotes)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {type: 'link', url: '#', title: 'a![b](c*d_e[f_g`h<i</j', children: []},
       {quote: "'"}
@@ -1891,7 +1894,7 @@ test('link', (t) => {
     'should not escape unneeded characters in a `title` (single quotes)'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'link', title: 'b'}, {quote: '.'})
@@ -1899,40 +1902,38 @@ test('link', (t) => {
     /Cannot serialize title with `\.` for `options\.quote`, expected `"`, or `'`/,
     'should throw on when given an incorrect `quote`'
   )
-
-  t.end()
 })
 
-test('linkReference', (t) => {
-  t.equal(
+test('linkReference', () => {
+  assert.equal(
     // @ts-expect-error: `children`, `referenceType`, `identifier` missing.
     to({type: 'linkReference'}),
     '[][]\n',
     'should support a link reference (nonsensical)'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType`, `identifier` missing.
     to({type: 'linkReference', children: [{type: 'text', value: 'a'}]}),
     '[a][]\n',
     'should support `children`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier` missing.
     to({type: 'linkReference', identifier: 'a'}),
     '[][a]\n',
     'should support an `identifier` (nonsensical)'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children`, `referenceType`, `identifier` missing.
     to({type: 'linkReference', label: 'a'}),
     '[][a]\n',
     'should support a `label` (nonsensical)'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `identifier` missing.
     to({
       type: 'linkReference',
@@ -1944,7 +1945,7 @@ test('linkReference', (t) => {
     'should support `referenceType: "shortcut"`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'linkReference',
       children: [{type: 'text', value: 'A'}],
@@ -1956,7 +1957,7 @@ test('linkReference', (t) => {
     'should support `referenceType: "collapsed"`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'linkReference',
       children: [{type: 'text', value: 'A'}],
@@ -1968,7 +1969,7 @@ test('linkReference', (t) => {
     'should support `referenceType: "full"` (default)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'linkReference',
       children: [{type: 'text', value: '&'}],
@@ -1980,7 +1981,7 @@ test('linkReference', (t) => {
     'should prefer label over identifier'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'linkReference',
       children: [{type: 'text', value: '&'}],
@@ -1991,7 +1992,7 @@ test('linkReference', (t) => {
     'should decode `identifier` if w/o `label`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -2007,7 +2008,7 @@ test('linkReference', (t) => {
     'should support incorrect character references'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'linkReference',
       identifier: 'a![b](c*d_e[f_g`h<i</j',
@@ -2018,7 +2019,7 @@ test('linkReference', (t) => {
     'should not escape unneeded characters in a `reference`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'linkReference',
       children: [{type: 'text', value: '+'}],
@@ -2029,7 +2030,7 @@ test('linkReference', (t) => {
     'should unescape `identifier` if w/o `label`'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType` missing.
     to({
       type: 'linkReference',
@@ -2041,7 +2042,7 @@ test('linkReference', (t) => {
     'should use a collapsed reference if w/o `referenceType` and the label matches the reference'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `referenceType` missing.
     to({
       type: 'linkReference',
@@ -2053,7 +2054,7 @@ test('linkReference', (t) => {
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -2065,22 +2066,20 @@ test('linkReference', (t) => {
     '[a][]\\(b)\n',
     'should use a full reference if w/o `referenceType` and the label does not match the reference'
   )
-
-  t.end()
 })
 
-test('list', (t) => {
+test('list', () => {
   // @ts-expect-error: `children` missing.
-  t.equal(to({type: 'list'}), '', 'should support an empty list')
+  assert.equal(to({type: 'list'}), '', 'should support an empty list')
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'list', children: [{type: 'listItem'}]}),
     '*\n',
     'should support a list w/ an item'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       children: [
@@ -2106,7 +2105,7 @@ test('list', (t) => {
     'should support a list w/ items'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       spread: false,
@@ -2127,7 +2126,7 @@ test('list', (t) => {
     'should not use blank lines between items for lists w/ `spread: false`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       spread: false,
@@ -2149,14 +2148,14 @@ test('list', (t) => {
     'should support a list w/ `spread: false`, w/ a spread item'
   )
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'list', ordered: true, children: [{type: 'listItem'}]}),
     '1.\n',
     'should support a list w/ `ordered` and an empty item'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       ordered: true,
@@ -2183,7 +2182,7 @@ test('list', (t) => {
     'should support a list w/ `ordered`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       ordered: true,
@@ -2211,7 +2210,7 @@ test('list', (t) => {
     'should support a list w/ `ordered` and `spread: false`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2242,7 +2241,7 @@ test('list', (t) => {
     'should support a list w/ `ordered` when `incrementListMarker: false`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2267,7 +2266,7 @@ test('list', (t) => {
     'should support a list w/ `ordered` and `start`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2293,7 +2292,7 @@ test('list', (t) => {
     'should support a correct prefix and indent `listItemIndent: "mixed"` and a tight list'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2319,7 +2318,7 @@ test('list', (t) => {
     'should support a correct prefix and indent `listItemIndent: "mixed"` and a tight list'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2347,7 +2346,7 @@ test('list', (t) => {
     'should support a correct prefix and indent for items 9 and 10 when `listItemIndent: "one"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2375,7 +2374,7 @@ test('list', (t) => {
     'should support a correct prefix and indent for items 99 and 100 when `listItemIndent: "one"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2403,7 +2402,7 @@ test('list', (t) => {
     'should support a correct prefix and indent for items 999 and 1000 when `listItemIndent: "one"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2431,7 +2430,7 @@ test('list', (t) => {
     'should support a correct prefix and indent for items 9 and 10 when `listItemIndent: "tab"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2459,7 +2458,7 @@ test('list', (t) => {
     'should support a correct prefix and indent for items 99 and 100 when `listItemIndent: "tab"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2486,22 +2485,20 @@ test('list', (t) => {
     '999.    a\n        b\n1000.   c\n        d\n',
     'should support a correct prefix and indent for items 999 and 1000 when `listItemIndent: "tab"`'
   )
-
-  t.end()
 })
 
-test('listItem', (t) => {
+test('listItem', () => {
   // @ts-expect-error: `children` missing.
-  t.equal(to({type: 'listItem'}), '*\n', 'should support a list item')
+  assert.equal(to({type: 'listItem'}), '*\n', 'should support a list item')
 
-  t.equal(
+  assert.equal(
     // @ts-expect-error: `children` missing.
     to({type: 'listItem'}, {bullet: '+'}),
     '+\n',
     'should serialize an item w/ a plus as bullet when `bullet: "+"`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'listItem'}, {bullet: '.'})
@@ -2510,7 +2507,7 @@ test('listItem', (t) => {
     'should throw on an incorrect bullet'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       children: [{type: 'paragraph', children: [{type: 'text', value: 'a'}]}]
@@ -2519,7 +2516,7 @@ test('listItem', (t) => {
     'should support a list item w/ a child'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       children: [
@@ -2532,7 +2529,7 @@ test('listItem', (t) => {
     'should support a list item w/ children'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'listItem',
@@ -2547,7 +2544,7 @@ test('listItem', (t) => {
     'should use one space after the bullet for `listItemIndent: "one"`'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'listItem',
@@ -2563,7 +2560,7 @@ test('listItem', (t) => {
     'should use one space after the bullet for `listItemIndent: "1"` (deprecated)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'listItem',
@@ -2575,7 +2572,7 @@ test('listItem', (t) => {
     'should use one space after the bullet for `listItemIndent: "mixed"`, when the item is not spread'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'listItem',
@@ -2591,7 +2588,7 @@ test('listItem', (t) => {
     'should use a tab stop of spaces after the bullet for `listItemIndent: "mixed"`, when the item is spread'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'listItem'}, {listItemIndent: 'x'})
@@ -2600,7 +2597,7 @@ test('listItem', (t) => {
     'should throw on an incorrect `listItemIndent`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       spread: false,
@@ -2626,25 +2623,25 @@ test('listItem', (t) => {
     }
   }
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList())), {bulletOther: '+'}),
     '*   *   +\n',
     'should support `bulletOther`'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList())), {bullet: '-'}),
     '-   -   *\n',
     'should default to an `bulletOther` different from `bullet` (1)'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList())), {bullet: '*'}),
     '*   *   -\n',
     'should default to an `bulletOther` different from `bullet` (2)'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to(createList(createList(createList())), {bulletOther: '?'})
@@ -2653,7 +2650,7 @@ test('listItem', (t) => {
     'should throw when given an incorrect `bulletOther`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to(createList(createList(createList())), {bullet: '-', bulletOther: '-'})
     },
@@ -2661,7 +2658,7 @@ test('listItem', (t) => {
     'should throw when an `bulletOther` is given equal to `bullet`'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       children: [{type: 'listItem', children: [{type: 'thematicBreak'}]}]
@@ -2670,7 +2667,7 @@ test('listItem', (t) => {
     'should use a different bullet than a thematic rule marker, if the first child of a list item is a thematic break (1)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       children: [
@@ -2687,19 +2684,19 @@ test('listItem', (t) => {
     'should use a different bullet than a thematic rule marker, if the first child of a list item is a thematic break (2)'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList())),
     '*   *\n',
     'should *not* use a different bullet for an empty list item in two lists'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList()))),
     '*   *   -\n',
     'should use a different bullet for an empty list item in three lists (1)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'list',
       children: [
@@ -2711,25 +2708,25 @@ test('listItem', (t) => {
     'should use a different bullet for an empty list item in three lists (2)'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList())), {bullet: '+'}),
     '+   +   +\n',
     'should not use a different bullet for an empty list item in three lists if `bullet` isn’t a thematic rule marker'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList(createList())))),
     '*   *   *   -\n',
     'should use a different bullet for an empty list item in four lists'
   )
 
-  t.equal(
+  assert.equal(
     to(createList(createList(createList(createList(createList()))))),
     '*   *   *   *   -\n',
     'should use a different bullet for an empty list item in five lists'
   )
 
-  t.equal(
+  assert.equal(
     to(
       createList(
         createList([
@@ -2745,7 +2742,7 @@ test('listItem', (t) => {
     'should not use a different bullet for an empty list item at non-head in two lists'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'list',
@@ -2758,7 +2755,7 @@ test('listItem', (t) => {
     'should support `bulletOrdered`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to(
         {
@@ -2774,7 +2771,7 @@ test('listItem', (t) => {
     'should throw on a `bulletOrdered` that is invalid'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -2797,7 +2794,7 @@ test('listItem', (t) => {
     'should support `bulletOrderedOther`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to(
         {
@@ -2813,7 +2810,7 @@ test('listItem', (t) => {
     'should throw on a `bulletOrderedOther` that is invalid'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to(
         {
@@ -2837,64 +2834,60 @@ test('listItem', (t) => {
     /Expected `bulletOrdered` \(`.`\) and `bulletOrderedOther` \(`.`\) to be different/,
     'should throw on a `bulletOrderedOther` that matches `bulletOrdered`'
   )
-
-  t.end()
 })
 
-test('paragraph', (t) => {
+test('paragraph', () => {
   // @ts-expect-error: `children` missing.
-  t.equal(to({type: 'paragraph'}), '', 'should support an empty paragraph')
+  assert.equal(to({type: 'paragraph'}), '', 'should support an empty paragraph')
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\nb'}]}),
     'a\nb\n',
     'should support a paragraph'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '  a'}]}),
     '&#x20; a\n',
     'should encode spaces at the start of paragraphs'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a  '}]}),
     'a &#x20;\n',
     'should encode spaces at the end of paragraphs'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '\t\ta'}]}),
     '&#x9;\ta\n',
     'should encode tabs at the start of paragraphs'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\t\t'}]}),
     'a\t&#x9;\n',
     'should encode tabs at the end of paragraphs'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a  \n  b'}]}),
     'a &#x20;\n&#x20; b\n',
     'should encode spaces around line endings in paragraphs'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\t\t\n\t\tb'}]}),
     'a\t&#x9;\n&#x9;\tb\n',
     'should encode spaces around line endings in paragraphs'
   )
-
-  t.end()
 })
 
-test('strong', (t) => {
+test('strong', () => {
   // @ts-expect-error: `children` missing.
-  t.equal(to({type: 'strong'}), '****\n', 'should support an empty strong')
+  assert.equal(to({type: 'strong'}), '****\n', 'should support an empty strong')
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'strong'}, {strong: '?'})
@@ -2903,50 +2896,54 @@ test('strong', (t) => {
     'should throw on when given an incorrect `strong`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'strong', children: [{type: 'text', value: 'a'}]}),
     '**a**\n',
     'should support a strong w/ children'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'strong', children: [{type: 'text', value: 'a'}]}, {strong: '_'}),
     '__a__\n',
     'should support a strong w/ underscores when `emphasis: "_"`'
   )
-
-  t.end()
 })
 
-test('text', (t) => {
+test('text', () => {
   // @ts-expect-error: `value` missing.
-  t.equal(to({type: 'text'}), '', 'should support a void text')
-  t.equal(to({type: 'text', value: ''}), '', 'should support an empty text')
-  t.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n', 'should support text')
-
-  t.end()
+  assert.equal(to({type: 'text'}), '', 'should support a void text')
+  assert.equal(
+    to({type: 'text', value: ''}),
+    '',
+    'should support an empty text'
+  )
+  assert.equal(
+    to({type: 'text', value: 'a\nb'}),
+    'a\nb\n',
+    'should support text'
+  )
 })
 
-test('thematic break', (t) => {
-  t.equal(
+test('thematic break', () => {
+  assert.equal(
     to({type: 'thematicBreak'}),
     '***\n',
     'should support a thematic break'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'thematicBreak'}, {rule: '-'}),
     '---\n',
     'should support a thematic break w/ dashes when `rule: "-"`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'thematicBreak'}, {rule: '_'}),
     '___\n',
     'should support a thematic break w/ underscores when `rule: "_"`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       // @ts-expect-error: runtime.
       to({type: 'thematicBreak'}, {rule: '.'})
@@ -2955,13 +2952,13 @@ test('thematic break', (t) => {
     'should throw on when given an incorrect `rule`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'thematicBreak'}, {ruleRepetition: 5}),
     '*****\n',
     'should support a thematic break w/ more repetitions w/ `ruleRepetition`'
   )
 
-  t.throws(
+  assert.throws(
     () => {
       to({type: 'thematicBreak'}, {ruleRepetition: 2})
     },
@@ -2969,23 +2966,21 @@ test('thematic break', (t) => {
     'should throw on when given an incorrect `ruleRepetition`'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'thematicBreak'}, {ruleSpaces: true}),
     '* * *\n',
     'should support a thematic break w/ spaces w/ `ruleSpaces`'
   )
-
-  t.end()
 })
 
-test('escape', (t) => {
-  t.equal(
+test('escape', () => {
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '> a\n> b\nc >'}]}),
     '\\> a\n\\> b\nc >\n',
     'should escape what would otherwise be a block quote in a paragraph'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'listItem',
       children: [
@@ -2996,7 +2991,7 @@ test('escape', (t) => {
     'should escape what would otherwise be a block quote in a list item'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'blockquote',
       children: [
@@ -3007,31 +3002,31 @@ test('escape', (t) => {
     'should escape what would otherwise be a block quote in a block quote'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\\\nb'}]}),
     'a\\\\\nb\n',
     'should escape what would otherwise be a break'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '&amp'}]}),
     '\\&amp\n',
     'should escape what would otherwise be a named character reference'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '&#9;'}]}),
     '\\&#9;\n',
     'should escape what would otherwise be a numeric character reference'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\\+b'}]}),
     'a\\\\+b\n',
     'should escape what would otherwise be a character escape'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -3047,61 +3042,61 @@ test('escape', (t) => {
     'should escape what would otherwise be a character escape of an autolink'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '```js\n```'}]}),
     '\\`\\`\\`js\n\\`\\`\\`\n',
     'should escape what would otherwise be code (flow)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[a]: b'}]}),
     '\\[a]: b\n',
     'should escape what would otherwise be a definition'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '*a*'}]}),
     '\\*a\\*\n',
     'should escape what would otherwise be emphasis (asterisk)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '_a_'}]}),
     '\\_a\\_\n',
     'should escape what would otherwise be emphasis (underscore)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '# a'}]}),
     '\\# a\n',
     'should escape what would otherwise be a heading (atx)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\n='}]}),
     'a\n\\=\n',
     'should escape what would otherwise be a heading (setext, equals)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a\n-'}]}),
     'a\n\\-\n',
     'should escape what would otherwise be a heading (setext, dash)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '<a\nb>'}]}),
     '\\<a\nb>\n',
     'should escape what would otherwise be html'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: 'a `b`\n`c` d'}]}),
     'a \\`b\\`\n\\`c\\` d\n',
     'should escape what would otherwise be code (text)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -3117,7 +3112,7 @@ test('escape', (t) => {
     'should escape what would otherwise turn a link into an image'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -3135,55 +3130,55 @@ test('escape', (t) => {
     'should escape what would otherwise turn a link reference into an image reference'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![a][b]'}]}),
     '!\\[a]\\[b]\n',
     'should escape what would otherwise be an image (reference)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '![](a.jpg)'}]}),
     '!\\[]\\(a.jpg)\n',
     'should escape what would otherwise be an image (resource)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[a][b]'}]}),
     '\\[a]\\[b]\n',
     'should escape what would otherwise be a link (reference)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '[](a.jpg)'}]}),
     '\\[]\\(a.jpg)\n',
     'should escape what would otherwise be a link (resource)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '+ a\n+ b'}]}),
     '\\+ a\n\\+ b\n',
     'should escape what would otherwise be a list item (plus)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '+a'}]}),
     '+a\n',
     'should not escape `+` when not followed by whitespace'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '- a\n- b'}]}),
     '\\- a\n\\- b\n',
     'should escape what would otherwise be a list item (dash)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '-a'}]}),
     '-a\n',
     'should not escape `-` when not followed by whitespace'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '--a'}]}),
     '\\--a\n',
     'should escape `-` when followed by another `-` (as it looks like a thematic break, setext underline)'
@@ -3191,43 +3186,43 @@ test('escape', (t) => {
 
   // Note: these are in titles, because the `*` case here is about flow nodes,
   // not phrasing (emphasis).
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'x', url: 'y', title: 'a\n* b\n* c'}),
     '[x]: y "a\n\\* b\n\\* c"\n',
     'should escape what would otherwise be a list item (asterisk)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'x', url: 'y', title: 'a\n*b'}),
     '[x]: y "a\n*b"\n',
     'should not escape `*` when not followed by whitespace'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'definition', identifier: 'x', url: 'y', title: 'a\n**b'}),
     '[x]: y "a\n\\**b"\n',
     'should escape `*` when followed by another `*` (as it looks like a thematic break)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '1. a\n2. b'}]}),
     '1\\. a\n2\\. b\n',
     'should escape what would otherwise be a list item (dot)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '1) a\n2) b'}]}),
     '1\\) a\n2\\) b\n',
     'should escape what would otherwise be a list item (paren)'
   )
 
-  t.equal(
+  assert.equal(
     to({type: 'paragraph', children: [{type: 'text', value: '1.2.3. asd'}]}),
     '1.2.3. asd\n',
     'should not escape what can’t be a list (dot)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -3242,7 +3237,7 @@ test('escape', (t) => {
     'should support options in extensions'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -3263,7 +3258,7 @@ test('escape', (t) => {
     'should support empty `join`, `handlers`, `extensions` in an extension (coverage)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -3321,7 +3316,7 @@ test('escape', (t) => {
     'should make `join` from options highest priority'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -3333,7 +3328,7 @@ test('escape', (t) => {
     'should prefer main options over extension options'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'root',
@@ -3345,7 +3340,7 @@ test('escape', (t) => {
     'should prefer extension options over subextension options'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -3357,7 +3352,7 @@ test('escape', (t) => {
     'should handle literal backslashes properly when before constructs (1)'
   )
 
-  t.equal(
+  assert.equal(
     to({
       type: 'paragraph',
       children: [
@@ -3368,11 +3363,9 @@ test('escape', (t) => {
     '\\\\\\\\*a*\n',
     'should handle literal backslashes properly when before constructs (2)'
   )
-
-  t.end()
 })
 
-test('roundtrip', (t) => {
+test('roundtrip', () => {
   let doc = [
     '> *   Lorem ipsum dolor sit amet',
     '>',
@@ -3380,7 +3373,11 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip spread items in block quotes')
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip spread items in block quotes'
+  )
 
   doc = [
     '*   Lorem ipsum dolor sit amet',
@@ -3391,7 +3388,11 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (1)')
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip spread items in sublists (1)'
+  )
 
   doc = [
     '*   1.  Lorem ipsum dolor sit amet',
@@ -3400,7 +3401,11 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (2)')
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip spread items in sublists (2)'
+  )
 
   doc = [
     '*   hello',
@@ -3415,11 +3420,15 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip spread items in sublists (3)')
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip spread items in sublists (3)'
+  )
 
   doc = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
 
-  t.equal(
+  assert.equal(
     to(from(doc)),
     doc,
     'should roundtrip autolinks w/ potentially escapable characters'
@@ -3436,7 +3445,11 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip potential prototype injections')
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip potential prototype injections'
+  )
 
   doc = [
     '*   foo',
@@ -3464,11 +3477,11 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip empty lists')
+  assert.equal(to(from(doc)), doc, 'should roundtrip empty lists')
 
   doc = '*   a\n\n<!---->\n\n*   b\n'
 
-  t.equal(to(from(doc)), doc, 'should roundtrip lists with break comments')
+  assert.equal(to(from(doc)), doc, 'should roundtrip lists with break comments')
 
   // The first one could have (up to) four spaces, but it doesn’t add anything,
   // so we don’t roundtrip it.
@@ -3485,29 +3498,33 @@ test('roundtrip', (t) => {
     ''
   ].join('\n')
 
-  t.equal(to(from(doc)), doc, 'should roundtrip indented blank lines in code')
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip indented blank lines in code'
+  )
 
   doc = '> a\n\n> b\n'
 
-  t.equal(to(from(doc)), doc, 'should roundtrip adjacent block quotes')
+  assert.equal(to(from(doc)), doc, 'should roundtrip adjacent block quotes')
 
   doc = '[**https://unifiedjs.com/**](https://unifiedjs.com/)\n'
 
-  t.equal(to(from(doc)), doc, 'should roundtrip formatted URLs')
+  assert.equal(to(from(doc)), doc, 'should roundtrip formatted URLs')
 
   const step1 = '\\ \\\\ \\\\\\ \\\\\\\\'
   const step2 = '\\ \\ \\\\\\ \\\\\\\\\n'
 
-  t.equal(to(from(step1)), step2, 'should roundtrip backslashes (1)')
-  t.equal(to(from(step2)), step2, 'should roundtrip backslashes (2)')
+  assert.equal(to(from(step1)), step2, 'should roundtrip backslashes (1)')
+  assert.equal(to(from(step2)), step2, 'should roundtrip backslashes (2)')
 
   doc = '\\\\\\*a\n'
 
-  t.equal(to(from(doc)), doc, 'should not collapse escapes (1)')
+  assert.equal(to(from(doc)), doc, 'should not collapse escapes (1)')
 
   doc = '\\\\*a\\\\\\*'
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(from(doc)),
     removePosition(from(to(from(doc)))),
     'should not collapse escapes (2)'
@@ -3515,7 +3532,7 @@ test('roundtrip', (t) => {
 
   doc = '```\n	\n```\n'
 
-  t.equal(
+  assert.equal(
     to(from(doc)),
     doc,
     'should roundtrip a sole blank line in fenced code'
@@ -3523,7 +3540,7 @@ test('roundtrip', (t) => {
 
   doc = '*   *   -\n'
 
-  t.equal(
+  assert.equal(
     to(from(doc)),
     doc,
     'should roundtrip an empty list item in two more lists'
@@ -3531,7 +3548,7 @@ test('roundtrip', (t) => {
 
   doc = '-   ***\n'
 
-  t.equal(
+  assert.equal(
     to(from(doc)),
     doc,
     'should roundtrip a thematic break at the start of a list item'
@@ -3539,7 +3556,7 @@ test('roundtrip', (t) => {
 
   let tree = from('* a\n- b')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther`'
@@ -3547,7 +3564,7 @@ test('roundtrip', (t) => {
 
   tree = from('* ---\n- - +\n+ b')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (1)'
@@ -3555,7 +3572,7 @@ test('roundtrip', (t) => {
 
   tree = from('- - +\n* ---\n+ b')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (2)'
@@ -3563,7 +3580,7 @@ test('roundtrip', (t) => {
 
   tree = from('- - +\n- -')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (3)'
@@ -3571,7 +3588,7 @@ test('roundtrip', (t) => {
 
   tree = from('* - +\n    *\n    -\n    +')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (4)'
@@ -3579,7 +3596,7 @@ test('roundtrip', (t) => {
 
   tree = from('* - +\n  - *\n    -\n    +')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (5)'
@@ -3587,7 +3604,7 @@ test('roundtrip', (t) => {
 
   tree = from('- +\n- *\n  -\n  +')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (6)'
@@ -3595,7 +3612,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. a\n1) b')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3606,7 +3623,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. ---\n1) 1. 1)\n1. b')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3617,7 +3634,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. 1. 1)\n1) ---\n1. b')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3628,7 +3645,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. 1. 1)\n1. 1.')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3639,7 +3656,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. 1) 1.\n      1.\n      1)\n    1.')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3650,7 +3667,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. 1) 1.\n   1) 1.\n     1)\n     1.')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3661,7 +3678,7 @@ test('roundtrip', (t) => {
 
   tree = from('1. 1)\n1. 1.\n   1)\n   1.')
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(tree, true),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
@@ -3672,15 +3689,15 @@ test('roundtrip', (t) => {
 
   doc = '&#x20;\n'
 
-  t.equal(to(from(doc)), doc, 'should roundtrip a single encoded space')
+  assert.equal(to(from(doc)), doc, 'should roundtrip a single encoded space')
 
   doc = '&#x9;\n'
 
-  t.equal(to(from(doc)), doc, 'should roundtrip a single encoded tab')
+  assert.equal(to(from(doc)), doc, 'should roundtrip a single encoded tab')
 
   doc = '&#x20; a &#x20;\n&#x9;\tb\t&#x9;\n'
 
-  t.equal(
+  assert.equal(
     to(from(doc)),
     doc,
     'should roundtrip encoded spaces and tabs where needed'
@@ -3713,7 +3730,7 @@ a **\\* is this emphasis? **\\*
 a *\\** is this emphasis? *\\**`
   tree = from(doc)
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(from(to(tree)), true),
     removePosition(tree, true),
     'should roundtrip asterisks (tree)'
@@ -3746,7 +3763,7 @@ a __\\_ is this emphasis? __\\_
 a _\\__ is this emphasis? _\\__`
   tree = from(doc)
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(from(to(tree)), true),
     removePosition(tree, true),
     'should roundtrip underscores (tree)'
@@ -3754,19 +3771,21 @@ a _\\__ is this emphasis? _\\__`
 
   doc = to(from(`(____`))
 
-  t.equal(to(from(doc)), doc, 'should roundtrip attention-like plain text')
+  assert.equal(to(from(doc)), doc, 'should roundtrip attention-like plain text')
 
   doc = to(
     from('Once activated, a service worker ______, then transitions to idle…')
   )
 
-  t.equal(to(from(doc)), doc, 'should roundtrip faux “fill in the blank” spans')
-
-  t.end()
+  assert.equal(
+    to(from(doc)),
+    doc,
+    'should roundtrip faux “fill in the blank” spans'
+  )
 })
 
-test('position (output)', function (t) {
-  t.equal(
+test('position (output)', function () {
+  assert.equal(
     to(
       {
         type: 'blockquote',
@@ -3781,7 +3800,7 @@ test('position (output)', function (t) {
           /** @param {unknown} _ */
           unknown(_, _2, _3, info) {
             const {now, lineShift} = info
-            t.deepEqual(
+            assert.deepEqual(
               {now, lineShift},
               {now: {line: 3, column: 3}, lineShift: 2},
               'should track output positions (1)'
@@ -3795,7 +3814,7 @@ test('position (output)', function (t) {
     'should track output positions (2)'
   )
 
-  t.equal(
+  assert.equal(
     to(
       {
         type: 'blockquote',
@@ -3820,7 +3839,7 @@ test('position (output)', function (t) {
           /** @param {unknown} _ */
           unknown(_, _2, _3, info) {
             const {now, lineShift} = info
-            t.deepEqual(
+            assert.deepEqual(
               {now, lineShift},
               {now: {line: 2, column: 4}, lineShift: 2},
               'should track output positions (3)'
@@ -3833,6 +3852,4 @@ test('position (output)', function (t) {
     '> a\n> *b*\n',
     'should track output positions (4)'
   )
-
-  t.end()
 })
