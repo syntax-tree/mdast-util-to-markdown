@@ -139,7 +139,7 @@ Turn an **[mdast][]** syntax tree into markdown.
 
 *   `tree` ([`Node`][node])
     — tree to serialize
-*   `options` (`Options`, optional)
+*   `options` ([`Options`][options], optional)
     — configuration
 
 ###### Returns
