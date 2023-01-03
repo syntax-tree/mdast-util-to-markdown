@@ -18,6 +18,14 @@
 *   [Use](#use)
 *   [API](#api)
     *   [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
+    *   [`Handle`](#handle)
+    *   [`Handlers`](#handlers)
+    *   [`Info`](#info)
+    *   [`Join`](#join)
+    *   [`Map`](#map)
+    *   [`Options`](#options)
+    *   [`State`](#state)
+    *   [`Unsafe`](#unsafe)
 *   [List of extensions](#list-of-extensions)
 *   [Syntax](#syntax)
 *   [Syntax tree](#syntax-tree)
@@ -52,7 +60,7 @@ Notable examples that deeply integrate with it are
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+In Node.js (version 14.14+, or 16.0+), install with [npm][]:
 
 ```sh
 npm install mdast-util-to-markdown
@@ -127,9 +135,116 @@ There is no default export.
 
 Turn an **[mdast][]** syntax tree into markdown.
 
-##### Formatting options
+###### Parameters
 
-The following fields influence how markdown is formatted.
+*   `tree` ([`Node`][node])
+    — tree to serialize
+*   `options` (`Options`, optional)
+    — configuration
+
+###### Returns
+
+Serialized markdown representing `tree` (`string`).
+
+### `Handle`
+
+Handle a particular node (TypeScript type).
+
+###### Parameters
+
+*   `node` (`any`)
+    — expected mdast node
+*   `parent` ([`Node`][node], optional)
+    — parent of `node`
+*   `state` ([`State`][state])
+    — info passed around about the current state
+*   `info` ([`Info`][info])
+    — info on the surrounding of the node that is serialized
+
+###### Returns
+
+Serialized markdown representing `node` (`string`).
+
+### `Handlers`
+
+Handle particular nodes (TypeScript type).
+
+Each key is a node type (`string`), each value its corresponding handler
+([`Handle`][handle]).
+
+###### Type
+
+```ts
+Record<string, Handle>
+```
+
+### `Info`
+
+Info on the surrounding of the node that is serialized (TypeScript type).
+
+###### Fields
+
+*   `now` ([`Point`][point])
+    — current point
+*   `lineShift` (`number`)
+    — number of columns each line will be shifted by wrapping nodes
+*   `before` (`string`)
+    — characters before this (guaranteed to be one, can be more)
+*   `after` (`string`)
+    — characters after this (guaranteed to be one, can be more)
+
+### `Join`
+
+How to join two blocks (TypeScript type).
+
+“Blocks” are typically joined by one blank line.
+Sometimes it’s nicer to have them flush next to each other, yet other times
+they cannot occur together at all.
+
+Join functions receive two adjacent siblings and their parent and what they
+return defines how many blank lines to use between them.
+
+###### Parameters
+
+*   `left` ([`Node`][node])
+    — first of two adjacent siblings
+*   `right` ([`Node`][node])
+    — second of two adjacent siblings
+*   `parent` ([`Node`][node])
+    — parent of the two siblings
+*   `state` ([`State`][state])
+    — info passed around about the current state
+
+###### Returns
+
+How many blank lines to use between the siblings (`boolean`, `number`,
+optional).
+
+Where `true` is as passing `1` and `false` means the nodes cannot be
+joined by a blank line, such as two adjacent block quotes or indented code
+after a list, in which case a comment will be injected to break them up:
+
+```markdown
+> Quote 1
+
+<!---->
+
+> Quote 2
+```
+
+> 👉 **Note**: abusing this feature will break markdown.
+> One such example is when returning `0` for two paragraphs, which will result
+> in the text running together, and in the future to be seen as one paragraph.
+
+### `Map`
+
+### `Options`
+
+Configuration (TypeScript type).
+
+##### Fields
+
+The following fields influence how markdown is serialized.
 
 ###### `options.bullet`
 
@@ -141,7 +256,7 @@ default: `'*'`).
 Marker to use in certain cases where the primary bullet doesn’t work (`'*'`,
 `'+'`, or `'-'`, default: depends).
 
-There are three cases where the primary bullet can’t be used:
+There are three cases where the primary bullet cannot be used:
 
 *   When three list items are on their own, the last one is empty, and `bullet`
     is also a valid `rule`: `* - +`.
@@ -172,7 +287,7 @@ Marker to use for bullets of items in ordered lists (`'.'` or `')'`, default:
 Marker to use in certain cases where the primary bullet for ordered items
 doesn’t work (`'.'` or `')'`, default: none).
 
-There is one case where the primary bullet for ordered items can’t be used:
+There is one case where the primary bullet for ordered items cannot be used:
 
 *   When two ordered lists appear next to each other: `1. a\n2) b`.
     CommonMark added support for `)` as a marker, but other markdown parsers
@@ -241,7 +356,7 @@ Whether to add spaces between markers in thematic breaks (`boolean`, default:
 Whether to use setext headings when possible (`boolean`, default: `false`).
 The default is to always use ATX headings (`# heading`) instead of setext
 headings (`heading\n=======`).
-Setext headings can’t be used for empty headings or headings with a rank of
+Setext headings cannot be used for empty headings or headings with a rank of
 three or more.
 
 ###### `options.strong`
@@ -251,8 +366,9 @@ Marker to use for strong (`'*'` or `'_'`, default: `'*'`).
 ###### `options.tightDefinitions`
 
 Whether to join definitions without a blank line (`boolean`, default: `false`).
+
 The default is to add blank lines between any flow (“block”) construct.
-Turning this option on is a shortcut for a join function like so:
+Turning this option on is a shortcut for a [`Join`][join] function like so:
 
 ```js
 function joinTightDefinitions(left, right) {
@@ -264,55 +380,68 @@ function joinTightDefinitions(left, right) {
 
 ###### `options.handlers`
 
-Object mapping node types to custom handlers (`Record<string, Handle>`, default:
-`{}`).
-Useful for syntax extensions.
-
-This option is a bit advanced.
-It’s recommended to look at the code in [`lib/handle/`][handlers] for examples.
+Handle particular nodes ([`Handlers`][handlers], optional).
 
 ###### `options.join`
 
-List of functions used to determine what to place between two flow nodes
-(`Array<Join>`, default: `[]`).
-
-“Blocks” are typically joined by one blank line.
-Sometimes it’s nicer to have them flush next to each other, yet other times
-they can’t occur together at all.
-Join functions receive two adjacent siblings and their parent and can return
-`number` or `boolean`, to signal how many blank lines to use between them.
-A return value of `true` is as passing `1`.
-A return value of `false` means the nodes cannot be joined by a blank line, such
-as two adjacent block quotes or indented code after a list, in which case a
-comment will be injected to break them up:
-
-```markdown
-> Quote 1
-
-<!---->
-
-> Quote 2
-```
+How to join blocks ([`Array<Join>`][join], optional).
 
 ###### `options.unsafe`
 
-List of patterns to escape (`Array<Unsafe>`).
-Useful for syntax extensions.
-
-This option is quite advanced.
-It’s recommended to look at the code in [`lib/unsafe.js`][unsafe] for examples.
-
-##### Extension options
+Schemas that define when characters cannot occur ([`Array<Unsafe>`][unsafe],
+optional).
 
 ###### `options.extensions`
 
-List of extensions (`Array<ToMarkdownExtension>`, default: `[]`).
-Each `ToMarkdownExtension` is an object with the same interface as `options`
-here.
+List of extensions (`Array<Options>`, default: `[]`).
+Each extension is an object with the same interface as `Options` itself.
 
-##### Returns
+### `State`
 
-Serialized markdown (`string`).
+Info passed around about the current state (TypeScript type).
+
+###### Fields
+
+*   `stack` (`Array<string>`)
+    — stack of constructs we’re in
+*   `indexStack` (`Array<number>`)
+    — positions of child nodes in their parents
+*   `enter` (`(construct: string) => () => void`)
+    — enter a construct (returns a corresponding exit function)
+*   `options` ([`Options`][options])
+    — applied user configuration
+*   `unsafe` ([`Array<Unsafe>`][unsafe])
+    — applied unsafe patterns
+*   `join` ([`Array<Join>`][join])
+    — applied join handlers
+*   `handle` ([`Handle`][handle])
+    — call the configured handler for the given node
+*   `handlers` ([`Handlers`][handlers])
+    — applied handlers
+*   `bulletCurrent` (`string` or `undefined`)
+    — list marker currently in use
+*   `bulletLastUsed` (`string` or `undefined`)
+    — list marker previously in use
+
+### `Unsafe`
+
+Schema that defines when a character cannot occur (TypeScript type).
+
+###### Fields
+
+*   `character` (`string`)
+    — single unsafe character
+*   `inConstruct` (`string`, `Array<string>`, optional)
+    — constructs where this is bad
+*   `notInConstruct` (`string`, `Array<string>`, optional)
+    — constructs where this is fine again
+*   `before` (`string`, optional)
+    — `character` is bad when this is before it (cannot be used together with
+    `atBreak`)
+*   `after` (`string`, optional)
+    — `character` is bad when this is after it
+*   `atBreak` (`boolean`, optional)
+    — `character` is bad at a break (cannot be used together with `before`)
 
 ## List of extensions
 
@@ -356,9 +485,8 @@ The syntax tree is [mdast][].
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types `Options`, `Map`, `Unsafe`, `Join`, `Handlers`,
-`Handle`, `Context`, `Info`, which model the interfaces used by options
-and extensions.
+It exports the additional types `Handle`, `Handlers`, `Info` `Join`, `Map`,
+`Options`, `State`, and `Unsafe`.
 
 ## Security
 
@@ -448,7 +576,11 @@ abide by its terms.
 
 [hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
 
+[point]: https://github.com/syntax-tree/unist#point
+
 [mdast]: https://github.com/syntax-tree/mdast
+
+[node]: https://github.com/syntax-tree/mdast#nodes
 
 [mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
 
@@ -460,10 +592,20 @@ abide by its terms.
 
 [mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
 
-[handlers]: lib/handle
-
-[unsafe]: lib/unsafe.js
-
 [remark]: https://github.com/remarkjs/remark
 
 [remark-stringify]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify
+
+[handle]: #handle
+
+[handlers]: #handlers
+
+[info]: #info
+
+[join]: #join
+
+[options]: #options
+
+[state]: #state
+
+[unsafe]: #unsafe
