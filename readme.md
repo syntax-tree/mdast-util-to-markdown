@@ -208,7 +208,7 @@ Serialized markdown representing `node` (`string`).
 
 Handle particular nodes (TypeScript type).
 
-Each key is a node type (`string`), each value its corresponding handler
+Each key is a node type (`Node['type']`), each value its corresponding handler
 ([`Handle`][handle]).
 
 ###### Type

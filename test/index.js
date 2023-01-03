@@ -1,6 +1,7 @@
 /**
  * @typedef {import('mdast').BlockContent} BlockContent
  * @typedef {import('mdast').List} List
+ * @typedef {import('../index.js').Handle} Handle
  */
 
 import assert from 'node:assert/strict'
@@ -3810,7 +3811,10 @@ test('position (output)', function () {
       },
       {
         handlers: {
-          /** @param {unknown} _ */
+          /**
+           * @type {Handle}
+           * @param {unknown} _
+           */
           unknown(_, _2, _3, info) {
             const {now, lineShift} = info
             assert.deepEqual(
@@ -3849,7 +3853,10 @@ test('position (output)', function () {
       },
       {
         handlers: {
-          /** @param {unknown} _ */
+          /**
+           * @type {Handle}
+           * @param {unknown} _
+           */
           unknown(_, _2, _3, info) {
             const {now, lineShift} = info
             assert.deepEqual(
