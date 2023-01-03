@@ -277,6 +277,21 @@ after a list, in which case a comment will be injected to break them up:
 
 ### `Map`
 
+Map function to pad a single line (TypeScript type).
+
+###### Parameters
+
+*   `value` (`string`)
+    — a single line of serialized markdown
+*   `line` (`number`)
+    — line number relative to the fragment
+*   `blank` (`boolean`)
+    — whether the line is considered blank in markdown
+
+###### Returns
+
+Padded line (`string`).
+
 ### `Options`
 
 Configuration (TypeScript type).
@@ -447,6 +462,9 @@ Info passed around about the current state (TypeScript type).
     — positions of child nodes in their parents
 *   `enter` (`(construct: ConstructName) => () => void`)
     — enter a construct (returns a corresponding exit function)
+    (see [`ConstructName`][constructname])
+*   `indentLines` (`(value: string, map: Map) => string`)
+    — pad serialized markdown (see [`Map`][map])
 *   `options` ([`Options`][options])
     — applied user configuration
 *   `unsafe` ([`Array<Unsafe>`][unsafe])
@@ -646,6 +664,8 @@ abide by its terms.
 [info]: #info
 
 [join]: #join
+
+[map]: #map
 
 [options]: #options
 

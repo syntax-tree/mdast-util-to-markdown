@@ -314,10 +314,10 @@ export type {
   Handlers,
   Info,
   Join,
+  Map,
   Options,
   State,
-  Unsafe,
-  Map
+  Unsafe
 } from './lib/types.js'
 // Deprecated.
 export type SafeOptions = Info
