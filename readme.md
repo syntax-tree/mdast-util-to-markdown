@@ -129,6 +129,8 @@ Turn an **[mdast][]** syntax tree into markdown.
 
 ##### Formatting options
 
+The following fields influence how markdown is formatted.
+
 ###### `options.bullet`
 
 Marker to use for bullets of items in unordered lists (`'*'`, `'+'`, or `'-'`,
@@ -355,7 +357,7 @@ The syntax tree is [mdast][].
 
 This package is fully typed with [TypeScript][].
 It exports the additional types `Options`, `Map`, `Unsafe`, `Join`, `Handlers`,
-`Handle`, `Context`, `SafeOptions`, which model the interfaces used by options
+`Handle`, `Context`, `Info`, which model the interfaces used by options
 and extensions.
 
 ## Security
