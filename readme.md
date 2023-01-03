@@ -214,7 +214,7 @@ Each key is a node type (`Node['type']`), each value its corresponding handler
 ###### Type
 
 ```ts
-type Handlers = Record<string, Handle>
+type Handlers = Record<Node['type'], Handle>
 ```
 
 ### `Info`
