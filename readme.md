@@ -26,6 +26,7 @@
     *   [`Join`](#join)
     *   [`Map`](#map)
     *   [`Options`](#options)
+    *   [`SafeConfig`](#safeconfig)
     *   [`State`](#state)
     *   [`Unsafe`](#unsafe)
 *   [List of extensions](#list-of-extensions)
@@ -450,6 +451,22 @@ optional).
 List of extensions (`Array<Options>`, default: `[]`).
 Each extension is an object with the same interface as `Options` itself.
 
+### `SafeConfig`
+
+Configuration passed to `state.safe`.
+
+###### Fields
+
+*   `before` (`string`)
+    — characters before this (guaranteed to be one, can be more)
+*   `after` (`string`)
+    — characters after this (guaranteed to be one, can be more)
+*   `encode` (`Array<string>`, optional)
+    — extra characters that *must* be encoded (as character references) instead
+    of escaped (character escapes).
+    Only ASCII punctuation will use character escapes, so you never need to
+    pass non-ASCII-punctuation here
+
 ### `State`
 
 Info passed around about the current state (TypeScript type).
@@ -466,9 +483,11 @@ Info passed around about the current state (TypeScript type).
 *   `indentLines` (`(value: string, map: Map) => string`)
     — pad serialized markdown (see [`Map`][map])
 *   `containerFlow` (`(parent: Node, info: Info) => string`)
-    — serialize flow children
+    — serialize flow children (see [`Info`][info])
 *   `containerPhrasing` (`(parent: Node, info: Info) => string`)
-    — serialize phrasing children
+    — serialize phrasing children (see [`Info`][info])
+*   `safe` (`(value: string, config: SafeConfig) => string`)
+    — make a string safe for embedding (see [`SafeConfig`][safeconfig])
 *   `options` ([`Options`][options])
     — applied user configuration
 *   `unsafe` ([`Array<Unsafe>`][unsafe])
@@ -549,7 +568,8 @@ The syntax tree is [mdast][].
 
 This package is fully typed with [TypeScript][].
 It exports the additional types `ConstructName`, `ConstructNameMap`, `Handle`,
-`Handlers`, `Info` `Join`, `Map`, `Options`, `State`, and `Unsafe`.
+`Handlers`, `Info` `Join`, `Map`, `Options`, `SafeConfig`, `State`, and
+`Unsafe`.
 
 ## Security
 
@@ -674,5 +694,7 @@ abide by its terms.
 [options]: #options
 
 [state]: #state
+
+[safeconfig]: #safeconfig
 
 [unsafe]: #unsafe
