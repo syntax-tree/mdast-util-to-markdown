@@ -28,6 +28,7 @@
     *   [`Options`](#options)
     *   [`SafeConfig`](#safeconfig)
     *   [`State`](#state)
+    *   [`Tracker`](#tracker)
     *   [`Unsafe`](#unsafe)
 *   [List of extensions](#list-of-extensions)
 *   [Syntax](#syntax)
@@ -453,7 +454,7 @@ Each extension is an object with the same interface as `Options` itself.
 
 ### `SafeConfig`
 
-Configuration passed to `state.safe`.
+Configuration passed to `state.safe` (TypeScript type).
 
 ###### Fields
 
@@ -486,6 +487,9 @@ Info passed around about the current state (TypeScript type).
     — serialize flow children (see [`Info`][info])
 *   `containerPhrasing` (`(parent: Node, info: Info) => string`)
     — serialize phrasing children (see [`Info`][info])
+*   `createTracker` (`(info: Info) => Tracker`)
+    — track positional info in the output (see [`Info`][info],
+    [`Tracker`][tracker])
 *   `safe` (`(value: string, config: SafeConfig) => string`)
     — make a string safe for embedding (see [`SafeConfig`][safeconfig])
 *   `options` ([`Options`][options])
@@ -502,6 +506,22 @@ Info passed around about the current state (TypeScript type).
     — list marker currently in use
 *   `bulletLastUsed` (`string` or `undefined`)
     — list marker previously in use
+
+### `Tracker`
+
+Track positional info in the output (TypeScript type).
+
+This info isn’t used yet but such functionality will allow line wrapping,
+source maps, etc.
+
+###### Fields
+
+*   `current` (`() => Info`)
+    — get current tracked info
+*   `shift` (`(value: number) => void`)
+    — define a relative increased line shift (the typical indent for lines)
+*   `move` (`(value: string) => string`)
+    — move past some generated markdown
 
 ### `Unsafe`
 
@@ -693,8 +713,10 @@ abide by its terms.
 
 [options]: #options
 
+[safeconfig]: #safeconfig
+
 [state]: #state
 
-[safeconfig]: #safeconfig
+[tracker]: #tracker
 
 [unsafe]: #unsafe

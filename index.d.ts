@@ -316,7 +316,9 @@ export type {
   Join,
   Map,
   Options,
+  SafeConfig,
   State,
+  Tracker,
   Unsafe
 } from './lib/types.js'
 // Deprecated.
