@@ -478,6 +478,9 @@ Info passed around about the current state (TypeScript type).
     — stack of constructs we’re in
 *   `indexStack` (`Array<number>`)
     — positions of child nodes in their parents
+*   `associationId` (`(node: Association) => string`)
+    — get an identifier from an association to match it to others (see
+    [`Association`][association])
 *   `enter` (`(construct: ConstructName) => () => void`)
     — enter a construct (returns a corresponding exit function)
     (see [`ConstructName`][constructname])
@@ -684,6 +687,8 @@ abide by its terms.
 [mdast]: https://github.com/syntax-tree/mdast
 
 [node]: https://github.com/syntax-tree/mdast#nodes
+
+[association]: https://github.com/syntax-tree/mdast#association
 
 [mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
 
