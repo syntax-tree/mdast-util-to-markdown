@@ -465,6 +465,10 @@ Info passed around about the current state (TypeScript type).
     (see [`ConstructName`][constructname])
 *   `indentLines` (`(value: string, map: Map) => string`)
     — pad serialized markdown (see [`Map`][map])
+*   `containerFlow` (`(parent: Node, info: Info) => string`)
+    — serialize flow children
+*   `containerPhrasing` (`(parent: Node, info: Info) => string`)
+    — serialize phrasing children
 *   `options` ([`Options`][options])
     — applied user configuration
 *   `unsafe` ([`Array<Unsafe>`][unsafe])
