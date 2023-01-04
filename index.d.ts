@@ -309,6 +309,7 @@ export interface ConstructNameMap {
 export type ConstructName = ConstructNameMap[keyof ConstructNameMap]
 
 export {toMarkdown} from './lib/index.js'
+export {handle as defaultHandlers} from './lib/handle/index.js'
 export type {
   Handle,
   Handlers,

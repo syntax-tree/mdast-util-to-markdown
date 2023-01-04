@@ -9,8 +9,16 @@ import test from 'node:test'
 import {removePosition} from 'unist-util-remove-position'
 import {fromMarkdown as from} from 'mdast-util-from-markdown'
 import {toMarkdown as to} from '../index.js'
+import * as api from '../index.js'
 
 test('core', () => {
+  const identifiers = Object.keys(api)
+  assert.ok(identifiers.includes('toMarkdown'), 'should expose `toMarkdown`')
+  assert.ok(
+    identifiers.includes('defaultHandlers'),
+    'should expose `defaultHandlers`'
+  )
+
   assert.equal(
     to({
       type: 'root',

@@ -18,6 +18,7 @@
 *   [Use](#use)
 *   [API](#api)
     *   [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
+    *   [`defaultHandlers`](#defaulthandlers)
     *   [`ConstructName`](#constructname)
     *   [`ConstructNameMap`](#constructnamemap)
     *   [`Handle`](#handle)
@@ -132,7 +133,7 @@ console.log(toMarkdown(tree))
 
 ## API
 
-This package exports the identifier `toMarkdown`.
+This package exports the identifiers `toMarkdown` and `defaultHandlers`.
 There is no default export.
 
 ### `toMarkdown(tree[, options])`
@@ -149,6 +150,10 @@ Turn an **[mdast][]** syntax tree into markdown.
 ###### Returns
 
 Serialized markdown representing `tree` (`string`).
+
+### `defaultHandlers`
+
+Default (CommonMark) handlers ([`Handlers`][handlers]).
 
 ### `ConstructName`
 
@@ -167,7 +172,7 @@ type ConstructName = ConstructNameMap[keyof ConstructNameMap]
 
 ### `ConstructNameMap`
 
-Interface of registered constructs.
+Interface of registered constructs (TypeScript type).
 
 ###### Type
 
