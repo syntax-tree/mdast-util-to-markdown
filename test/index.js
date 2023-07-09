@@ -117,14 +117,17 @@ test('core', async function (t) {
     'should inject HTML comments between lists and an indented code',
     async function () {
       assert.equal(
-        to({
-          type: 'root',
-          children: [
-            {type: 'code', value: 'a'},
-            {type: 'list', children: [{type: 'listItem', children: []}]},
-            {type: 'code', value: 'b'}
-          ]
-        }),
+        to(
+          {
+            type: 'root',
+            children: [
+              {type: 'code', value: 'a'},
+              {type: 'list', children: [{type: 'listItem', children: []}]},
+              {type: 'code', value: 'b'}
+            ]
+          },
+          {fences: false}
+        ),
         '    a\n\n*\n\n<!---->\n\n    b\n'
       )
     }
@@ -134,13 +137,16 @@ test('core', async function (t) {
     'should inject HTML comments between adjacent indented code',
     async function () {
       assert.equal(
-        to({
-          type: 'root',
-          children: [
-            {type: 'code', value: 'a'},
-            {type: 'code', value: 'b'}
-          ]
-        }),
+        to(
+          {
+            type: 'root',
+            children: [
+              {type: 'code', value: 'a'},
+              {type: 'code', value: 'b'}
+            ]
+          },
+          {fences: false}
+        ),
         '    a\n\n<!---->\n\n    b\n'
       )
     }
@@ -371,10 +377,13 @@ test('blockquote', async function (t) {
     'should support code (flow, indented) in a block quote',
     async function () {
       assert.equal(
-        to({
-          type: 'blockquote',
-          children: [{type: 'code', value: 'a\nb\n\nc'}]
-        }),
+        to(
+          {
+            type: 'blockquote',
+            children: [{type: 'code', value: 'a\nb\n\nc'}]
+          },
+          {fences: false}
+        ),
         '>     a\n>     b\n>\n>     c\n'
       )
     }
@@ -799,14 +808,11 @@ test('code (flow)', async function (t) {
   )
 
   await t.test('should support code w/ a value (indent)', async function () {
-    assert.equal(to({type: 'code', value: 'a'}), '    a\n')
+    assert.equal(to({type: 'code', value: 'a'}, {fences: false}), '    a\n')
   })
 
   await t.test('should support code w/ a value (fences)', async function () {
-    assert.equal(
-      to({type: 'code', value: 'a'}, {fences: true}),
-      '```\na\n```\n'
-    )
+    assert.equal(to({type: 'code', value: 'a'}), '```\na\n```\n')
   })
 
   await t.test('should support code w/ a lang', async function () {
@@ -904,7 +910,7 @@ test('code (flow)', async function (t) {
     'should use more grave accents for fences if there are streaks of grave accents in the value (fences)',
     async function () {
       assert.equal(
-        to({type: 'code', value: '```\nasd\n```'}, {fences: true}),
+        to({type: 'code', value: '```\nasd\n```'}),
         '````\n```\nasd\n```\n````\n'
       )
     }
@@ -914,7 +920,7 @@ test('code (flow)', async function (t) {
     'should use more tildes for fences if there are streaks of tildes in the value (fences)',
     async function () {
       assert.equal(
-        to({type: 'code', value: '~~~\nasd\n~~~'}, {fence: '~', fences: true}),
+        to({type: 'code', value: '~~~\nasd\n~~~'}, {fence: '~'}),
         '~~~~\n~~~\nasd\n~~~\n~~~~\n'
       )
     }
@@ -963,7 +969,7 @@ test('code (flow)', async function (t) {
     'should use an indent if the value is indented',
     async function () {
       assert.equal(
-        to({type: 'code', value: '  a\n\n b'}),
+        to({type: 'code', value: '  a\n\n b'}, {fences: false}),
         '      a\n\n     b\n'
       )
     }
@@ -4501,7 +4507,7 @@ test('roundtrip', async function (t) {
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(doc), {fences: false}), doc)
     }
   )
 

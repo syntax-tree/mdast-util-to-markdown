@@ -374,7 +374,7 @@ Marker to use for fenced code (``'`'`` or `'~'`, default: ``'`'``).
 
 ###### `options.fences`
 
-Whether to use fenced code always (`boolean`, default: `false`).
+Whether to use fenced code always (`boolean`, default: `true`).
 The default is to use fenced code if there is a language defined, if the code is
 empty, or if it starts or ends in blank lines.
 
