@@ -15,7 +15,6 @@ import type {Info, State} from './lib/types.js'
  * }
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ConstructNameMap {
   /**
    * Whole autolink.
@@ -322,6 +321,7 @@ export type {
   Tracker,
   Unsafe
 } from './lib/types.js'
+// To do: next major: remove.
 // Deprecated.
 export type SafeOptions = Info
 export type Context = State

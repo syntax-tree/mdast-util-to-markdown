@@ -90,11 +90,20 @@
     "strict": true
   },
   "xo": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/consistent-type-definitions": "off"
+        }
+      }
+    ],
     "prettier": true,
     "rules": {
       "complexity": "off",
-      "unicorn/prefer-code-point": "off",
-      "unicorn/prefer-switch": "off"
+      "unicorn/prefer-code-point": "off"
     }
   }
 }

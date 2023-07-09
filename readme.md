@@ -486,7 +486,7 @@ Info passed around about the current state (TypeScript type).
 *   `associationId` (`(node: Association) => string`)
     — get an identifier from an association to match it to others (see
     [`Association`][association])
-*   `enter` (`(construct: ConstructName) => () => void`)
+*   `enter` (`(construct: ConstructName) => () => undefined`)
     — enter a construct (returns a corresponding exit function)
     (see [`ConstructName`][constructname])
 *   `indentLines` (`(value: string, map: Map) => string`)
@@ -526,7 +526,7 @@ source maps, etc.
 
 *   `current` (`() => Info`)
     — get current tracked info
-*   `shift` (`(value: number) => void`)
+*   `shift` (`(value: number) => undefined`)
     — define a relative increased line shift (the typical indent for lines)
 *   `move` (`(value: string) => string`)
     — move past some generated markdown
