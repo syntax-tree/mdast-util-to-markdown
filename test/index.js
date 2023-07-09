@@ -3579,66 +3579,80 @@ test('roundtrip', () => {
   let tree = from('* a\n- b')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther`'
   )
 
   tree = from('* ---\n- - +\n+ b')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (1)'
   )
 
   tree = from('- - +\n* ---\n+ b')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (2)'
   )
 
   tree = from('- - +\n- -')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (3)'
   )
 
   tree = from('* - +\n    *\n    -\n    +')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (4)'
   )
 
   tree = from('* - +\n  - *\n    -\n    +')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (5)'
   )
 
   tree = from('- +\n- *\n  -\n  +')
 
   assert.deepEqual(
-    removePosition(tree, true),
-    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), true),
+    removePosition(tree, {force: true}),
+    removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
+      force: true
+    }),
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (6)'
   )
 
   tree = from('1. a\n1) b')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther`'
   )
@@ -3646,10 +3660,10 @@ test('roundtrip', () => {
   tree = from('1. ---\n1) 1. 1)\n1. b')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (1)'
   )
@@ -3657,10 +3671,10 @@ test('roundtrip', () => {
   tree = from('1. 1. 1)\n1) ---\n1. b')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (2)'
   )
@@ -3668,10 +3682,10 @@ test('roundtrip', () => {
   tree = from('1. 1. 1)\n1. 1.')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (3)'
   )
@@ -3679,10 +3693,10 @@ test('roundtrip', () => {
   tree = from('1. 1) 1.\n      1.\n      1)\n    1.')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (4)'
   )
@@ -3690,10 +3704,10 @@ test('roundtrip', () => {
   tree = from('1. 1) 1.\n   1) 1.\n     1)\n     1.')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (5)'
   )
@@ -3701,10 +3715,10 @@ test('roundtrip', () => {
   tree = from('1. 1)\n1. 1.\n   1)\n   1.')
 
   assert.deepEqual(
-    removePosition(tree, true),
+    removePosition(tree, {force: true}),
     removePosition(
       from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-      true
+      {force: true}
     ),
     'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (6)'
   )
@@ -3753,8 +3767,8 @@ a *\\** is this emphasis? *\\**`
   tree = from(doc)
 
   assert.deepEqual(
-    removePosition(from(to(tree)), true),
-    removePosition(tree, true),
+    removePosition(from(to(tree)), {force: true}),
+    removePosition(tree, {force: true}),
     'should roundtrip asterisks (tree)'
   )
 
@@ -3786,8 +3800,8 @@ a _\\__ is this emphasis? _\\__`
   tree = from(doc)
 
   assert.deepEqual(
-    removePosition(from(to(tree)), true),
-    removePosition(tree, true),
+    removePosition(from(to(tree)), {force: true}),
+    removePosition(tree, {force: true}),
     'should roundtrip underscores (tree)'
   )
 
