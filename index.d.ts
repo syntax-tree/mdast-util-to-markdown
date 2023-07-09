@@ -321,6 +321,3 @@ export type {
   Tracker,
   Unsafe
 } from './lib/types.js'
-// To do: next major: remove.
-// Deprecated.
-export type Context = State
