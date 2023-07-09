@@ -35,6 +35,7 @@
 *   [Syntax](#syntax)
 *   [Syntax tree](#syntax-tree)
 *   [Types](#types)
+*   [Compatibility](#compatibility)
 *   [Security](#security)
 *   [Related](#related)
 *   [Contribute](#contribute)
@@ -65,7 +66,7 @@ Notable examples that deeply integrate with it are
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+, or 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install mdast-util-to-markdown
@@ -133,7 +134,8 @@ console.log(toMarkdown(tree))
 
 ## API
 
-This package exports the identifiers `toMarkdown` and `defaultHandlers`.
+This package exports the identifiers [`defaultHandlers`][api-default-handlers]
+and [`toMarkdown`][api-to-markdown].
 There is no default export.
 
 ### `toMarkdown(tree[, options])`
@@ -144,7 +146,7 @@ Turn an **[mdast][]** syntax tree into markdown.
 
 *   `tree` ([`Node`][node])
     — tree to serialize
-*   `options` ([`Options`][options], optional)
+*   `options` ([`Options`][api-options], optional)
     — configuration
 
 ###### Returns
@@ -153,7 +155,7 @@ Serialized markdown representing `tree` (`string`).
 
 ### `defaultHandlers`
 
-Default (CommonMark) handlers ([`Handlers`][handlers]).
+Default (CommonMark) handlers ([`Handlers`][api-handlers]).
 
 ### `ConstructName`
 
@@ -202,9 +204,9 @@ Handle a particular node (TypeScript type).
     — expected mdast node
 *   `parent` ([`Node`][node], optional)
     — parent of `node`
-*   `state` ([`State`][state])
+*   `state` ([`State`][api-state])
     — info passed around about the current state
-*   `info` ([`Info`][info])
+*   `info` ([`Info`][api-info])
     — info on the surrounding of the node that is serialized
 
 ###### Returns
@@ -216,7 +218,7 @@ Serialized markdown representing `node` (`string`).
 Handle particular nodes (TypeScript type).
 
 Each key is a node type (`Node['type']`), each value its corresponding handler
-([`Handle`][handle]).
+([`Handle`][api-handle]).
 
 ###### Type
 
@@ -258,7 +260,7 @@ return defines how many blank lines to use between them.
     — second of two adjacent siblings
 *   `parent` ([`Node`][node])
     — parent of the two siblings
-*   `state` ([`State`][state])
+*   `state` ([`State`][api-state])
     — info passed around about the current state
 
 ###### Returns
@@ -383,7 +385,7 @@ Whether to increment the counter of ordered lists items (`boolean`, default:
 
 ###### `options.listItemIndent`
 
-How to indent the content of list items (`'one'`, `'tab'`, or `'mixed'`,
+How to indent the content of list items (`'mixed'`, `'one'`, or `'tab'`,
 default: `'tab'`).
 Either with the size of the bullet plus one space (when `'one'`), a tab stop
 (`'tab'`), or depending on the item and its parent list (`'mixed'`, uses `'one'`
@@ -429,7 +431,7 @@ Marker to use for strong (`'*'` or `'_'`, default: `'*'`).
 Whether to join definitions without a blank line (`boolean`, default: `false`).
 
 The default is to add blank lines between any flow (“block”) construct.
-Turning this option on is a shortcut for a [`Join`][join] function like so:
+Turning this option on is a shortcut for a [`Join`][api-join] function like so:
 
 ```js
 function joinTightDefinitions(left, right) {
@@ -441,16 +443,16 @@ function joinTightDefinitions(left, right) {
 
 ###### `options.handlers`
 
-Handle particular nodes ([`Handlers`][handlers], optional).
+Handle particular nodes ([`Handlers`][api-handlers], optional).
 
 ###### `options.join`
 
-How to join blocks ([`Array<Join>`][join], optional).
+How to join blocks ([`Array<Join>`][api-join], optional).
 
 ###### `options.unsafe`
 
-Schemas that define when characters cannot occur ([`Array<Unsafe>`][unsafe],
-optional).
+Schemas that define when characters cannot occur
+([`Array<Unsafe>`][api-unsafe], optional).
 
 ###### `options.extensions`
 
@@ -479,7 +481,7 @@ Info passed around about the current state (TypeScript type).
 
 ###### Fields
 
-*   `stack` ([`Array<ConstructName>`][constructname])
+*   `stack` ([`Array<ConstructName>`][api-construct-name])
     — stack of constructs we’re in
 *   `indexStack` (`Array<number>`)
     — positions of child nodes in their parents
@@ -488,27 +490,27 @@ Info passed around about the current state (TypeScript type).
     [`Association`][association])
 *   `enter` (`(construct: ConstructName) => () => undefined`)
     — enter a construct (returns a corresponding exit function)
-    (see [`ConstructName`][constructname])
+    (see [`ConstructName`][api-construct-name])
 *   `indentLines` (`(value: string, map: Map) => string`)
-    — pad serialized markdown (see [`Map`][map])
+    — pad serialized markdown (see [`Map`][api-map])
 *   `containerFlow` (`(parent: Node, info: Info) => string`)
-    — serialize flow children (see [`Info`][info])
+    — serialize flow children (see [`Info`][api-info])
 *   `containerPhrasing` (`(parent: Node, info: Info) => string`)
-    — serialize phrasing children (see [`Info`][info])
+    — serialize phrasing children (see [`Info`][api-info])
 *   `createTracker` (`(info: Info) => Tracker`)
-    — track positional info in the output (see [`Info`][info],
-    [`Tracker`][tracker])
+    — track positional info in the output (see [`Info`][api-info],
+    [`Tracker`][api-tracker])
 *   `safe` (`(value: string, config: SafeConfig) => string`)
-    — make a string safe for embedding (see [`SafeConfig`][safeconfig])
-*   `options` ([`Options`][options])
+    — make a string safe for embedding (see [`SafeConfig`][api-safe-config])
+*   `options` ([`Options`][api-options])
     — applied user configuration
-*   `unsafe` ([`Array<Unsafe>`][unsafe])
+*   `unsafe` ([`Array<Unsafe>`][api-unsafe])
     — applied unsafe patterns
-*   `join` ([`Array<Join>`][join])
+*   `join` ([`Array<Join>`][api-join])
     — applied join handlers
-*   `handle` ([`Handle`][handle])
+*   `handle` ([`Handle`][api-handle])
     — call the configured handler for the given node
-*   `handlers` ([`Handlers`][handlers])
+*   `handlers` ([`Handlers`][api-handlers])
     — applied handlers
 *   `bulletCurrent` (`string` or `undefined`)
     — list marker currently in use
@@ -539,11 +541,11 @@ Schema that defines when a character cannot occur (TypeScript type).
 
 *   `character` (`string`)
     — single unsafe character
-*   `inConstruct` ([`ConstructName`][constructname], `Array<ConstructName>`,
-    optional)
+*   `inConstruct` ([`Array<ConstructName>`][api-construct-name],
+    `ConstructName`, optional)
     — constructs where this is bad
-*   `notInConstruct` ([`ConstructName`][constructname], `Array<ConstructName>`,
-    optional)
+*   `notInConstruct` ([`Array<ConstructName>`][api-construct-name],
+    `ConstructName`, optional)
     — constructs where this is fine again
 *   `before` (`string`, optional)
     — `character` is bad when this is before it (cannot be used together with
@@ -595,9 +597,28 @@ The syntax tree is [mdast][].
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types `ConstructName`, `ConstructNameMap`, `Handle`,
-`Handlers`, `Info` `Join`, `Map`, `Options`, `SafeConfig`, `State`, and
-`Unsafe`.
+It exports the additional types
+[`ConstructName`][api-construct-name],
+[`ConstructNameMap`][api-construct-name-map],
+[`Handle`][api-handle],
+[`Handlers`][api-handlers],
+[`Info`][api-info],
+[`Join`][api-join],
+[`Map`][api-map],
+[`Options`][api-options],
+[`SafeConfig`][api-safe-config],
+[`State`][api-State], and
+[`Unsafe`][api-Unsafe].
+
+## Compatibility
+
+Projects maintained by the unified collective are compatible with maintained
+versions of Node.js.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `mdast-util-to-markdown@^1`,
+compatible with Node.js 12.
 
 ## Security
 
@@ -649,9 +670,9 @@ abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/mdast-util-to-markdown
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/mdast-util-to-markdown.svg
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-to-markdown
 
-[size]: https://bundlephobia.com/result?p=mdast-util-to-markdown
+[size]: https://bundlejs.com/?q=mdast-util-to-markdown
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -709,24 +730,30 @@ abide by its terms.
 
 [remark-stringify]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify
 
-[constructname]: #constructname
+[api-construct-name]: #constructname
 
-[handle]: #handle
+[api-construct-name-map]: #constructnamemap
 
-[handlers]: #handlers
+[api-default-handlers]: #defaulthandlers
 
-[info]: #info
+[api-handle]: #handle
 
-[join]: #join
+[api-handlers]: #handlers
 
-[map]: #map
+[api-info]: #info
 
-[options]: #options
+[api-join]: #join
 
-[safeconfig]: #safeconfig
+[api-map]: #map
 
-[state]: #state
+[api-options]: #options
 
-[tracker]: #tracker
+[api-safe-config]: #safeconfig
 
-[unsafe]: #unsafe
+[api-state]: #state
+
+[api-to-markdown]: #tomarkdowntree-options
+
+[api-tracker]: #tracker
+
+[api-unsafe]: #unsafe
