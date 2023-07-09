@@ -3250,28 +3250,6 @@ test('listItem', async function (t) {
   )
 
   await t.test(
-    'should use one space after the bullet for `listItemIndent: "1"` (deprecated)',
-    async function () {
-      assert.equal(
-        to(
-          {
-            type: 'listItem',
-            children: [
-              {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
-              {type: 'thematicBreak'}
-            ]
-          },
-          {
-            // @ts-expect-error: check how the runtime handles `listItemIdent` being wrong.
-            listItemIndent: '1'
-          }
-        ),
-        '* a\n\n  ***\n'
-      )
-    }
-  )
-
-  await t.test(
     'should use one space after the bullet for `listItemIndent: "mixed"`, when the item is not spread',
     async function () {
       assert.equal(
