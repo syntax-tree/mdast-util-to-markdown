@@ -323,5 +323,4 @@ export type {
 } from './lib/types.js'
 // To do: next major: remove.
 // Deprecated.
-export type SafeOptions = Info
 export type Context = State
