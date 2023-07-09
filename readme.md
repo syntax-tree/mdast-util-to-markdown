@@ -386,7 +386,7 @@ Whether to increment the counter of ordered lists items (`boolean`, default:
 ###### `options.listItemIndent`
 
 How to indent the content of list items (`'mixed'`, `'one'`, or `'tab'`,
-default: `'tab'`).
+default: `'one'`).
 Either with the size of the bullet plus one space (when `'one'`), a tab stop
 (`'tab'`), or depending on the item and its parent list (`'mixed'`, uses `'one'`
 if the item and list are tight and `'tab'` otherwise).

@@ -158,7 +158,7 @@ test('core', async function (t) {
             {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
           ]
         }),
-        '*   a\n\n    b\n'
+        '* a\n\n  b\n'
       )
     }
   )
@@ -175,7 +175,7 @@ test('core', async function (t) {
             {type: 'definition', identifier: 'b', label: 'c', url: 'd'}
           ]
         }),
-        '*   a\n\n    [c]: d\n'
+        '* a\n\n  [c]: d\n'
       )
     }
   )
@@ -192,7 +192,7 @@ test('core', async function (t) {
             {type: 'heading', depth: 1, children: [{type: 'text', value: 'b'}]}
           ]
         }),
-        '*   a\n    # b\n'
+        '* a\n  # b\n'
       )
     }
   )
@@ -216,7 +216,7 @@ test('core', async function (t) {
           },
           {setext: true}
         ),
-        '*   a\n\n    b\n    =\n'
+        '* a\n\n  b\n  =\n'
       )
     }
   )
@@ -696,7 +696,7 @@ test('blockquote', async function (t) {
           }
         ]
       }),
-      '> a\n> b\n>\n> -   c\n>     d\n>\n> -   ***\n>\n> -   e\n>     f\n'
+      '> a\n> b\n>\n> - c\n>   d\n>\n> - ***\n>\n> - e\n>   f\n'
     )
   })
 
@@ -2735,7 +2735,7 @@ test('list', async function (t) {
           }
         ]
       }),
-      '-   a\n\n-   ***\n\n-   b\n'
+      '- a\n\n- ***\n\n- b\n'
     )
   })
 
@@ -2759,7 +2759,7 @@ test('list', async function (t) {
             }
           ]
         }),
-        '-   a\n-   ***\n'
+        '- a\n- ***\n'
       )
     }
   )
@@ -2785,7 +2785,7 @@ test('list', async function (t) {
             }
           ]
         }),
-        '-   a\n\n    b\n-   ***\n'
+        '- a\n\n  b\n- ***\n'
       )
     }
   )
@@ -2828,7 +2828,7 @@ test('list', async function (t) {
           }
         ]
       }),
-      '1.  a\n\n2.  ***\n\n3.  b\n'
+      '1. a\n\n2. ***\n\n3. b\n'
     )
   })
 
@@ -2859,7 +2859,7 @@ test('list', async function (t) {
             }
           ]
         }),
-        '1.  a\n2.  ***\n3.  b\n'
+        '1. a\n2. ***\n3. b\n'
       )
     }
   )
@@ -2894,7 +2894,7 @@ test('list', async function (t) {
           },
           {incrementListMarker: false}
         ),
-        '1.  a\n1.  ***\n1.  b\n'
+        '1. a\n1. ***\n1. b\n'
       )
     }
   )
@@ -3212,7 +3212,7 @@ test('listItem', async function (t) {
         type: 'listItem',
         children: [{type: 'paragraph', children: [{type: 'text', value: 'a'}]}]
       }),
-      '*   a\n'
+      '* a\n'
     )
   })
 
@@ -3226,7 +3226,7 @@ test('listItem', async function (t) {
           {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
         ]
       }),
-      '*   a\n\n    ***\n\n    b\n'
+      '* a\n\n  ***\n\n  b\n'
     )
   })
 
@@ -3314,7 +3314,7 @@ test('listItem', async function (t) {
             {type: 'thematicBreak'}
           ]
         }),
-        '*   a\n    ***\n'
+        '* a\n  ***\n'
       )
     }
   )
@@ -3322,7 +3322,7 @@ test('listItem', async function (t) {
   await t.test('should support `bulletOther`', async function () {
     assert.equal(
       to(createList(createList(createList())), {bulletOther: '+'}),
-      '*   *   +\n'
+      '* * +\n'
     )
   })
 
@@ -3331,7 +3331,7 @@ test('listItem', async function (t) {
     async function () {
       assert.equal(
         to(createList(createList(createList())), {bullet: '-'}),
-        '-   -   *\n'
+        '- - *\n'
       )
     }
   )
@@ -3341,7 +3341,7 @@ test('listItem', async function (t) {
     async function () {
       assert.equal(
         to(createList(createList(createList())), {bullet: '*'}),
-        '*   *   -\n'
+        '* * -\n'
       )
     }
   )
@@ -3378,7 +3378,7 @@ test('listItem', async function (t) {
           type: 'list',
           children: [{type: 'listItem', children: [{type: 'thematicBreak'}]}]
         }),
-        '-   ***\n'
+        '- ***\n'
       )
     }
   )
@@ -3399,7 +3399,7 @@ test('listItem', async function (t) {
             {type: 'listItem', children: [{type: 'thematicBreak'}]}
           ]
         }),
-        '-   a\n\n-   ***\n'
+        '- a\n\n- ***\n'
       )
     }
   )
@@ -3407,14 +3407,14 @@ test('listItem', async function (t) {
   await t.test(
     'should *not* use a different bullet for an empty list item in two lists',
     async function () {
-      assert.equal(to(createList(createList())), '*   *\n')
+      assert.equal(to(createList(createList())), '* *\n')
     }
   )
 
   await t.test(
     'should use a different bullet for an empty list item in three lists (1)',
     async function () {
-      assert.equal(to(createList(createList(createList()))), '*   *   -\n')
+      assert.equal(to(createList(createList(createList()))), '* * -\n')
     }
   )
 
@@ -3429,7 +3429,7 @@ test('listItem', async function (t) {
             {type: 'listItem', children: [createList(createList())]}
           ]
         }),
-        '*\n\n*   *   -\n'
+        '*\n\n* * -\n'
       )
     }
   )
@@ -3439,7 +3439,7 @@ test('listItem', async function (t) {
     async function () {
       assert.equal(
         to(createList(createList(createList())), {bullet: '+'}),
-        '+   +   +\n'
+        '+ + +\n'
       )
     }
   )
@@ -3449,7 +3449,7 @@ test('listItem', async function (t) {
     async function () {
       assert.equal(
         to(createList(createList(createList(createList())))),
-        '*   *   *   -\n'
+        '* * * -\n'
       )
     }
   )
@@ -3459,7 +3459,7 @@ test('listItem', async function (t) {
     async function () {
       assert.equal(
         to(createList(createList(createList(createList(createList()))))),
-        '*   *   *   *   -\n'
+        '* * * * -\n'
       )
     }
   )
@@ -3479,7 +3479,7 @@ test('listItem', async function (t) {
             ])
           )
         ),
-        '*   *   *   a\n\n        <!---->\n\n        *\n'
+        '* * * a\n\n    <!---->\n\n    *\n'
       )
     }
   )
@@ -3810,7 +3810,7 @@ test('escape', async function (t) {
             {type: 'paragraph', children: [{type: 'text', value: '> a\n> b'}]}
           ]
         }),
-        '*   \\> a\n    \\> b\n'
+        '* \\> a\n  \\> b\n'
       )
     }
   )
@@ -4296,7 +4296,7 @@ test('escape', async function (t) {
             ]
           }
         ),
-        '1.  foo\n    *   bar\n'
+        '1. foo\n   * bar\n'
       )
     }
   )
@@ -4371,9 +4371,9 @@ test('roundtrip', async function (t) {
     'should roundtrip spread items in block quotes',
     async function () {
       const doc = [
-        '> *   Lorem ipsum dolor sit amet',
+        '> * Lorem ipsum dolor sit amet',
         '>',
-        '> *   consectetur adipisicing elit',
+        '> * consectetur adipisicing elit',
         ''
       ].join('\n')
 
@@ -4385,11 +4385,11 @@ test('roundtrip', async function (t) {
     'should roundtrip spread items in sublists (1)',
     async function () {
       const doc = [
-        '*   Lorem ipsum dolor sit amet',
+        '* Lorem ipsum dolor sit amet',
         '',
-        '    1.  consectetur adipisicing elit',
+        '  1. consectetur adipisicing elit',
         '',
-        '    2.  sed do eiusmod tempor incididunt',
+        '  2. sed do eiusmod tempor incididunt',
         ''
       ].join('\n')
 
@@ -4401,9 +4401,9 @@ test('roundtrip', async function (t) {
     'should roundtrip spread items in sublists (2)',
     async function () {
       const doc = [
-        '*   1.  Lorem ipsum dolor sit amet',
+        '* 1. Lorem ipsum dolor sit amet',
         '',
-        '    2.  consectetur adipisicing elit',
+        '  2. consectetur adipisicing elit',
         ''
       ].join('\n')
 
@@ -4415,15 +4415,15 @@ test('roundtrip', async function (t) {
     'should roundtrip spread items in sublists (3)',
     async function () {
       const doc = [
-        '*   hello',
-        '    *   world',
-        '        how',
+        '* hello',
+        '  * world',
+        '    how',
         '',
-        '        are',
-        '        you',
+        '    are',
+        '    you',
         '',
-        '    *   today',
-        '*   hi',
+        '  * today',
+        '* hi',
         ''
       ].join('\n')
 
@@ -4460,17 +4460,17 @@ test('roundtrip', async function (t) {
 
   await t.test('should roundtrip empty lists', async function () {
     const doc = [
-      '*   foo',
+      '* foo',
       '',
       '*',
       '',
-      '*   bar',
+      '* bar',
       '',
-      '*   baz',
+      '* baz',
       '',
       '*',
       '',
-      '*   qux quux',
+      '* qux quux',
       ''
     ].join('\n')
 
@@ -4478,7 +4478,7 @@ test('roundtrip', async function (t) {
   })
 
   await t.test('should roundtrip empty lists', async function () {
-    const doc = '*   a\n\n<!---->\n\n*   b\n'
+    const doc = '* a\n\n<!---->\n\n* b\n'
 
     assert.equal(to(from(doc)), doc)
   })
@@ -4553,7 +4553,7 @@ test('roundtrip', async function (t) {
   await t.test(
     'should roundtrip an empty list item in two more lists',
     async function () {
-      const doc = '*   *   -\n'
+      const doc = '* * -\n'
 
       assert.equal(to(from(doc)), doc)
     }
@@ -4562,7 +4562,7 @@ test('roundtrip', async function (t) {
   await t.test(
     'should roundtrip a thematic break at the start of a list item',
     async function () {
-      const doc = '-   ***\n'
+      const doc = '- ***\n'
 
       assert.equal(to(from(doc)), doc)
     }
