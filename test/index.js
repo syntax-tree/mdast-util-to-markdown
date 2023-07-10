@@ -86,7 +86,7 @@ test('core', async function (t) {
   )
 
   await t.test(
-    'should inject HTML comments between lists w/ the same marker',
+    'should use a different marker for adjacent lists',
     async function () {
       assert.equal(
         to({
@@ -108,7 +108,7 @@ test('core', async function (t) {
             {type: 'paragraph', children: [{type: 'text', value: 'd'}]}
           ]
         }),
-        'a\n\n*\n\n<!---->\n\n*\n\n1.\n\n<!---->\n\n1.\n\nd\n'
+        'a\n\n*\n\n-\n\n1.\n\n1)\n\nd\n'
       )
     }
   )
@@ -3485,7 +3485,7 @@ test('listItem', async function (t) {
             ])
           )
         ),
-        '* * * a\n\n    <!---->\n\n    *\n'
+        '* * * a\n\n    -\n'
       )
     }
   )
@@ -3523,54 +3523,10 @@ test('listItem', async function (t) {
     }
   )
 
-  await t.test('should support `bulletOrderedOther`', async function () {
-    assert.equal(
-      to(
-        {
-          type: 'root',
-          children: [
-            {
-              type: 'list',
-              ordered: true,
-              children: [{type: 'listItem', children: []}]
-            },
-            {
-              type: 'list',
-              ordered: true,
-              children: [{type: 'listItem', children: []}]
-            }
-          ]
-        },
-        {bulletOrdered: '.', bulletOrderedOther: ')'}
-      ),
-      '1.\n\n1)\n'
-    )
-  })
-
   await t.test(
-    'should throw on a `bulletOrderedOther` that is invalid',
+    'should use a different bullet for adjacent ordered lists',
     async function () {
-      assert.throws(function () {
-        to(
-          {
-            type: 'list',
-            ordered: true,
-            children: [{type: 'listItem', children: []}]
-          },
-
-          {
-            // @ts-expect-error: check how the runtime handles `bulletOrderedOther`.
-            bulletOrderedOther: '~'
-          }
-        )
-      }, /Cannot serialize items with `~` for `options.bulletOrderedOther`/)
-    }
-  )
-
-  await t.test(
-    'should throw on a `bulletOrderedOther` that matches `bulletOrdered`',
-    async function () {
-      assert.throws(function () {
+      assert.equal(
         to(
           {
             type: 'root',
@@ -3587,9 +3543,10 @@ test('listItem', async function (t) {
               }
             ]
           },
-          {bulletOrdered: '.', bulletOrderedOther: '.'}
-        )
-      }, /Expected `bulletOrdered` \(`.`\) and `bulletOrderedOther` \(`.`\) to be different/)
+          {bulletOrdered: ')'}
+        ),
+        '1)\n\n1.\n'
+      )
     }
   )
 })
@@ -4672,107 +4629,83 @@ test('roundtrip', async function (t) {
     }
   )
 
-  await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther`',
-    async function () {
-      const tree = from('1. a\n1) b')
+  await t.test('should roundtrip adjacent ordered lists', async function () {
+    const tree = from('1. a\n1) b')
 
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
-      )
-    }
-  )
+    assert.deepEqual(
+      removePosition(tree, {force: true}),
+      removePosition(from(to(tree)), {force: true})
+    )
+  })
 
   await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (1)',
+    'should roundtrip different ordered lists and lists that could turn into thematic breaks (1)',
     async function () {
       const tree = from('1. ---\n1) 1. 1)\n1. b')
 
       assert.deepEqual(
         removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
+        removePosition(from(to(tree)), {force: true})
       )
     }
   )
 
   await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (2)',
+    'should roundtrip different ordered lists and lists that could turn into thematic breaks (2)',
     async function () {
       const tree = from('1. 1. 1)\n1) ---\n1. b')
 
       assert.deepEqual(
         removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
+        removePosition(from(to(tree)), {force: true})
       )
     }
   )
 
   await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (3)',
+    'should roundtrip different ordered lists and lists that could turn into thematic breaks (3)',
     async function () {
       const tree = from('1. 1. 1)\n1. 1.')
 
       assert.deepEqual(
         removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
+        removePosition(from(to(tree)), {force: true})
       )
     }
   )
 
   await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (4)',
+    'should roundtrip different ordered lists and lists that could turn into thematic breaks (4)',
     async function () {
       const tree = from('1. 1) 1.\n      1.\n      1)\n    1.')
 
       assert.deepEqual(
         removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
+        removePosition(from(to(tree)), {force: true})
       )
     }
   )
 
   await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (5)',
+    'should roundtrip different ordered lists and lists that could turn into thematic breaks (5)',
     async function () {
       const tree = from('1. 1) 1.\n   1) 1.\n     1)\n     1.')
 
       assert.deepEqual(
         removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
+        removePosition(from(to(tree)), {force: true})
       )
     }
   )
 
   await t.test(
-    'should roundtrip different lists w/ `bulletOrderedOther` and lists that could turn into thematic breaks (6)',
+    'should roundtrip different ordered lists and lists that could turn into thematic breaks (6)',
     async function () {
       const tree = from('1. 1)\n1. 1.\n   1)\n   1.')
 
       assert.deepEqual(
         removePosition(tree, {force: true}),
-        removePosition(
-          from(to(tree, {bulletOrdered: '.', bulletOrderedOther: ')'})),
-          {force: true}
-        )
+        removePosition(from(to(tree)), {force: true})
       )
     }
   )

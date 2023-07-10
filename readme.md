@@ -314,50 +314,35 @@ The following fields influence how markdown is serialized.
 Marker to use for bullets of items in unordered lists (`'*'`, `'+'`, or `'-'`,
 default: `'*'`).
 
+There are three cases where the primary bullet cannot be used:
+
+*   when three or more list items are on their own, the last one is empty, and
+    `bullet` is also a valid `rule`: `* - +`; this would turn into a thematic
+    break if serialized with three primary bullets; `bulletOther` is used for
+    the last item
+*   when a thematic break is the first child of a list item and `bullet` is the
+    same character as `rule`: `- ***`; this would turn into a single thematic
+    break if serialized with primary bullets; `bulletOther` is used for the
+    item
+*   when two unordered lists appear next to each other: `* a\n- b`;
+    `bulletOther` is used for such lists
+
 ###### `options.bulletOther`
 
 Marker to use in certain cases where the primary bullet doesn’t work (`'*'`,
-`'+'`, or `'-'`, default: depends).
+`'+'`, or `'-'`, default: `'-'` when `bullet` is `'*'`, `'*'` otherwise).
 
-There are three cases where the primary bullet cannot be used:
-
-*   When three list items are on their own, the last one is empty, and `bullet`
-    is also a valid `rule`: `* - +`.
-    This would turn into a thematic break if serialized with three primary
-    bullets.
-    As this is an edge case unlikely to appear in normal markdown, the last list
-    item will be given a different bullet.
-*   When a thematic break is the first child of one of the list items, and
-    `bullet` is the same character as `rule`: `- ***`.
-    This would turn into a single thematic break if serialized with primary
-    bullets.
-    As this is an edge case unlikely to appear in normal markdown this markup is
-    always fixed, even if `bulletOther` is not passed
-*   When two unordered lists appear next to each other: `* a\n- b`.
-    CommonMark sees different bullets as different lists, but several markdown
-    parsers parse it as one list.
-    To solve for both, we instead inject an empty comment between the two lists:
-    `* a\n<!---->\n* b`, but if `bulletOther` is given explicitly, it will be
-    used instead
+Cannot be equal to `bullet`.
 
 ###### `options.bulletOrdered`
 
 Marker to use for bullets of items in ordered lists (`'.'` or `')'`, default:
 `'.'`).
 
-###### `options.bulletOrderedOther`
-
-Marker to use in certain cases where the primary bullet for ordered items
-doesn’t work (`'.'` or `')'`, default: none).
-
 There is one case where the primary bullet for ordered items cannot be used:
 
-*   When two ordered lists appear next to each other: `1. a\n2) b`.
-    CommonMark added support for `)` as a marker, but other markdown parsers
-    do not support it.
-    To solve for both, we instead inject an empty comment between the two lists:
-    `1. a\n<!---->\n1. b`, but if `bulletOrderedOther` is given explicitly, it
-    will be used instead
+*   when two ordered lists appear next to each other: `1. a\n2) b`; to solve
+    that, `'.'` will be used when `bulletOrdered` is `')'`, and `'.'` otherwise
 
 ###### `options.closeAtx`
 
