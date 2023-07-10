@@ -75,14 +75,14 @@ npm install mdast-util-to-markdown
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@1'
+import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@2'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@1?bundle'
+  import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@2?bundle'
 </script>
 ```
 
