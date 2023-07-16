@@ -478,6 +478,8 @@ Info passed around about the current state (TypeScript type).
     (see [`ConstructName`][api-construct-name])
 *   `indentLines` (`(value: string, map: Map) => string`)
     — pad serialized markdown (see [`Map`][api-map])
+*   `compilePattern` (`(pattern: Unsafe) => RegExp`)
+    — compile an unsafe pattern to a regex (see [`Unsafe`][api-unsafe])
 *   `containerFlow` (`(parent: Node, info: Info) => string`)
     — serialize flow children (see [`Info`][api-info])
 *   `containerPhrasing` (`(parent: Node, info: Info) => string`)
