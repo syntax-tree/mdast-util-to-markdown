@@ -1,8 +1,9 @@
+*.d.ts
 *.log
+*.map
 *.tsbuildinfo
 .DS_Store
 coverage/
-lib/**/*.d.ts
 node_modules/
-test/**/*.d.ts
 yarn.lock
+!/index.d.ts
