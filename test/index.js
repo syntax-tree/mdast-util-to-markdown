@@ -4333,21 +4333,21 @@ test('roundtrip', async function (t) {
   await t.test(
     'should roundtrip spread items in block quotes',
     async function () {
-      const doc = [
+      const value = [
         '> * Lorem ipsum dolor sit amet',
         '>',
         '> * consectetur adipisicing elit',
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip spread items in sublists (1)',
     async function () {
-      const doc = [
+      const value = [
         '* Lorem ipsum dolor sit amet',
         '',
         '  1. consectetur adipisicing elit',
@@ -4356,28 +4356,28 @@ test('roundtrip', async function (t) {
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip spread items in sublists (2)',
     async function () {
-      const doc = [
+      const value = [
         '* 1. Lorem ipsum dolor sit amet',
         '',
         '  2. consectetur adipisicing elit',
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip spread items in sublists (3)',
     async function () {
-      const doc = [
+      const value = [
         '* hello',
         '  * world',
         '    how',
@@ -4390,23 +4390,23 @@ test('roundtrip', async function (t) {
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip autolinks w/ potentially escapable characters',
     async function () {
-      const doc = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
+      const value = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip potential prototype injections',
     async function () {
-      const doc = [
+      const value = [
         'A [primary][toString], [secondary][constructor], and [tertiary][__proto__] link.',
         '',
         '[toString]: http://primary.com',
@@ -4417,12 +4417,12 @@ test('roundtrip', async function (t) {
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test('should roundtrip empty lists', async function () {
-    const doc = [
+    const value = [
       '* foo',
       '',
       '*',
@@ -4437,13 +4437,13 @@ test('roundtrip', async function (t) {
       ''
     ].join('\n')
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test('should roundtrip empty lists', async function () {
-    const doc = '* a\n\n<!---->\n\n* b\n'
+    const value = '* a\n\n<!---->\n\n* b\n'
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test(
@@ -4451,7 +4451,7 @@ test('roundtrip', async function (t) {
     async function () {
       // The first one could have (up to) four spaces, but it doesn’t add anything,
       // so we don’t roundtrip it.
-      const doc = [
+      const value = [
         '    <h3>Header 3</h3>',
         '',
         '    <blockquote>',
@@ -4464,20 +4464,20 @@ test('roundtrip', async function (t) {
         ''
       ].join('\n')
 
-      assert.equal(to(from(doc), {fences: false}), doc)
+      assert.equal(to(from(value), {fences: false}), value)
     }
   )
 
   await t.test('should roundtrip adjacent block quotes', async function () {
-    const doc = '> a\n\n> b\n'
+    const value = '> a\n\n> b\n'
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test('should roundtrip formatted URLs', async function () {
-    const doc = '[**https://unifiedjs.com/**](https://unifiedjs.com/)\n'
+    const value = '[**https://unifiedjs.com/**](https://unifiedjs.com/)\n'
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test('should roundtrip backslashes (1)', async function () {
@@ -4490,44 +4490,44 @@ test('roundtrip', async function (t) {
   })
 
   await t.test('should not collapse escapes (1)', async function () {
-    const doc = '\\\\\\*a\n'
+    const value = '\\\\\\*a\n'
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test('should not collapse escapes (2)', async function () {
-    const doc = '\\\\*a\\\\\\*'
+    const value = '\\\\*a\\\\\\*'
 
     assert.deepEqual(
-      removePosition(from(doc)),
-      removePosition(from(to(from(doc))))
+      removePosition(from(value)),
+      removePosition(from(to(from(value))))
     )
   })
 
   await t.test(
     'should roundtrip a sole blank line in fenced code',
     async function () {
-      const doc = '```\n	\n```\n'
+      const value = '```\n	\n```\n'
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip an empty list item in two more lists',
     async function () {
-      const doc = '* * -\n'
+      const value = '* * -\n'
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test(
     'should roundtrip a thematic break at the start of a list item',
     async function () {
-      const doc = '- ***\n'
+      const value = '- ***\n'
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
@@ -4711,28 +4711,28 @@ test('roundtrip', async function (t) {
   )
 
   await t.test('should roundtrip a single encoded space', async function () {
-    const doc = '&#x20;\n'
+    const value = '&#x20;\n'
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test('should roundtrip a single encoded tab', async function () {
-    const doc = '&#x9;\n'
+    const value = '&#x9;\n'
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test(
     'should roundtrip encoded spaces and tabs where needed',
     async function () {
-      const doc = '&#x20; a &#x20;\n&#x9;\tb\t&#x9;\n'
+      const value = '&#x20; a &#x20;\n&#x9;\tb\t&#x9;\n'
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 
   await t.test('should roundtrip asterisks (tree)', async function () {
-    const doc = `Separate paragraphs:
+    const value = `Separate paragraphs:
 
 a * is this emphasis? *
 
@@ -4757,7 +4757,7 @@ a *\\* is this emphasis? *\\*
 a \\** is this emphasis? \\**
 a **\\* is this emphasis? **\\*
 a *\\** is this emphasis? *\\**`
-    const tree = from(doc)
+    const tree = from(value)
 
     assert.deepEqual(
       removePosition(from(to(tree)), {force: true}),
@@ -4766,7 +4766,7 @@ a *\\** is this emphasis? *\\**`
   })
 
   await t.test('should roundtrip underscores (tree)', async function () {
-    const doc = `Separate paragraphs:
+    const value = `Separate paragraphs:
 
 a _ is this emphasis? _
 
@@ -4791,7 +4791,7 @@ a _\\_ is this emphasis? _\\_
 a \\__ is this emphasis? \\__
 a __\\_ is this emphasis? __\\_
 a _\\__ is this emphasis? _\\__`
-    const tree = from(doc)
+    const tree = from(value)
 
     assert.deepEqual(
       removePosition(from(to(tree)), {force: true}),
@@ -4800,21 +4800,21 @@ a _\\__ is this emphasis? _\\__`
   })
 
   await t.test('should roundtrip attention-like plain text', async function () {
-    const doc = to(from(`(____`))
+    const value = to(from(`(____`))
 
-    assert.equal(to(from(doc)), doc)
+    assert.equal(to(from(value)), value)
   })
 
   await t.test(
     'should roundtrip faux “fill in the blank” spans',
     async function () {
-      const doc = to(
+      const value = to(
         from(
           'Once activated, a service worker ______, then transitions to idle…'
         )
       )
 
-      assert.equal(to(from(doc)), doc)
+      assert.equal(to(from(value)), value)
     }
   )
 })

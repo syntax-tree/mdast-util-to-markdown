@@ -12,34 +12,34 @@
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
-    *   [`defaultHandlers`](#defaulthandlers)
-    *   [`ConstructName`](#constructname)
-    *   [`ConstructNameMap`](#constructnamemap)
-    *   [`Handle`](#handle)
-    *   [`Handlers`](#handlers)
-    *   [`Info`](#info)
-    *   [`Join`](#join)
-    *   [`Map`](#map)
-    *   [`Options`](#options)
-    *   [`SafeConfig`](#safeconfig)
-    *   [`State`](#state)
-    *   [`Tracker`](#tracker)
-    *   [`Unsafe`](#unsafe)
-*   [List of extensions](#list-of-extensions)
-*   [Syntax](#syntax)
-*   [Syntax tree](#syntax-tree)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Security](#security)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
+  * [`defaultHandlers`](#defaulthandlers)
+  * [`ConstructName`](#constructname)
+  * [`ConstructNameMap`](#constructnamemap)
+  * [`Handle`](#handle)
+  * [`Handlers`](#handlers)
+  * [`Info`](#info)
+  * [`Join`](#join)
+  * [`Map`](#map)
+  * [`Options`](#options)
+  * [`SafeConfig`](#safeconfig)
+  * [`State`](#state)
+  * [`Tracker`](#tracker)
+  * [`Unsafe`](#unsafe)
+* [List of extensions](#list-of-extensions)
+* [Syntax](#syntax)
+* [Syntax tree](#syntax-tree)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Security](#security)
+* [Related](#related)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
@@ -144,10 +144,10 @@ Turn an **[mdast][]** syntax tree into markdown.
 
 ###### Parameters
 
-*   `tree` ([`Node`][node])
-    — tree to serialize
-*   `options` ([`Options`][api-options], optional)
-    — configuration
+* `tree` ([`Node`][node])
+  — tree to serialize
+* `options` ([`Options`][api-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -200,14 +200,14 @@ Handle a particular node (TypeScript type).
 
 ###### Parameters
 
-*   `node` (`any`)
-    — expected mdast node
-*   `parent` ([`Node`][node], optional)
-    — parent of `node`
-*   `state` ([`State`][api-state])
-    — info passed around about the current state
-*   `info` ([`Info`][api-info])
-    — info on the surrounding of the node that is serialized
+* `node` (`any`)
+  — expected mdast node
+* `parent` ([`Node`][node], optional)
+  — parent of `node`
+* `state` ([`State`][api-state])
+  — info passed around about the current state
+* `info` ([`Info`][api-info])
+  — info on the surrounding of the node that is serialized
 
 ###### Returns
 
@@ -232,14 +232,14 @@ Info on the surrounding of the node that is serialized (TypeScript type).
 
 ###### Fields
 
-*   `now` ([`Point`][point])
-    — current point
-*   `lineShift` (`number`)
-    — number of columns each line will be shifted by wrapping nodes
-*   `before` (`string`)
-    — characters before this (guaranteed to be one, can be more)
-*   `after` (`string`)
-    — characters after this (guaranteed to be one, can be more)
+* `now` ([`Point`][point])
+  — current point
+* `lineShift` (`number`)
+  — number of columns each line will be shifted by wrapping nodes
+* `before` (`string`)
+  — characters before this (guaranteed to be one, can be more)
+* `after` (`string`)
+  — characters after this (guaranteed to be one, can be more)
 
 ### `Join`
 
@@ -254,14 +254,14 @@ return defines how many blank lines to use between them.
 
 ###### Parameters
 
-*   `left` ([`Node`][node])
-    — first of two adjacent siblings
-*   `right` ([`Node`][node])
-    — second of two adjacent siblings
-*   `parent` ([`Node`][node])
-    — parent of the two siblings
-*   `state` ([`State`][api-state])
-    — info passed around about the current state
+* `left` ([`Node`][node])
+  — first of two adjacent siblings
+* `right` ([`Node`][node])
+  — second of two adjacent siblings
+* `parent` ([`Node`][node])
+  — parent of the two siblings
+* `state` ([`State`][api-state])
+  — info passed around about the current state
 
 ###### Returns
 
@@ -290,12 +290,12 @@ Map function to pad a single line (TypeScript type).
 
 ###### Parameters
 
-*   `value` (`string`)
-    — a single line of serialized markdown
-*   `line` (`number`)
-    — line number relative to the fragment
-*   `blank` (`boolean`)
-    — whether the line is considered blank in markdown
+* `value` (`string`)
+  — a single line of serialized markdown
+* `line` (`number`)
+  — line number relative to the fragment
+* `blank` (`boolean`)
+  — whether the line is considered blank in markdown
 
 ###### Returns
 
@@ -316,16 +316,16 @@ default: `'*'`).
 
 There are three cases where the primary bullet cannot be used:
 
-*   when three or more list items are on their own, the last one is empty, and
-    `bullet` is also a valid `rule`: `* - +`; this would turn into a thematic
-    break if serialized with three primary bullets; `bulletOther` is used for
-    the last item
-*   when a thematic break is the first child of a list item and `bullet` is the
-    same character as `rule`: `- ***`; this would turn into a single thematic
-    break if serialized with primary bullets; `bulletOther` is used for the
-    item
-*   when two unordered lists appear next to each other: `* a\n- b`;
-    `bulletOther` is used for such lists
+* when three or more list items are on their own, the last one is empty, and
+  `bullet` is also a valid `rule`: `* - +`; this would turn into a thematic
+  break if serialized with three primary bullets; `bulletOther` is used for
+  the last item
+* when a thematic break is the first child of a list item and `bullet` is the
+  same character as `rule`: `- ***`; this would turn into a single thematic
+  break if serialized with primary bullets; `bulletOther` is used for the
+  item
+* when two unordered lists appear next to each other: `* a\n- b`;
+  `bulletOther` is used for such lists
 
 ###### `options.bulletOther`
 
@@ -341,8 +341,8 @@ Marker to use for bullets of items in ordered lists (`'.'` or `')'`, default:
 
 There is one case where the primary bullet for ordered items cannot be used:
 
-*   when two ordered lists appear next to each other: `1. a\n2) b`; to solve
-    that, `'.'` will be used when `bulletOrdered` is `')'`, and `'.'` otherwise
+* when two ordered lists appear next to each other: `1. a\n2) b`; to solve
+  that, `'.'` will be used when `bulletOrdered` is `')'`, and `'.'` otherwise
 
 ###### `options.closeAtx`
 
@@ -450,15 +450,15 @@ Configuration passed to `state.safe` (TypeScript type).
 
 ###### Fields
 
-*   `before` (`string`)
-    — characters before this (guaranteed to be one, can be more)
-*   `after` (`string`)
-    — characters after this (guaranteed to be one, can be more)
-*   `encode` (`Array<string>`, optional)
-    — extra characters that *must* be encoded (as character references) instead
-    of escaped (character escapes).
-    Only ASCII punctuation will use character escapes, so you never need to
-    pass non-ASCII-punctuation here
+* `before` (`string`)
+  — characters before this (guaranteed to be one, can be more)
+* `after` (`string`)
+  — characters after this (guaranteed to be one, can be more)
+* `encode` (`Array<string>`, optional)
+  — extra characters that *must* be encoded (as character references) instead
+  of escaped (character escapes).
+  Only ASCII punctuation will use character escapes, so you never need to
+  pass non-ASCII-punctuation here
 
 ### `State`
 
@@ -466,43 +466,43 @@ Info passed around about the current state (TypeScript type).
 
 ###### Fields
 
-*   `stack` ([`Array<ConstructName>`][api-construct-name])
-    — stack of constructs we’re in
-*   `indexStack` (`Array<number>`)
-    — positions of child nodes in their parents
-*   `associationId` (`(node: Association) => string`)
-    — get an identifier from an association to match it to others (see
-    [`Association`][association])
-*   `enter` (`(construct: ConstructName) => () => undefined`)
-    — enter a construct (returns a corresponding exit function)
-    (see [`ConstructName`][api-construct-name])
-*   `indentLines` (`(value: string, map: Map) => string`)
-    — pad serialized markdown (see [`Map`][api-map])
-*   `compilePattern` (`(pattern: Unsafe) => RegExp`)
-    — compile an unsafe pattern to a regex (see [`Unsafe`][api-unsafe])
-*   `containerFlow` (`(parent: Node, info: Info) => string`)
-    — serialize flow children (see [`Info`][api-info])
-*   `containerPhrasing` (`(parent: Node, info: Info) => string`)
-    — serialize phrasing children (see [`Info`][api-info])
-*   `createTracker` (`(info: Info) => Tracker`)
-    — track positional info in the output (see [`Info`][api-info],
-    [`Tracker`][api-tracker])
-*   `safe` (`(value: string, config: SafeConfig) => string`)
-    — make a string safe for embedding (see [`SafeConfig`][api-safe-config])
-*   `options` ([`Options`][api-options])
-    — applied user configuration
-*   `unsafe` ([`Array<Unsafe>`][api-unsafe])
-    — applied unsafe patterns
-*   `join` ([`Array<Join>`][api-join])
-    — applied join handlers
-*   `handle` ([`Handle`][api-handle])
-    — call the configured handler for the given node
-*   `handlers` ([`Handlers`][api-handlers])
-    — applied handlers
-*   `bulletCurrent` (`string` or `undefined`)
-    — list marker currently in use
-*   `bulletLastUsed` (`string` or `undefined`)
-    — list marker previously in use
+* `stack` ([`Array<ConstructName>`][api-construct-name])
+  — stack of constructs we’re in
+* `indexStack` (`Array<number>`)
+  — positions of child nodes in their parents
+* `associationId` (`(node: Association) => string`)
+  — get an identifier from an association to match it to others (see
+  [`Association`][association])
+* `enter` (`(construct: ConstructName) => () => undefined`)
+  — enter a construct (returns a corresponding exit function)
+  (see [`ConstructName`][api-construct-name])
+* `indentLines` (`(value: string, map: Map) => string`)
+  — pad serialized markdown (see [`Map`][api-map])
+* `compilePattern` (`(pattern: Unsafe) => RegExp`)
+  — compile an unsafe pattern to a regex (see [`Unsafe`][api-unsafe])
+* `containerFlow` (`(parent: Node, info: Info) => string`)
+  — serialize flow children (see [`Info`][api-info])
+* `containerPhrasing` (`(parent: Node, info: Info) => string`)
+  — serialize phrasing children (see [`Info`][api-info])
+* `createTracker` (`(info: Info) => Tracker`)
+  — track positional info in the output (see [`Info`][api-info],
+  [`Tracker`][api-tracker])
+* `safe` (`(value: string, config: SafeConfig) => string`)
+  — make a string safe for embedding (see [`SafeConfig`][api-safe-config])
+* `options` ([`Options`][api-options])
+  — applied user configuration
+* `unsafe` ([`Array<Unsafe>`][api-unsafe])
+  — applied unsafe patterns
+* `join` ([`Array<Join>`][api-join])
+  — applied join handlers
+* `handle` ([`Handle`][api-handle])
+  — call the configured handler for the given node
+* `handlers` ([`Handlers`][api-handlers])
+  — applied handlers
+* `bulletCurrent` (`string` or `undefined`)
+  — list marker currently in use
+* `bulletLastUsed` (`string` or `undefined`)
+  — list marker previously in use
 
 ### `Tracker`
 
@@ -513,12 +513,12 @@ source maps, etc.
 
 ###### Fields
 
-*   `current` (`() => Info`)
-    — get current tracked info
-*   `shift` (`(value: number) => undefined`)
-    — define a relative increased line shift (the typical indent for lines)
-*   `move` (`(value: string) => string`)
-    — move past some generated markdown
+* `current` (`() => Info`)
+  — get current tracked info
+* `shift` (`(value: number) => undefined`)
+  — define a relative increased line shift (the typical indent for lines)
+* `move` (`(value: string) => string`)
+  — move past some generated markdown
 
 ### `Unsafe`
 
@@ -526,50 +526,50 @@ Schema that defines when a character cannot occur (TypeScript type).
 
 ###### Fields
 
-*   `character` (`string`)
-    — single unsafe character
-*   `inConstruct` ([`Array<ConstructName>`][api-construct-name],
-    `ConstructName`, optional)
-    — constructs where this is bad
-*   `notInConstruct` ([`Array<ConstructName>`][api-construct-name],
-    `ConstructName`, optional)
-    — constructs where this is fine again
-*   `before` (`string`, optional)
-    — `character` is bad when this is before it (cannot be used together with
-    `atBreak`)
-*   `after` (`string`, optional)
-    — `character` is bad when this is after it
-*   `atBreak` (`boolean`, optional)
-    — `character` is bad at a break (cannot be used together with `before`)
+* `character` (`string`)
+  — single unsafe character
+* `inConstruct` ([`Array<ConstructName>`][api-construct-name],
+  `ConstructName`, optional)
+  — constructs where this is bad
+* `notInConstruct` ([`Array<ConstructName>`][api-construct-name],
+  `ConstructName`, optional)
+  — constructs where this is fine again
+* `before` (`string`, optional)
+  — `character` is bad when this is before it (cannot be used together with
+  `atBreak`)
+* `after` (`string`, optional)
+  — `character` is bad when this is after it
+* `atBreak` (`boolean`, optional)
+  — `character` is bad at a break (cannot be used together with `before`)
 
 ## List of extensions
 
-*   [`syntax-tree/mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive)
-    — directives
-*   [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
-    — frontmatter (YAML, TOML, more)
-*   [`syntax-tree/mdast-util-gfm`](https://github.com/syntax-tree/mdast-util-gfm)
-    — GFM
-*   [`syntax-tree/mdast-util-gfm-autolink-literal`](https://github.com/syntax-tree/mdast-util-gfm-autolink-literal)
-    — GFM autolink literals
-*   [`syntax-tree/mdast-util-gfm-footnote`](https://github.com/syntax-tree/mdast-util-gfm-footnote)
-    — GFM footnotes
-*   [`syntax-tree/mdast-util-gfm-strikethrough`](https://github.com/syntax-tree/mdast-util-gfm-strikethrough)
-    — GFM strikethrough
-*   [`syntax-tree/mdast-util-gfm-table`](https://github.com/syntax-tree/mdast-util-gfm-table)
-    — GFM tables
-*   [`syntax-tree/mdast-util-gfm-task-list-item`](https://github.com/syntax-tree/mdast-util-gfm-task-list-item)
-    — GFM task list items
-*   [`syntax-tree/mdast-util-math`](https://github.com/syntax-tree/mdast-util-math)
-    — math
-*   [`syntax-tree/mdast-util-mdx`](https://github.com/syntax-tree/mdast-util-mdx)
-    — MDX
-*   [`syntax-tree/mdast-util-mdx-expression`](https://github.com/syntax-tree/mdast-util-mdx-expression)
-    — MDX expressions
-*   [`syntax-tree/mdast-util-mdx-jsx`](https://github.com/syntax-tree/mdast-util-mdx-jsx)
-    — MDX JSX
-*   [`syntax-tree/mdast-util-mdxjs-esm`](https://github.com/syntax-tree/mdast-util-mdxjs-esm)
-    — MDX ESM
+* [`syntax-tree/mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive)
+  — directives
+* [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
+  — frontmatter (YAML, TOML, more)
+* [`syntax-tree/mdast-util-gfm`](https://github.com/syntax-tree/mdast-util-gfm)
+  — GFM
+* [`syntax-tree/mdast-util-gfm-autolink-literal`](https://github.com/syntax-tree/mdast-util-gfm-autolink-literal)
+  — GFM autolink literals
+* [`syntax-tree/mdast-util-gfm-footnote`](https://github.com/syntax-tree/mdast-util-gfm-footnote)
+  — GFM footnotes
+* [`syntax-tree/mdast-util-gfm-strikethrough`](https://github.com/syntax-tree/mdast-util-gfm-strikethrough)
+  — GFM strikethrough
+* [`syntax-tree/mdast-util-gfm-table`](https://github.com/syntax-tree/mdast-util-gfm-table)
+  — GFM tables
+* [`syntax-tree/mdast-util-gfm-task-list-item`](https://github.com/syntax-tree/mdast-util-gfm-task-list-item)
+  — GFM task list items
+* [`syntax-tree/mdast-util-math`](https://github.com/syntax-tree/mdast-util-math)
+  — math
+* [`syntax-tree/mdast-util-mdx`](https://github.com/syntax-tree/mdast-util-mdx)
+  — MDX
+* [`syntax-tree/mdast-util-mdx-expression`](https://github.com/syntax-tree/mdast-util-mdx-expression)
+  — MDX expressions
+* [`syntax-tree/mdast-util-mdx-jsx`](https://github.com/syntax-tree/mdast-util-mdx-jsx)
+  — MDX JSX
+* [`syntax-tree/mdast-util-mdxjs-esm`](https://github.com/syntax-tree/mdast-util-mdxjs-esm)
+  — MDX ESM
 
 ## Syntax
 
@@ -622,12 +622,12 @@ When parsing markdown afterwards and then going to HTML, use something like
 
 ## Related
 
-*   [`syntax-tree/mdast-util-from-markdown`](https://github.com/syntax-tree/mdast-util-from-markdown)
-    — parse markdown to mdast
-*   [`micromark/micromark`](https://github.com/micromark/micromark)
-    — parse markdown
-*   [`remarkjs/remark`](https://github.com/remarkjs/remark)
-    — process markdown
+* [`syntax-tree/mdast-util-from-markdown`](https://github.com/syntax-tree/mdast-util-from-markdown)
+  — parse markdown to mdast
+* [`micromark/micromark`](https://github.com/micromark/micromark)
+  — parse markdown
+* [`remarkjs/remark`](https://github.com/remarkjs/remark)
+  — process markdown
 
 ## Contribute
 
