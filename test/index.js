@@ -1,7 +1,6 @@
 /**
- * @typedef {import('mdast').BlockContent} BlockContent
- * @typedef {import('mdast').List} List
- * @typedef {import('mdast-util-to-markdown').Handle} Handle
+ * @import {Handle} from 'mdast-util-to-markdown'
+ * @import {BlockContent, List} from 'mdast'
  */
 
 import assert from 'node:assert/strict'

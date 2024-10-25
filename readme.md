@@ -91,9 +91,13 @@ In browsers with [`esm.sh`][esmsh]:
 Say our module `example.js` looks as follows:
 
 ```js
+/**
+ * @import {Root} from 'mdast'
+ */
+
 import {toMarkdown} from 'mdast-util-to-markdown'
 
-/** @type {import('mdast').Root} */
+/** @type {Root} */
 const tree = {
   type: 'root',
   children: [
