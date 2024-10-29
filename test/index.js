@@ -1,6 +1,6 @@
 /**
  * @import {Handle} from 'mdast-util-to-markdown'
- * @import {BlockContent, List} from 'mdast'
+ * @import {BlockContent, List, PhrasingContent, Root} from 'mdast'
  */
 
 import assert from 'node:assert/strict'
@@ -4816,6 +4816,96 @@ a _\\__ is this emphasis? _\\__`
       assert.equal(to(from(value)), value)
     }
   )
+})
+
+test('roundtrip attention', async function (t) {
+  /**
+   * @typedef Case
+   * @property {string} inside
+   * @property {(typeof markers)[number]} marker
+   * @property {string} outside
+   * @property {(typeof sides)[number]} side
+   * @property {(typeof types)[number]} type
+   */
+
+  const characters = ['.', ' ', 'a']
+  const markers = /** @type {const} */ (['*', '_'])
+  const sides = /** @type {const} */ (['open', 'close'])
+  const types = /** @type {const} */ (['emphasis', 'strong'])
+  /** @type {Array<Case>} */
+  const tests = []
+
+  for (const type of types) {
+    for (const marker of markers) {
+      for (const side of sides) {
+        for (const inside of characters) {
+          for (const outside of characters) {
+            tests.push({inside, marker, outside, side, type})
+          }
+        }
+      }
+    }
+  }
+
+  for (const test of tests) {
+    const {inside, marker, outside, side, type} = test
+    const name =
+      'should roundtrip `' +
+      type +
+      '` using `' +
+      marker +
+      '` in an ' +
+      side +
+      ' run: ' +
+      (outside === '.'
+        ? 'punctuation'
+        : outside === ' '
+          ? 'whitespace'
+          : 'letter') +
+      ' outside and ' +
+      (inside === '.'
+        ? 'punctuation'
+        : inside === ' '
+          ? 'whitespace'
+          : 'letter') +
+      ' inside'
+
+    await t.test(name, async function () {
+      /** @type {Array<PhrasingContent>} */
+      const children = []
+
+      if (side === 'open') {
+        children.push({type: 'text', value: 'x' + outside})
+      }
+
+      children.push({
+        type,
+        children: [
+          {
+            type: 'text',
+            value:
+              (side === 'open' ? inside : '') +
+              'y' +
+              (side === 'close' ? inside : '')
+          }
+        ]
+      })
+
+      if (side === 'close') {
+        children.push({type: 'text', value: outside + 'z'})
+      }
+
+      /** @type {Root} */
+      const expected = {
+        type: 'root',
+        children: [{type: 'paragraph', children}]
+      }
+      const markdown = to(expected, {emphasis: marker, strong: marker})
+      const actual = from(markdown)
+      removePosition(actual, {force: true})
+      assert.deepEqual(actual, expected)
+    })
+  }
 })
 
 test('position (output)', async function (t) {

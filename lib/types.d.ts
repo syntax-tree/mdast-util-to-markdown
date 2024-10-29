@@ -393,6 +393,38 @@ export type ContainerPhrasing = (parent: PhrasingParents, info: Info) => string
 export type CreateTracker = (info: TrackFields) => Tracker
 
 /**
+ * Whether to encode things — with fields representing the surrounding of a
+ * whole.
+ */
+export interface EncodeSurrounding {
+  /**
+   * Whether to encode after.
+   */
+  after: boolean
+
+  /**
+   * Whether to encode before.
+   */
+  before: boolean
+}
+
+/**
+ * Whether to encode things — with fields representing the relationship to a
+ * whole.
+ */
+export interface EncodeSides {
+  /**
+   * Whether to encode inside.
+   */
+  inside: boolean
+
+  /**
+   * Whether to encode before.
+   */
+  outside: boolean
+}
+
+/**
  * Enter something.
  *
  * @param name
@@ -754,6 +786,18 @@ export interface State {
    * Get an identifier from an association to match it to others.
    */
   associationId: AssociationId
+  /**
+   * Info on whether to encode the surrounding of *attention*.
+   *
+   * Whether attention (emphasis, strong, strikethrough) forms
+   * depends on the characters inside and outside them.
+   * The characters inside can be handled by *attention* itself.
+   * However the outside characters are already handled.
+   * Or handled afterwards.
+   * This field can be used to signal from *attention* that some parent
+   * function (practically `containerPhrasing`) has to handle the surrounding.
+   */
+  attentionEncodeSurroundingInfo: EncodeSurrounding | undefined
   /**
    * List marker currently in use.
    */

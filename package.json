@@ -10,6 +10,7 @@
     "longest-streak": "^3.0.0",
     "mdast-util-phrasing": "^4.0.0",
     "mdast-util-to-string": "^4.0.0",
+    "micromark-util-classify-character": "^2.0.0",
     "micromark-util-decode-string": "^2.0.0",
     "unist-util-visit": "^5.0.0",
     "zwitch": "^2.0.0"
@@ -109,6 +110,15 @@
             "error",
             "interface"
           ]
+        }
+      },
+      {
+        "files": [
+          "test/**/*.js"
+        ],
+        "rules": {
+          "max-depth": "off",
+          "no-await-in-loop": "off"
         }
       }
     ],
