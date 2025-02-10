@@ -8,7 +8,7 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-**[mdast][]** utility that turns a syntax tree into markdown.
+**[mdast][github-mdast]** utility that turns a syntax tree into markdown.
 
 ## Contents
 
@@ -43,25 +43,27 @@
 
 ## What is this?
 
-This package is a utility that takes an [mdast][] syntax tree as input and turns
-it into serialized markdown.
+This package is a utility that takes an [mdast][github-mdast]
+syntax tree as input and turns it into serialized markdown.
 
 This utility is a low level project.
-It’s used in [`remark-stringify`][remark-stringify], which focusses on making it
-easier to transform content by abstracting these internals away.
+It’s used in [`remark-stringify`][github-remark-stringify],
+which focusses on making it easier to transform content by abstracting
+these internals away.
 
 ## When should I use this?
 
 If you want to handle syntax trees manually, use this.
-For an easier time processing content, use the **[remark][]** ecosystem instead.
+For an easier time processing content, use the **[remark][github-remark]**
+ecosystem instead.
 
 You can combine this utility with other utilities to add syntax extensions.
 Notable examples that deeply integrate with it are
-[`mdast-util-gfm`][mdast-util-gfm],
-[`mdast-util-mdx`][mdast-util-mdx],
-[`mdast-util-frontmatter`][mdast-util-frontmatter],
-[`mdast-util-math`][mdast-util-math], and
-[`mdast-util-directive`][mdast-util-directive].
+[`mdast-util-gfm`][github-mdast-util-gfm],
+[`mdast-util-mdx`][github-mdast-util-mdx],
+[`mdast-util-frontmatter`][github-mdast-util-frontmatter],
+[`mdast-util-math`][github-mdast-util-math], and
+[`mdast-util-directive`][github-mdast-util-directive].
 
 ## Install
 
@@ -144,11 +146,11 @@ There is no default export.
 
 ### `toMarkdown(tree[, options])`
 
-Turn an **[mdast][]** syntax tree into markdown.
+Turn an **[mdast][github-mdast]** syntax tree into markdown.
 
 ###### Parameters
 
-* `tree` ([`Node`][node])
+* `tree` ([`Node`][github-mdast-nodes])
   — tree to serialize
 * `options` ([`Options`][api-options], optional)
   — configuration
@@ -206,7 +208,7 @@ Handle a particular node (TypeScript type).
 
 * `node` (`any`)
   — expected mdast node
-* `parent` ([`Node`][node], optional)
+* `parent` ([`Node`][github-mdast-nodes], optional)
   — parent of `node`
 * `state` ([`State`][api-state])
   — info passed around about the current state
@@ -236,7 +238,7 @@ Info on the surrounding of the node that is serialized (TypeScript type).
 
 ###### Fields
 
-* `now` ([`Point`][point])
+* `now` ([`Point`][github-unist-point])
   — current point
 * `lineShift` (`number`)
   — number of columns each line will be shifted by wrapping nodes
@@ -258,11 +260,11 @@ return defines how many blank lines to use between them.
 
 ###### Parameters
 
-* `left` ([`Node`][node])
+* `left` ([`Node`][github-mdast-nodes])
   — first of two adjacent siblings
-* `right` ([`Node`][node])
+* `right` ([`Node`][github-mdast-nodes])
   — second of two adjacent siblings
-* `parent` ([`Node`][node])
+* `parent` ([`Node`][github-mdast-nodes])
   — parent of the two siblings
 * `state` ([`State`][api-state])
   — info passed around about the current state
@@ -476,7 +478,7 @@ Info passed around about the current state (TypeScript type).
   — positions of child nodes in their parents
 * `associationId` (`(node: Association) => string`)
   — get an identifier from an association to match it to others (see
-  [`Association`][association])
+  [`Association`][github-mdast-association])
 * `enter` (`(construct: ConstructName) => () => undefined`)
   — enter a construct (returns a corresponding exit function)
   (see [`ConstructName`][api-construct-name])
@@ -548,11 +550,11 @@ Schema that defines when a character cannot occur (TypeScript type).
 
 ## List of extensions
 
-* [`syntax-tree/mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive)
+* [`syntax-tree/mdast-util-directive`][github-mdast-util-directive]
   — directives
-* [`syntax-tree/mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter)
+* [`syntax-tree/mdast-util-frontmatter`][github-mdast-util-frontmatter]
   — frontmatter (YAML, TOML, more)
-* [`syntax-tree/mdast-util-gfm`](https://github.com/syntax-tree/mdast-util-gfm)
+* [`syntax-tree/mdast-util-gfm`][github-mdast-util-gfm]
   — GFM
 * [`syntax-tree/mdast-util-gfm-autolink-literal`](https://github.com/syntax-tree/mdast-util-gfm-autolink-literal)
   — GFM autolink literals
@@ -564,9 +566,9 @@ Schema that defines when a character cannot occur (TypeScript type).
   — GFM tables
 * [`syntax-tree/mdast-util-gfm-task-list-item`](https://github.com/syntax-tree/mdast-util-gfm-task-list-item)
   — GFM task list items
-* [`syntax-tree/mdast-util-math`](https://github.com/syntax-tree/mdast-util-math)
+* [`syntax-tree/mdast-util-math`][github-mdast-util-math]
   — math
-* [`syntax-tree/mdast-util-mdx`](https://github.com/syntax-tree/mdast-util-mdx)
+* [`syntax-tree/mdast-util-mdx`][github-mdast-util-mdx]
   — MDX
 * [`syntax-tree/mdast-util-mdx-expression`](https://github.com/syntax-tree/mdast-util-mdx-expression)
   — MDX expressions
@@ -583,7 +585,7 @@ Extensions can add support for custom syntax.
 
 ## Syntax tree
 
-The syntax tree is [mdast][].
+The syntax tree is [mdast][github-mdast].
 
 ## Types
 
@@ -619,10 +621,11 @@ It’ll do its best, but complete roundtripping is impossible given that any val
 could be injected into the tree.
 
 As markdown is sometimes used for HTML, and improper use of HTML can open you up
-to a [cross-site scripting (XSS)][xss] attack, use of `mdast-util-to-markdown`
+to a [cross-site scripting (XSS)][wikipedia-xss] attack,
+use of `mdast-util-to-markdown`
 and parsing it again later could potentially be unsafe.
 When parsing markdown afterwards and then going to HTML, use something like
-[`hast-util-sanitize`][hast-util-sanitize] to make the tree safe.
+[`hast-util-sanitize`][github-hast-util-sanitize] to make the tree safe.
 
 ## Related
 
@@ -630,96 +633,25 @@ When parsing markdown afterwards and then going to HTML, use something like
   — parse markdown to mdast
 * [`micromark/micromark`](https://github.com/micromark/micromark)
   — parse markdown
-* [`remarkjs/remark`](https://github.com/remarkjs/remark)
+* [`remarkjs/remark`][github-remark]
   — process markdown
 
 ## Contribute
 
-See [`contributing.md`][contributing] in [`syntax-tree/.github`][health] for
+See [`contributing.md`][health-contributing] in
+[`syntax-tree/.github`][health] for
 ways to get started.
-See [`support.md`][support] for ways to get help.
+See [`support.md`][health-support] for ways to get help.
 
-This project has a [code of conduct][coc].
+This project has a [code of conduct][health-coc].
 By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
-
-[build-badge]: https://github.com/syntax-tree/mdast-util-to-markdown/workflows/main/badge.svg
-
-[build]: https://github.com/syntax-tree/mdast-util-to-markdown/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-to-markdown.svg
-
-[coverage]: https://codecov.io/github/syntax-tree/mdast-util-to-markdown
-
-[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-to-markdown.svg
-
-[downloads]: https://www.npmjs.com/package/mdast-util-to-markdown
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-to-markdown
-
-[size]: https://bundlejs.com/?q=mdast-util-to-markdown
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/syntax-tree/unist/discussions
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esmsh]: https://esm.sh
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[health]: https://github.com/syntax-tree/.github
-
-[contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
-
-[support]: https://github.com/syntax-tree/.github/blob/main/support.md
-
-[coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[typescript]: https://www.typescriptlang.org
-
-[xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
-
-[hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
-
-[point]: https://github.com/syntax-tree/unist#point
-
-[mdast]: https://github.com/syntax-tree/mdast
-
-[node]: https://github.com/syntax-tree/mdast#nodes
-
-[association]: https://github.com/syntax-tree/mdast#association
-
-[mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
-
-[mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
-
-[mdast-util-frontmatter]: https://github.com/syntax-tree/mdast-util-frontmatter
-
-[mdast-util-math]: https://github.com/syntax-tree/mdast-util-math
-
-[mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
-
-[remark]: https://github.com/remarkjs/remark
-
-[remark-stringify]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify
 
 [api-construct-name]: #constructname
 
@@ -748,3 +680,75 @@ abide by its terms.
 [api-tracker]: #tracker
 
 [api-unsafe]: #unsafe
+
+[backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+[build]: https://github.com/syntax-tree/mdast-util-to-markdown/actions
+
+[build-badge]: https://github.com/syntax-tree/mdast-util-to-markdown/workflows/main/badge.svg
+
+[chat]: https://github.com/syntax-tree/unist/discussions
+
+[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
+
+[collective]: https://opencollective.com/unified
+
+[coverage]: https://codecov.io/github/syntax-tree/mdast-util-to-markdown
+
+[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-to-markdown.svg
+
+[downloads]: https://www.npmjs.com/package/mdast-util-to-markdown
+
+[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-to-markdown.svg
+
+[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[esmsh]: https://esm.sh
+
+[github-hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
+
+[github-mdast]: https://github.com/syntax-tree/mdast
+
+[github-mdast-association]: https://github.com/syntax-tree/mdast#association
+
+[github-mdast-nodes]: https://github.com/syntax-tree/mdast#nodes
+
+[github-mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
+
+[github-mdast-util-frontmatter]: https://github.com/syntax-tree/mdast-util-frontmatter
+
+[github-mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
+
+[github-mdast-util-math]: https://github.com/syntax-tree/mdast-util-math
+
+[github-mdast-util-mdx]: https://github.com/syntax-tree/mdast-util-mdx
+
+[github-remark]: https://github.com/remarkjs/remark
+
+[github-remark-stringify]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify
+
+[github-unist-point]: https://github.com/syntax-tree/unist#point
+
+[health]: https://github.com/syntax-tree/.github
+
+[health-coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
+
+[health-contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
+
+[health-support]: https://github.com/syntax-tree/.github/blob/main/support.md
+
+[license]: license
+
+[npm]: https://docs.npmjs.com/cli/install
+
+[size]: https://bundlejs.com/?q=mdast-util-to-markdown
+
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-to-markdown
+
+[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+[typescript]: https://www.typescriptlang.org
+
+[wikipedia-xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+
+[wooorm]: https://wooorm.com
