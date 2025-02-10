@@ -482,6 +482,7 @@ export type Handlers = Record<Nodes['type'], Handle>
  *   Serialized markdown representing `node`.
  */
 export type Handle = (
+  // type-coverage:ignore-next-line
   node: any,
   parent: Parents | undefined,
   state: State,

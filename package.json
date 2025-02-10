@@ -80,9 +80,6 @@
   "sideEffects": false,
   "typeCoverage": {
     "atLeast": 100,
-    "ignoreFiles": [
-      "lib/types.d.ts"
-    ],
     "strict": true
   },
   "type": "module",
