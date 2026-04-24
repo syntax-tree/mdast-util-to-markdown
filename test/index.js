@@ -1262,6 +1262,306 @@ test('emphasis', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should flip the inner marker for emphasis nested in emphasis',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [{type: 'emphasis', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '*_a_*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should flip the inner marker for emphasis nested in strong',
+    async function () {
+      assert.equal(
+        to({
+          type: 'strong',
+          children: [{type: 'emphasis', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '**_a_**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not flip strong nested in emphasis (spec fusion handles it)',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '***a***\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not flip strong nested in strong (spec fusion handles it)',
+    async function () {
+      assert.equal(
+        to({
+          type: 'strong',
+          children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '****a****\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should alternate markers for a strict three-deep emphasis chain',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [
+            {
+              type: 'emphasis',
+              children: [
+                {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+              ]
+            }
+          ]
+        }),
+        '_*_a_*_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should flip emphasis-in-emphasis when primary is `_`',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'emphasis',
+            children: [
+              {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '_*a*_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should alternate markers for a three-deep chain when primary is `_`',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'emphasis',
+            children: [
+              {
+                type: 'emphasis',
+                children: [
+                  {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+                ]
+              }
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '_*_a_*_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not flip when the emphasis parent has more than one child',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+            {type: 'text', value: 'x'}
+          ]
+        }),
+        '**a*x*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not flip when the nested emphasis is a middle sibling',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [
+            {type: 'text', value: 'x'},
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+            {type: 'text', value: 'y'}
+          ]
+        }),
+        '*x*a*y*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep adjacent attention siblings on their configured marker',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+            {type: 'strong', children: [{type: 'text', value: 'a'}]},
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+          ]
+        }),
+        '*a***a***a*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip parsed emphasis-in-emphasis',
+    async function () {
+      const tree = from('*_a_*')
+      removePosition(tree, {force: true})
+      const out = from(to(tree))
+      removePosition(out, {force: true})
+      assert.deepEqual(out, tree)
+    }
+  )
+
+  await t.test(
+    'should roundtrip synthesized emphasis-in-emphasis',
+    async function () {
+      /** @type {Root} */
+      const tree = {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'emphasis',
+                children: [
+                  {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      const out = from(to(tree))
+      removePosition(out, {force: true})
+      assert.deepEqual(out, tree)
+    }
+  )
+
+  await t.test(
+    'should roundtrip a three-deep emphasis chain',
+    async function () {
+      const tree = from('_*_a_*_')
+      removePosition(tree, {force: true})
+      const out = from(to(tree))
+      removePosition(out, {force: true})
+      assert.deepEqual(out, tree)
+    }
+  )
+
+  await t.test('should roundtrip strong wrapping emphasis', async function () {
+    /** @type {Root} */
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'strong',
+              children: [
+                {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    const out = from(to(tree))
+    removePosition(out, {force: true})
+    assert.deepEqual(out, tree)
+  })
+
+  await t.test(
+    'should roundtrip a three-deep chain that follows sibling content',
+    async function () {
+      /** @type {Root} */
+      const tree = {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'x'},
+              {
+                type: 'emphasis',
+                children: [
+                  {
+                    type: 'emphasis',
+                    children: [
+                      {
+                        type: 'emphasis',
+                        children: [{type: 'text', value: 'a'}]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      const out = from(to(tree))
+      removePosition(out, {force: true})
+      assert.deepEqual(out, tree)
+    }
+  )
+
+  await t.test(
+    'should leave `emphasis > strong` adjacent-attention shapes untouched',
+    async function () {
+      // GH-12 edge case: intermediate emphasis whose sibling is a text run
+      // still fuses through the spec's attention algorithm. Verify this fix
+      // does not disturb a shape where the serializer and parser already
+      // agree: `*a***a***a*` round-trips as `[emphasis, strong, emphasis]`.
+      const tree = from('*a***a***a*')
+      removePosition(tree, {force: true})
+      const out = from(to(tree))
+      removePosition(out, {force: true})
+      assert.deepEqual(out, tree)
+    }
+  )
+
+  await t.test(
+    'should leave `***a*a*-*` fusion shape untouched',
+    async function () {
+      // GH-12 edge case: `emphasis > [emphasis > [emphasis, text], text]`.
+      // CommonMark's rule 17 pairs the leading `***` as fused em+strong
+      // openers and recovers the three-deep nesting. The helper must not
+      // intervene here, even though the outer emphasis has a first-child
+      // emphasis, because the fusion is what makes the roundtrip work.
+      const tree = from('***a*a*-*')
+      removePosition(tree, {force: true})
+      const out = from(to(tree))
+      removePosition(out, {force: true})
+      assert.deepEqual(out, tree)
+    }
+  )
 })
 
 test('heading', async function (t) {
