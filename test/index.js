@@ -2408,6 +2408,13 @@ test('link', async function (t) {
   })
 
   await t.test(
+    'should not double backslashes in autolink content',
+    async function () {
+      assert.equal(to(from('<aa:\\>\n')), '<aa:\\>\n')
+    }
+  )
+
+  await t.test(
     'should support a link w/ title when `quote: "\'"`',
     async function () {
       assert.equal(
