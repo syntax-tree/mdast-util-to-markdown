@@ -747,6 +747,22 @@ test('break', async function (t) {
   })
 
   await t.test(
+    'should not character-reference a break before an attention run',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'break'},
+            {type: 'strong', children: [{type: 'text', value: ' x'}]}
+          ]
+        }),
+        '\\\n**&#x20;x**\n'
+      )
+    }
+  )
+
+  await t.test(
     'should serialize breaks in heading (atx) as a space',
     async function () {
       assert.equal(
