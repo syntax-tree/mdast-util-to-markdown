@@ -2407,6 +2407,45 @@ test('link', async function (t) {
     )
   })
 
+  await t.test('should not escape a backslash in autolinks', async function () {
+    assert.equal(
+      to({
+        type: 'link',
+        url: 'aa:\\',
+        children: [{type: 'text', value: 'aa:\\'}]
+      }),
+      '<aa:\\>\n'
+    )
+  })
+
+  await t.test(
+    'should not escape a backslash before punctuation in autolinks',
+    async function () {
+      assert.equal(
+        to({
+          type: 'link',
+          url: 'https://example.com?find=\\*',
+          children: [{type: 'text', value: 'https://example.com?find=\\*'}]
+        }),
+        '<https://example.com?find=\\*>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not escape backslashes around punctuation in autolinks',
+    async function () {
+      assert.equal(
+        to({
+          type: 'link',
+          url: 'https://example.com/\\[\\',
+          children: [{type: 'text', value: 'https://example.com/\\[\\'}]
+        }),
+        '<https://example.com/\\[\\>\n'
+      )
+    }
+  )
+
   await t.test(
     'should support a link w/ title when `quote: "\'"`',
     async function () {
@@ -4397,6 +4436,33 @@ test('roundtrip', async function (t) {
     'should roundtrip autolinks w/ potentially escapable characters',
     async function () {
       const value = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
+
+      assert.equal(to(from(value)), value)
+    }
+  )
+
+  await t.test(
+    'should roundtrip an autolink w/ a trailing backslash',
+    async function () {
+      const value = '<aa:\\>\n'
+
+      assert.equal(to(from(value)), value)
+    }
+  )
+
+  await t.test(
+    'should roundtrip an autolink w/ a backslash before punctuation',
+    async function () {
+      const value = '<https://example.com?find=\\*>\n'
+
+      assert.equal(to(from(value)), value)
+    }
+  )
+
+  await t.test(
+    'should roundtrip an autolink w/ backslashes around punctuation',
+    async function () {
+      const value = '<https://example.com/\\[\\>\n'
 
       assert.equal(to(from(value)), value)
     }
