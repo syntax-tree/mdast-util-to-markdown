@@ -3688,6 +3688,45 @@ test('text', async function (t) {
   await t.test('should support text', async function () {
     assert.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n')
   })
+
+  await t.test(
+    'should not split an astral plane character (surrogate pair) that sits right before a construct that needs escaping',
+    async function () {
+      /** @type {Root} */
+      const tree = {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: '💡'},
+              {type: 'strong', children: [{type: 'text', value: ' hi'}]},
+              {type: 'text', value: '!'}
+            ]
+          }
+        ]
+      }
+
+      const markdown = to(tree)
+
+      // Neither surrogate half of the emoji should show up on its own: the
+      // character must be kept whole, whether that’s literal or encoded as
+      // a single character reference.
+      assert.ok(!/[\uD800-\uDFFF]/.test(markdown), markdown)
+
+      const roundtripped = from(markdown)
+      removePosition(roundtripped, {force: true})
+
+      assert.deepEqual(
+        // @ts-expect-error: acceptable indexing.
+        roundtripped.children[0].children.map(
+          (/** @type {PhrasingContent} */ child) =>
+            child.type === 'text' ? child.value : child.type
+        ),
+        ['💡', 'strong', '!']
+      )
+    }
+  )
 })
 
 test('thematic break', async function (t) {
