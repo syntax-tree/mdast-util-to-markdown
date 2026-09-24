@@ -3727,6 +3727,41 @@ test('text', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should not split an astral plane character (surrogate pair) when it starts a sibling being peeked at',
+    async function () {
+      /** @type {Root} */
+      const tree = {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a'},
+              {type: 'text', value: '💡b'}
+            ]
+          }
+        ]
+      }
+
+      const markdown = to(tree)
+
+      assert.equal(markdown, 'a💡b\n')
+
+      const roundtripped = from(markdown)
+      removePosition(roundtripped, {force: true})
+
+      assert.deepEqual(
+        // @ts-expect-error: acceptable indexing.
+        roundtripped.children[0].children.map(
+          (/** @type {PhrasingContent} */ child) =>
+            child.type === 'text' ? child.value : child.type
+        ),
+        ['a💡b']
+      )
+    }
+  )
 })
 
 test('thematic break', async function (t) {
