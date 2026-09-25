@@ -2407,6 +2407,22 @@ test('link', async function (t) {
     )
   })
 
+  await t.test('should not escape backslashes in autolinks', async function () {
+    assert.deepEqual(
+      to({
+        type: 'paragraph',
+        children: [
+          {
+            type: 'link',
+            url: 'https://example.com/page.\\',
+            children: [{type: 'text', value: 'https://example.com/page.\\'}]
+          }
+        ]
+      }),
+      '<https://example.com/page.\\>\n'
+    )
+  })
+
   await t.test(
     'should support a link w/ title when `quote: "\'"`',
     async function () {
@@ -4401,6 +4417,16 @@ test('roundtrip', async function (t) {
       assert.equal(to(from(value)), value)
     }
   )
+
+  await t.test('should roundtrip autolinks w/ backslashes', async function () {
+    const value = 'An autolink: <https://example.com/page.\\>.\n'
+    let actual = value
+
+    for (let index = 0; index < 3; index++) {
+      actual = to(from(actual))
+      assert.equal(actual, value)
+    }
+  })
 
   await t.test(
     'should roundtrip potential prototype injections',
