@@ -1,6 +1,6 @@
 /**
  * @import {Handle} from 'mdast-util-to-markdown'
- * @import {BlockContent, List, PhrasingContent, Root} from 'mdast'
+ * @import {BlockContent, Link, List, PhrasingContent, Root} from 'mdast'
  */
 
 import assert from 'node:assert/strict'
@@ -2075,6 +2075,31 @@ test('imageReference', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should support extension patterns in the reference',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'imageReference',
+                alt: 'x',
+                identifier: 'a|b',
+                label: 'a|b',
+                referenceType: 'full'
+              }
+            ]
+          },
+          // Like GFM table cells.
+          {unsafe: [{character: '|', inConstruct: 'paragraph'}]}
+        ),
+        '![x][a\\|b]\n'
+      )
+    }
+  )
 })
 
 test('code (text)', async function (t) {
@@ -2407,6 +2432,138 @@ test('link', async function (t) {
     )
   })
 
+  await t.test('should not escape backslashes in autolinks', async function () {
+    assert.equal(
+      to({
+        type: 'paragraph',
+        children: [
+          {
+            type: 'link',
+            url: 'aa:\\',
+            children: [{type: 'text', value: 'aa:\\'}]
+          }
+        ]
+      }),
+      '<aa:\\>\n'
+    )
+  })
+
+  await t.test(
+    'should not escape character escapes or references in autolinks',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {
+              type: 'link',
+              url: 'aa:\\*&amp;',
+              children: [{type: 'text', value: 'aa:\\*&amp;'}]
+            }
+          ]
+        }),
+        '<aa:\\*&amp;>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should percent encode unsafe characters in autolinks',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'link',
+                url: 'aa:b|c~d',
+                children: [{type: 'text', value: 'aa:b|c~d'}]
+              }
+            ]
+          },
+          {
+            unsafe: [
+              // Like GFM table cells.
+              {character: '|', inConstruct: 'paragraph'},
+              // Not like GFM.
+              // This checks that autolinks can be targeted.
+              {character: '~', inConstruct: 'autolink'}
+            ]
+          }
+        ),
+        '<aa:b%7Cc%7Ed>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use unsafe phrasing patterns in autolinks',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'link',
+                url: 'mailto:a@b.c',
+                children: [{type: 'text', value: 'a@b.c'}]
+              }
+            ]
+          },
+          {unsafe: [{character: '@', inConstruct: 'phrasing'}]}
+        ),
+        '<a@b.c>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should percent encode whitespace, controls, and angle brackets in autolinks',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'link',
+                url: 'aa:b c<d>\u0000',
+                children: [{type: 'text', value: 'aa:b c<d>\u0000'}]
+              }
+            ]
+          },
+          {
+            handlers: {
+              /**
+               * Always serialize links as autolinks.
+               *
+               * @type {Handle}
+               * @param {Link} node
+               *   Link node.
+               */
+              link(node, _, state, info) {
+                const exit = state.enter('autolink')
+                const value =
+                  '<' +
+                  state.containerPhrasing(node, {
+                    ...info,
+                    before: '<',
+                    after: '>'
+                  }) +
+                  '>'
+                exit()
+                return value
+              }
+            }
+          }
+        ),
+        '<aa:b%20c%3Cd%3E%00>\n'
+      )
+    }
+  )
+
   await t.test(
     'should support a link w/ title when `quote: "\'"`',
     async function () {
@@ -2698,6 +2855,31 @@ test('linkReference', async function (t) {
           ]
         }),
         '[a][]\\(b)\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should support extension patterns in the reference',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'linkReference',
+                children: [{type: 'text', value: 'x'}],
+                identifier: 'a|b',
+                label: 'a|b',
+                referenceType: 'full'
+              }
+            ]
+          },
+          // Like GFM table cells.
+          {unsafe: [{character: '|', inConstruct: 'paragraph'}]}
+        ),
+        '[x][a\\|b]\n'
       )
     }
   )
@@ -4399,6 +4581,22 @@ test('roundtrip', async function (t) {
       const value = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
 
       assert.equal(to(from(value)), value)
+    }
+  )
+
+  await t.test('should roundtrip autolinks w/ backslashes', async function () {
+    const value = '<aa:\\>\n'
+    assert.equal(to(from(value)), value)
+  })
+
+  await t.test(
+    'should roundtrip autolinks w/ escapes and references',
+    async function () {
+      const value = '<aa:\\*>\n<aa:\\[\\>\n<aa:&amp;>\n'
+      const once = to(from(value))
+      assert.equal(once, value)
+      const twice = to(from(once))
+      assert.equal(twice, value)
     }
   )
 
