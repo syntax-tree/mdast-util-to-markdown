@@ -4673,6 +4673,164 @@ test('escape', async function (t) {
       )
     }
   )
+
+  await t.test('should not escape `_` between letters', async function () {
+    assert.equal(
+      to({type: 'paragraph', children: [{type: 'text', value: 'a_b'}]}),
+      'a_b\n'
+    )
+  })
+
+  await t.test('should not escape `_` between digits', async function () {
+    assert.equal(
+      to({type: 'paragraph', children: [{type: 'text', value: '1_000'}]}),
+      '1_000\n'
+    )
+  })
+
+  await t.test(
+    'should not escape `_` between non-ASCII letters',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'é_é'}]}),
+        'é_é\n'
+      )
+    }
+  )
+
+  await t.test('should escape `_` next to punctuation', async function () {
+    assert.equal(
+      to({type: 'paragraph', children: [{type: 'text', value: 'a._.b'}]}),
+      'a.\\_.b\n'
+    )
+  })
+
+  await t.test(
+    'should escape `_` between a letter and whitespace',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a_ b'}]}),
+        'a\\_ b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape `_` between whitespace and a letter',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a _b'}]}),
+        'a \\_b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not escape several `_`s between letters',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a__b'}]}),
+        'a__b\n'
+      )
+    }
+  )
+
+  await t.test('should escape `_`s next to punctuation', async function () {
+    assert.equal(
+      to({type: 'paragraph', children: [{type: 'text', value: 'a__.b'}]}),
+      'a\\_\\_.b\n'
+    )
+  })
+
+  await t.test('should escape `_`s after attention', async function () {
+    assert.equal(
+      to(
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'emphasis', children: [{type: 'text', value: 'x'}]},
+            {type: 'text', value: '__a'}
+          ]
+        },
+        {emphasis: '_'}
+      ),
+      '_x_\\_\\_a\n'
+    )
+  })
+
+  await t.test('should escape `_`s before attention', async function () {
+    assert.equal(
+      to(
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a__'},
+            {type: 'emphasis', children: [{type: 'text', value: 'x'}]}
+          ]
+        },
+        {emphasis: '_'}
+      ),
+      'a\\_\\__x_\n'
+    )
+  })
+
+  await t.test('should escape `_` after an encoded letter', async function () {
+    assert.equal(
+      to(
+        {type: 'paragraph', children: [{type: 'text', value: 'a_b'}]},
+        {unsafe: [{character: 'a', inConstruct: 'phrasing'}]}
+      ),
+      '&#x61;\\_b\n'
+    )
+  })
+
+  await t.test('should escape `_` before an encoded letter', async function () {
+    assert.equal(
+      to(
+        {type: 'paragraph', children: [{type: 'text', value: 'a_b'}]},
+        {unsafe: [{character: 'b', inConstruct: 'phrasing'}]}
+      ),
+      'a\\_&#x62;\n'
+    )
+  })
+
+  await t.test(
+    'should escape `_` after a letter that is encoded for attention',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'd'},
+              {type: 'emphasis', children: [{type: 'text', value: 'a_bc'}]}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '&#x64;_&#x61;\\_bc_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape `_` before a letter that is encoded for attention',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'emphasis', children: [{type: 'text', value: 'ab_c'}]},
+              {type: 'text', value: 'd'}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '_ab\\_&#x63;_&#x64;\n'
+      )
+    }
+  )
 })
 
 test('roundtrip', async function (t) {
@@ -5277,6 +5435,112 @@ test('roundtrip attention', async function (t) {
         type: 'root',
         children: [{type: 'paragraph', children}]
       }
+      const markdown = to(expected, {emphasis: marker, strong: marker})
+      const actual = from(markdown)
+      removePosition(actual, {force: true})
+      assert.deepEqual(actual, expected)
+    })
+  }
+})
+
+test('roundtrip underscores', async function (t) {
+  /**
+   * @typedef Case
+   *   Test case.
+   * @property {string} after
+   *   Character after the underscore.
+   * @property {string} before
+   *   Character before the underscore.
+   * @property {(typeof markers)[number]} marker
+   *   Marker.
+   * @property {(typeof places)[number]} place
+   *   Place of the underscore: in text, in text after or before attention, or
+   *   at the start or end of text in attention.
+   * @property {(typeof types)[number]} type
+   *   Kind of attention, either `'emphasis'` or `'strong'`.
+   */
+
+  const characters = ['.', ' ', 'a']
+  const markers = /** @type {const} */ (['*', '_'])
+  const places = /** @type {const} */ ([
+    'text',
+    'after',
+    'before',
+    'start',
+    'end'
+  ])
+  const types = /** @type {const} */ (['emphasis', 'strong'])
+  /** @type {Array<Case>} */
+  const tests = []
+
+  for (const place of places) {
+    for (const type of types) {
+      for (const marker of markers) {
+        // Attention does not matter for underscores in plain text.
+        if (place === 'text' && (type !== 'emphasis' || marker !== '*')) {
+          continue
+        }
+
+        for (const before of characters) {
+          for (const after of characters) {
+            tests.push({after, before, marker, place, type})
+          }
+        }
+      }
+    }
+  }
+
+  for (const test of tests) {
+    const {after, before, marker, place, type} = test
+    const name =
+      'should roundtrip `_` between ' +
+      (before === '.'
+        ? 'punctuation'
+        : before === ' '
+          ? 'whitespace'
+          : 'letter') +
+      ' and ' +
+      (after === '.'
+        ? 'punctuation'
+        : after === ' '
+          ? 'whitespace'
+          : 'letter') +
+      (place === 'text'
+        ? ' in text'
+        : ' ' +
+          (place === 'after' || place === 'before'
+            ? place + ' `' + type + '`'
+            : 'at the ' + place + ' of `' + type + '`') +
+          ' using `' +
+          marker +
+          '`')
+
+    await t.test(name, async function () {
+      /** @type {Array<PhrasingContent>} */
+      const children = []
+      const value =
+        (place === 'after' || place === 'start' ? '' : 'x') +
+        before +
+        '_' +
+        after +
+        (place === 'before' || place === 'end' ? '' : 'y')
+
+      if (place === 'after') {
+        children.push({type, children: [{type: 'text', value: 'z'}]})
+      }
+
+      if (place === 'start' || place === 'end') {
+        children.push({type, children: [{type: 'text', value}]})
+      } else {
+        children.push({type: 'text', value})
+      }
+
+      if (place === 'before') {
+        children.push({type, children: [{type: 'text', value: 'z'}]})
+      }
+
+      /** @type {Root} */
+      const expected = {type: 'root', children: [{type: 'paragraph', children}]}
       const markdown = to(expected, {emphasis: marker, strong: marker})
       const actual = from(markdown)
       removePosition(actual, {force: true})
