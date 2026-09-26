@@ -4831,6 +4831,78 @@ test('escape', async function (t) {
       )
     }
   )
+  await t.test(
+    'should encode a line ending at the start of a paragraph',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: '\na'}]}),
+        '&#xA;a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode a line ending at the end of a paragraph',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\n'}]}),
+        'a&#xA;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode line endings that would form a blank line',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\n\nb'}]}),
+        'a&#xA;&#xA;b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode carriage returns that would form a blank line',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\r\rb'}]}),
+        'a&#xD;&#xD;b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not encode a carriage return + line feed',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\r\nb'}]}),
+        'a\r\nb\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode carriage returns + line feeds that would form a blank line',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [{type: 'text', value: 'a\r\n\r\nb'}]
+        }),
+        'a\r&#xA;&#xD;\nb\n'
+      )
+    }
+  )
+
+  await t.test('should encode a line ending after a break', async function () {
+    assert.equal(
+      to({
+        type: 'paragraph',
+        children: [{type: 'break'}, {type: 'text', value: '\nb'}]
+      }),
+      '\\\n&#xA;b\n'
+    )
+  })
 })
 
 test('roundtrip', async function (t) {
