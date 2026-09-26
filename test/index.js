@@ -1262,6 +1262,64 @@ test('emphasis', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should keep astral characters whole when encoding the start of emphasis',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a'},
+              {type: 'emphasis', children: [{type: 'text', value: '💡b'}]}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '&#x61;_&#x1F4A1;b_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep astral characters whole when encoding the end of emphasis',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'emphasis', children: [{type: 'text', value: 'b💡'}]},
+              {type: 'text', value: 'a'}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '_b&#x1F4A1;_&#x61;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not encode characters in empty emphasis',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a'},
+              {type: 'emphasis', children: []},
+              {type: 'text', value: 'b'}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '&#x61;__&#x62;\n'
+      )
+    }
+  )
 })
 
 test('heading', async function (t) {
@@ -3855,6 +3913,113 @@ test('strong', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should keep astral characters whole when encoding before strong',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: '💡'},
+            {type: 'strong', children: [{type: 'text', value: ' a'}]}
+          ]
+        }),
+        '&#x1F4A1;**&#x20;a**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep astral characters whole when encoding after strong',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'strong', children: [{type: 'text', value: 'a '}]},
+            {type: 'text', value: '💡'}
+          ]
+        }),
+        '**a&#x20;**&#x1F4A1;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep astral characters whole when encoding the start of strong',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a'},
+              {type: 'strong', children: [{type: 'text', value: '💡b'}]}
+            ]
+          },
+          {strong: '_'}
+        ),
+        '&#x61;__&#x1F4A1;b__\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep astral characters whole when encoding the end of strong',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'strong', children: [{type: 'text', value: 'b💡'}]},
+              {type: 'text', value: 'a'}
+            ]
+          },
+          {strong: '_'}
+        ),
+        '__b&#x1F4A1;__&#x61;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not encode characters in empty strong',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a'},
+              {type: 'strong', children: []},
+              {type: 'text', value: 'b'}
+            ]
+          },
+          {strong: '_'}
+        ),
+        '&#x61;____&#x62;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode the character before strong ignoring empty text',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a'},
+            {type: 'text', value: ''},
+            {type: 'strong', children: [{type: 'text', value: ' b'}]}
+          ]
+        }),
+        '&#x61;**&#x20;b**\n'
+      )
+    }
+  )
 })
 
 test('text', async function (t) {
@@ -4580,6 +4745,14 @@ test('roundtrip', async function (t) {
     async function () {
       const value = 'An autolink: <http://example.com/?foo=1&bar=2>.\n'
 
+      assert.equal(to(from(value)), value)
+    }
+  )
+
+  await t.test(
+    'should roundtrip astral characters around attention',
+    async function () {
+      const value = '&#x1F4A1;**&#x20;a&#x20;**&#x1F4A1;\n'
       assert.equal(to(from(value)), value)
     }
   )
