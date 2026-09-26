@@ -2392,7 +2392,7 @@ test('link', async function (t) {
   )
 
   await t.test('should not escape in autolinks', async function () {
-    assert.deepEqual(
+    assert.equal(
       to({
         type: 'paragraph',
         children: [
@@ -4821,11 +4821,17 @@ a _\\__ is this emphasis? _\\__`
 test('roundtrip attention', async function (t) {
   /**
    * @typedef Case
+   *   Test case.
    * @property {string} inside
+   *   Text inside the attention markers.
    * @property {(typeof markers)[number]} marker
+   *   Marker.
    * @property {string} outside
+   *   Text outside the attention markers.
    * @property {(typeof sides)[number]} side
+   *   Side of the attention markers, either `'open'` or `'close'`.
    * @property {(typeof types)[number]} type
+   *   Kind of attention, either `'emphasis'` or `'strong'`.
    */
 
   const characters = ['.', ' ', 'a']
@@ -4924,8 +4930,11 @@ test('position (output)', async function (t) {
         {
           handlers: {
             /**
+             * Handle for unknown nodes.
+             *
              * @type {Handle}
              * @param {unknown} _
+             *   Node to handle.
              */
             unknown(_, _2, _3, info) {
               const {now, lineShift} = info
@@ -4967,8 +4976,11 @@ test('position (output)', async function (t) {
         {
           handlers: {
             /**
+             * Handle for unknown nodes.
+             *
              * @type {Handle}
              * @param {unknown} _
+             *   Node to handle.
              */
             unknown(_, _2, _3, info) {
               const {now, lineShift} = info
@@ -4987,8 +4999,12 @@ test('position (output)', async function (t) {
 })
 
 /**
+ * Create a list w/ one item, using the given children.
+ *
  * @param {Array<BlockContent> | BlockContent | undefined} [d]
+ *   Children to include in the list item.
  * @returns {List}
+ *   List node.
  */
 function createList(d) {
   return {
