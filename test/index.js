@@ -1320,6 +1320,25 @@ test('emphasis', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should encode after the opening of emphasis, not a line ending before it',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'break'},
+              {type: 'emphasis', children: [{type: 'text', value: ' x'}]}
+            ]
+          },
+          {emphasis: '_'}
+        ),
+        '\\\n_&#x20;x_\n'
+      )
+    }
+  )
 })
 
 test('heading', async function (t) {
@@ -4017,6 +4036,22 @@ test('strong', async function (t) {
           ]
         }),
         '&#x61;**&#x20;b**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode after the opening of strong, not a line ending before it',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'break'},
+            {type: 'strong', children: [{type: 'text', value: ' x'}]}
+          ]
+        }),
+        '\\\n**&#x20;x**\n'
       )
     }
   )
