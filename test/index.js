@@ -1795,49 +1795,62 @@ test('html', async function (t) {
   })
 
   await t.test(
-    'should prevent html (text) from becoming html (flow) (1)',
+    'should replace a line ending before html (text) with a space if it would start html (flow) of kinds 1 through 6',
     async function () {
       assert.equal(
         to({
           type: 'paragraph',
           children: [
             {type: 'text', value: 'a\n'},
-            {type: 'html', value: '<div>'}
+            {type: 'html', value: '<pre>'}, // 1
+            {type: 'text', value: '\r'},
+            {type: 'html', value: '<!--b-->'}, // 2
+            {type: 'text', value: '\r\n'},
+            {type: 'html', value: '<?c?>'}, // 3
+            {type: 'text', value: '\n'},
+            {type: 'html', value: '<!D>'}, // 4
+            {type: 'text', value: '\n'},
+            {type: 'html', value: '<![CDATA[e]]>'}, // 5
+            {type: 'text', value: '\n'},
+            {type: 'html', value: '<div>'}, // 6
+            {type: 'text', value: '\n'},
+            {type: 'html', value: 'f'} // Unknown
           ]
         }),
-        'a <div>\n'
+        'a <pre> <!--b--> <?c?> <!D> <![CDATA[e]]> <div> f\n'
       )
     }
   )
 
   await t.test(
-    'should prevent html (text) from becoming html (flow) (2)',
+    'should keep a line ending before html (text) if it would start html (flow) of kind 7',
     async function () {
       assert.equal(
         to({
           type: 'paragraph',
           children: [
-            {type: 'text', value: 'a\r'},
-            {type: 'html', value: '<div>'}
+            {type: 'text', value: 'a\n'},
+            {type: 'html', value: '<b>'}
           ]
         }),
-        'a <div>\n'
+        'a\n<b>\n'
       )
     }
   )
 
   await t.test(
-    'should prevent html (text) from becoming html (flow) (3)',
+    'should keep a hard break before html (text) if it would start html (flow) of kind 7',
     async function () {
       assert.equal(
         to({
           type: 'paragraph',
           children: [
-            {type: 'text', value: 'a\r\n'},
-            {type: 'html', value: '<div>'}
+            {type: 'text', value: 'a'},
+            {type: 'break'},
+            {type: 'html', value: '<b>'}
           ]
         }),
-        'a <div>\n'
+        'a\\\n<b>\n'
       )
     }
   )
@@ -3493,6 +3506,154 @@ test('listItem', async function (t) {
       '* a\n\n  ***\n\n  b\n'
     )
   })
+
+  await t.test(
+    'should use a blank line between a paragraph and html that cannot interrupt it, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {type: 'html', value: '<b>'}
+          ]
+        }),
+        '* a\n\n  <b>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use a blank line between a paragraph and html that can interrupt it, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {type: 'html', value: '<div>'},
+            {type: 'paragraph', children: [{type: 'text', value: 'b'}]},
+            {type: 'html', value: '<!-- c -->'},
+            {type: 'paragraph', children: [{type: 'text', value: 'd'}]},
+            {type: 'html', value: '<pre>e</pre>'}
+          ]
+        }),
+        '* a\n  <div>\n\n  b\n  <!-- c -->\n  d\n  <pre>e</pre>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should compare tag names case-insensitively, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {type: 'html', value: '<DIV>'}
+          ]
+        }),
+        '* a\n  <DIV>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line after html that ends at a blank line, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'html', value: '<b>'},
+            {type: 'html', value: '<div>'},
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+          ]
+        }),
+        '* <b>\n\n  <div>\n\n  a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line after a closing tag with a raw name (kind 7, not 1), in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'html', value: '</pre>'},
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+          ]
+        }),
+        '* </pre>\n\n  a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line after a self-closing tag with a raw name (kind 7, not 1), in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'html', value: '<pre/>'},
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+          ]
+        }),
+        '* <pre/>\n\n  a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use a blank line after html that ends by itself, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'html', value: '<!-- a -->'},
+            {type: 'html', value: '<?b?>'},
+            {type: 'html', value: '<pre>c</pre>'},
+            {type: 'html', value: '<!D>'},
+            {type: 'html', value: '<![CDATA[e]]>'},
+            {type: 'paragraph', children: [{type: 'text', value: 'f'}]}
+          ]
+        }),
+        '* <!-- a -->\n  <?b?>\n  <pre>c</pre>\n  <!D>\n  <![CDATA[e]]>\n  f\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use blank lines around html of unknown kind, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {type: 'html', value: '<1'},
+            {type: 'paragraph', children: [{type: 'text', value: 'b'}]},
+            {type: 'html', value: '<!1'},
+            {type: 'paragraph', children: [{type: 'text', value: 'c'}]}
+          ]
+        }),
+        '* a\n\n  <1\n\n  b\n\n  <!1\n\n  c\n'
+      )
+    }
+  )
 
   await t.test(
     'should use one space after the bullet for `listItemIndent: "one"`',

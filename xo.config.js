@@ -28,6 +28,7 @@ const xoConfig = [
       'unicorn/prefer-combined-guards': 'off',
       'unicorn/prefer-early-return': 'off',
       'unicorn/prefer-https': 'off',
+      'unicorn/prefer-includes-over-repeated-comparisons': 'off',
       'unicorn/prefer-minimal-ternary': 'off',
       'unicorn/prefer-simple-condition-first': 'off',
       'unicorn/prefer-string-pad-start-end': 'off',
