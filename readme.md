@@ -19,6 +19,8 @@
 * [API](#api)
   * [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
   * [`defaultHandlers`](#defaulthandlers)
+  * [`Attention`](#attention)
+  * [`AttentionInfo`](#attentioninfo)
   * [`ConstructName`](#constructname)
   * [`ConstructNameMap`](#constructnamemap)
   * [`Handle`](#handle)
@@ -162,6 +164,43 @@ Serialized markdown representing `tree` (`string`).
 ### `defaultHandlers`
 
 Default (CommonMark) handlers ([`Handlers`][api-handlers]).
+
+### `Attention`
+
+Serialize a node as attention (emphasis, strong, strikethrough) (TypeScript
+type).
+
+Set as the `attention` field of a [`Handle`][api-handle]
+(`handle.attention = x`).
+This switches to a different algorithm,
+where attention is properly handled by `containerPhrasing`.
+
+###### Parameters
+
+* `node` (`any`)
+  — expected mdast node
+* `state` ([`State`][api-state])
+  — info passed around about the current state
+
+###### Returns
+
+Info on how to serialize `node` ([`AttentionInfo`][api-attention-info]).
+
+### `AttentionInfo`
+
+Info on how to serialize attention (TypeScript type).
+
+###### Fields
+
+* `construct` ([`ConstructName`][api-construct-name])
+  — construct to enter (such as `'emphasis'`)
+* `markers` (`Array<string>`)
+  — markers that can be used in order of preference (such as `['*', '_']`);
+  one or more strings, each just one ASCII punctuation character
+* `sizes` (`Array<number>`)
+  — sizes of sequences that can be used in order of preference (such as `[2]`
+  for strong or `[2, 1]` for GFM strikethrough);
+  one or more numbers, each a positive integer
 
 ### `ConstructName`
 
@@ -357,7 +396,10 @@ heading as the opening sequence (`boolean`, default: `false`).
 
 ###### `options.emphasis`
 
-Marker to use for emphasis (`'*'` or `'_'`, default: `'*'`).
+Preferred marker to use for emphasis (`'*'` or `'_'`, default: `'*'`).
+
+The other marker is sometimes used, to form for example emphasis next to or
+inside of other emphasis (`*a*_b_`).
 
 ###### `options.fence`
 
@@ -415,7 +457,10 @@ three or more.
 
 ###### `options.strong`
 
-Marker to use for strong (`'*'` or `'_'`, default: `'*'`).
+Preferred marker to use for strong (`'*'` or `'_'`, default: `'*'`).
+
+The other marker is sometimes used, to form for example strong next to or
+inside of other strong (`**a**__b__`).
 
 ###### `options.tightDefinitions`
 
@@ -591,6 +636,8 @@ The syntax tree is [mdast][github-mdast].
 
 This package is fully typed with [TypeScript][].
 It exports the additional types
+[`Attention`][api-attention],
+[`AttentionInfo`][api-attention-info],
 [`ConstructName`][api-construct-name],
 [`ConstructNameMap`][api-construct-name-map],
 [`Handle`][api-handle],
@@ -652,6 +699,10 @@ abide by its terms.
 [MIT][license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
+
+[api-attention]: #attention
+
+[api-attention-info]: #attentioninfo
 
 [api-construct-name]: #constructname
 

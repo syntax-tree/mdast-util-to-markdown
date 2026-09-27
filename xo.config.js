@@ -10,6 +10,8 @@ const xoConfig = [
       'jsdoc/informative-docs': 'off',
       'jsdoc/require-asterisk-prefix': 'off',
       'jsdoc/valid-types': 'off',
+      'max-depth': 'off',
+      'max-params': 'off',
       'no-shadow': 'off',
       'prefer-destructuring': 'off',
       'regexp/no-obscure-range': 'off',
@@ -59,7 +61,7 @@ const xoConfig = [
   },
   {
     files: ['test/**/*.js'],
-    rules: {'max-depth': 'off', 'max-lines': 'off', 'no-await-in-loop': 'off'}
+    rules: {'max-lines': 'off', 'no-await-in-loop': 'off'}
   },
   {rules: {curly: 'off', 'prefer-arrow-callback': 'off'}}
 ]

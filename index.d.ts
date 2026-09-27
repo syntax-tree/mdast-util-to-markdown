@@ -1,4 +1,6 @@
 export type {
+  AttentionInfo,
+  Attention,
   ConstructNameMap,
   ConstructName,
   Handle,

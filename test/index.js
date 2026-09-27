@@ -1,6 +1,6 @@
 /**
- * @import {Handle} from 'mdast-util-to-markdown'
- * @import {BlockContent, Link, List, PhrasingContent, Root} from 'mdast'
+ * @import {Attention, Handle, Info, State} from 'mdast-util-to-markdown'
+ * @import {BlockContent, Delete, Emphasis, Link, List, Parents, PhrasingContent, Root, Strong} from 'mdast'
  */
 
 import assert from 'node:assert/strict'
@@ -1339,6 +1339,24 @@ test('emphasis', async function (t) {
       )
     }
   )
+
+  await t.test('should escape in emphasis given directly', async function () {
+    assert.equal(
+      to({type: 'emphasis', children: [{type: 'text', value: '*'}]}),
+      '*\\**\n'
+    )
+  })
+
+  await t.test('should serialize emphasis outside phrasing', async function () {
+    assert.equal(
+      to({
+        type: 'blockquote',
+        // @ts-expect-error: check how the runtime handles phrasing in flow.
+        children: [{type: 'emphasis', children: [{type: 'text', value: '*'}]}]
+      }),
+      '> *\\**\n'
+    )
+  })
 })
 
 test('heading', async function (t) {
@@ -4216,6 +4234,17 @@ test('strong', async function (t) {
       )
     }
   )
+
+  await t.test('should serialize strong outside phrasing', async function () {
+    assert.equal(
+      to({
+        type: 'blockquote',
+        // @ts-expect-error: check how the runtime handles phrasing in flow.
+        children: [{type: 'strong', children: [{type: 'text', value: '*'}]}]
+      }),
+      '> **\\***\n'
+    )
+  })
 })
 
 test('text', async function (t) {
@@ -4230,6 +4259,10 @@ test('text', async function (t) {
 
   await t.test('should support text', async function () {
     assert.equal(to({type: 'text', value: 'a\nb'}), 'a\nb\n')
+  })
+
+  await t.test('should escape text given directly', async function () {
+    assert.equal(to({type: 'text', value: '*a*'}), '\\*a\\*\n')
   })
 })
 
@@ -5615,6 +5648,391 @@ a _\\__ is this emphasis? _\\__`
   )
 })
 
+test('attention', async function (t) {
+  await t.test(
+    'should use the other marker for emphasis next to emphasis',
+    async function () {
+      assert.equal(
+        to({
+          type: 'root',
+          children: [
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+            {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+          ]
+        }),
+        '*a*_b_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use the other marker for emphasis in emphasis',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [{type: 'emphasis', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '*_a_*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use the other marker for strong next to strong',
+    async function () {
+      assert.equal(
+        to({
+          type: 'root',
+          children: [
+            {type: 'strong', children: [{type: 'text', value: 'a'}]},
+            {type: 'strong', children: [{type: 'text', value: 'b'}]}
+          ]
+        }),
+        '**a**__b__\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use the other marker for emphasis in strong',
+    async function () {
+      assert.equal(
+        to({
+          type: 'strong',
+          children: [{type: 'emphasis', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '**_a_**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use the same marker for strong in emphasis, as that forms',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+        }),
+        '***a***\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use the same marker for strong in emphasis w/ `_`',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'emphasis',
+            children: [{type: 'strong', children: [{type: 'text', value: 'a'}]}]
+          },
+          {emphasis: '_', strong: '_'}
+        ),
+        '___a___\n'
+      )
+    }
+  )
+
+  await t.test('should keep the configured marker first', async function () {
+    assert.equal(
+      to(
+        {
+          type: 'root',
+          children: [
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+            {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+          ]
+        },
+        {emphasis: '_'}
+      ),
+      '_a_*b*\n'
+    )
+  })
+
+  await t.test('should use other markers for several nodes', async function () {
+    assert.equal(
+      to({
+        type: 'root',
+        children: [
+          {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+          {type: 'emphasis', children: [{type: 'text', value: 'b'}]},
+          {type: 'emphasis', children: [{type: 'text', value: 'c'}]},
+          {type: 'emphasis', children: [{type: 'text', value: 'd'}]}
+        ]
+      }),
+      '*a*_b_*c*_d_\n'
+    )
+  })
+
+  await t.test(
+    'should use the other marker for strong if the rule of 3 would pair it wrongly',
+    async function () {
+      assert.equal(
+        to({
+          type: 'root',
+          children: [
+            {type: 'strong', children: [{type: 'text', value: '.'}]},
+            {type: 'strong', children: [{type: 'text', value: '*'}]}
+          ]
+        }),
+        '**.**__\\*__\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use the other marker if underscores cannot form between words',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'root',
+            children: [
+              {type: 'strong', children: [{type: 'text', value: 'a'}]},
+              {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+            ]
+          },
+          {emphasis: '_', strong: '_'}
+        ),
+        '__a__*b*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use other markers if sequences would pair partially',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'strong',
+            children: [
+              {
+                type: 'emphasis',
+                children: [
+                  {type: 'strong', children: [{type: 'text', value: '.a'}]},
+                  {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+                ]
+              }
+            ]
+          },
+          {emphasis: '_', strong: '_'}
+        ),
+        '**___.a__*b*_**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep the markers if other markers do not help',
+    async function () {
+      assert.equal(
+        to({
+          type: 'emphasis',
+          children: [
+            {
+              type: 'emphasis',
+              children: [
+                {
+                  type: 'emphasis',
+                  children: [
+                    {
+                      type: 'emphasis',
+                      children: [
+                        {
+                          type: 'emphasis',
+                          children: [
+                            {
+                              type: 'emphasis',
+                              children: [{type: 'text', value: 'x'}]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }),
+        '******x******\n'
+      )
+    }
+  )
+
+  await t.test('should support attention from extensions', async function () {
+    assert.equal(
+      to(
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a '},
+            {
+              type: 'delete',
+              children: [
+                {type: 'text', value: 'b '},
+                {
+                  type: 'delete',
+                  children: [{type: 'text', value: 'c'}]
+                },
+                {type: 'text', value: ' d'}
+              ]
+            },
+            {type: 'text', value: ' e'}
+          ]
+        },
+        {handlers: {delete: attention(['~'], [2])}}
+      ),
+      'a ~~b ~~c~~ d~~ e\n'
+    )
+  })
+
+  await t.test(
+    'should support attention from extensions inside words',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a'},
+              {type: 'delete', children: [{type: 'text', value: 'b'}]},
+              {type: 'text', value: 'c '},
+              {type: 'emphasis', children: [{type: 'text', value: 'd'}]},
+              {type: 'emphasis', children: [{type: 'text', value: 'e'}]}
+            ]
+          },
+          {handlers: {delete: attention(['~'], [2])}}
+        ),
+        'a~~b~~c *d*_e_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should support attention from extensions w/ sequences longer than two',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'delete', children: [{type: 'text', value: 'a'}]},
+              {type: 'text', value: ' '},
+              {type: 'emphasis', children: [{type: 'text', value: 'b'}]},
+              {type: 'emphasis', children: [{type: 'text', value: 'c'}]}
+            ]
+          },
+          {handlers: {delete: attention(['+'], [3])}}
+        ),
+        '+++a+++ *b*_c_\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use preferred sequences from extensions',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'root',
+            children: [
+              {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+              {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+            ]
+          },
+          {handlers: {emphasis: attention(['_', '*'], [1])}}
+        ),
+        '_a_*b*\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should keep the preferred sequence of extensions if nothing pairs',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'root',
+            children: [
+              {type: 'delete', children: [{type: 'text', value: 'a'}]},
+              {type: 'delete', children: [{type: 'text', value: 'b'}]}
+            ]
+          },
+          {handlers: {delete: attention(['~'], [2, 1])}}
+        ),
+        '~~a~~~~b~~\n'
+      )
+    }
+  )
+
+  await t.test('should throw w/o `markers`', async function () {
+    assert.throws(function () {
+      to(
+        {type: 'delete', children: [{type: 'text', value: 'a'}]},
+        {handlers: {delete: attention([], [2])}}
+      )
+    }, /Cannot serialize `delete` as attention without markers, expected one or more markers/)
+  })
+
+  await t.test('should throw w/o `sizes`', async function () {
+    assert.throws(function () {
+      to(
+        {type: 'delete', children: [{type: 'text', value: 'a'}]},
+        {handlers: {delete: attention(['~'], [])}}
+      )
+    }, /Cannot serialize `delete` as attention without sizes, expected one or more sizes/)
+  })
+
+  await t.test(
+    'should throw on non-ascii punctuation in `markers`',
+    async function () {
+      assert.throws(function () {
+        to(
+          {type: 'delete', children: [{type: 'text', value: 'a'}]},
+          {handlers: {delete: attention(['a'], [2])}}
+        )
+      }, /Cannot serialize `delete` as attention with `a` as marker, expected ascii punctuation/)
+    }
+  )
+
+  await t.test(
+    'should throw on multiple ascii punctuation in `markers`',
+    async function () {
+      assert.throws(function () {
+        to(
+          {type: 'delete', children: [{type: 'text', value: 'a'}]},
+          {handlers: {delete: attention(['~~'], [1])}}
+        )
+      }, /Cannot serialize `delete` as attention with `~~` as marker, expected a single ascii character/)
+    }
+  )
+
+  await t.test('should throw on non-positive `sizes`', async function () {
+    assert.throws(function () {
+      to(
+        {type: 'delete', children: [{type: 'text', value: 'a'}]},
+        {handlers: {delete: attention(['~'], [0])}}
+      )
+    }, /Cannot serialize `delete` as attention with `0` as size, expected positive integer/)
+  })
+
+  await t.test('should throw non-integers in `sizes`', async function () {
+    assert.throws(function () {
+      to(
+        {type: 'delete', children: [{type: 'text', value: 'a'}]},
+        {handlers: {delete: attention(['~'], [1.5])}}
+      )
+    }, /Cannot serialize `delete` as attention with `1\.5` as size, expected positive integer/)
+  })
+})
+
 test('roundtrip attention', async function (t) {
   /**
    * @typedef Case
@@ -5900,6 +6318,65 @@ test('position (output)', async function (t) {
     )
   })
 })
+
+/**
+ * Create a handler for attention.
+ *
+ * @param {Array<string>} markers
+ *   Markers.
+ * @param {Array<number>} sizes
+ *   Sizes.
+ * @returns {Handle}
+ *   Handler.
+ */
+function attention(markers, sizes) {
+  handle.attention = attention
+  handle.peek = peek
+
+  return handle
+
+  /**
+   * Serialize the node.
+   *
+   * @param {Delete | Emphasis | Strong} node
+   *   Node.
+   * @param {Parents | undefined} _
+   *   Parent.
+   * @param {State} state
+   *   State.
+   * @param {Info} info
+   *   Info.
+   * @returns {string}
+   *   Serialized markdown.
+   */
+  function handle(node, _, state, info) {
+    const exit = state.enter('phrasing')
+    const value = state.containerPhrasing(
+      {type: 'root', children: [node]},
+      info
+    )
+    exit()
+    return value
+  }
+
+  /**
+   * Serialize the node as attention.
+   *
+   * @type {Attention}
+   */
+  function attention() {
+    return {construct: 'phrasing', markers, sizes}
+  }
+
+  /**
+   * Peek at the node.
+   *
+   * @type {Handle}
+   */
+  function peek() {
+    return markers[0]
+  }
+}
 
 /**
  * Create a list w/ one item, using the given children.

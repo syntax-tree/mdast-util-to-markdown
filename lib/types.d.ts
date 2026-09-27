@@ -393,22 +393,6 @@ export type ContainerPhrasing = (parent: PhrasingParents, info: Info) => string
 export type CreateTracker = (info: TrackFields) => Tracker
 
 /**
- * Whether to encode things — with fields representing the surrounding of a
- * whole.
- */
-export interface EncodeSurrounding {
-  /**
-   * Whether to encode after.
-   */
-  after: boolean
-
-  /**
-   * Whether to encode before.
-   */
-  before: boolean
-}
-
-/**
  * Whether to encode things — with fields representing the relationship to a
  * whole.
  */
@@ -488,6 +472,47 @@ export type Handle = (
   state: State,
   Info: Info
 ) => string
+
+/**
+ * Serialize a node as attention (emphasis, strong, strikethrough).
+ *
+ * Set as the `attention` field of a handler (`handle.attention = x`).
+ * This switches to a different algorithm,
+ * where attention is properly handled by `containerPhrasing`.
+ *
+ * @param node
+ *   Expected mdast node.
+ * @param state
+ *   Info passed around about the current state.
+ * @returns
+ *   Info on how to serialize `node`.
+ */
+export type Attention = (
+  // type-coverage:ignore-next-line
+  node: any,
+  state: State
+) => AttentionInfo
+
+/**
+ * Info on how to serialize attention.
+ */
+export interface AttentionInfo {
+  /**
+   * Construct to enter (such as `'emphasis'`).
+   */
+  construct: ConstructName
+  /**
+   * Markers that can be used in order of preference (such as `['*', '_']`);
+   * one or more strings, each just one ASCII punctuation character.
+   */
+  markers: Array<string>
+  /**
+   * Sizes of sequences that can be used in order of preference (such as `[2]`
+   * for strong or `[2, 1]` for GFM strikethrough);
+   * one or more numbers, each a positive integer.
+   */
+  sizes: Array<number>
+}
 
 /**
  * Pad serialized markdown.
@@ -611,7 +636,10 @@ export interface Options {
    */
   closeAtx?: boolean | null | undefined
   /**
-   * Marker to use for emphasis (default: `'*'`).
+   * Preferred marker to use for emphasis (default: `'*'`).
+   *
+   * The other marker is sometimes used, to form for example emphasis next to
+   * or inside of other emphasis (`*a*_b_`).
    */
   emphasis?: '*' | '_' | null | undefined
   /**
@@ -688,7 +716,10 @@ export interface Options {
    */
   setext?: boolean | null | undefined
   /**
-   * Marker to use for strong (default: `'*'`).
+   * Preferred marker to use for strong (default: `'*'`).
+   *
+   * The other marker is sometimes used, to form for example strong next to or
+   * inside of other strong (`**a**__b__`).
    */
   strong?: '*' | '_' | null | undefined
   /**
@@ -787,18 +818,6 @@ export interface State {
    * Get an identifier from an association to match it to others.
    */
   associationId: AssociationId
-  /**
-   * Info on whether to encode the surrounding of *attention*.
-   *
-   * Whether attention (emphasis, strong, strikethrough) forms
-   * depends on the characters inside and outside them.
-   * The characters inside can be handled by *attention* itself.
-   * However the outside characters are already handled.
-   * Or handled afterwards.
-   * This field can be used to signal from *attention* that some parent
-   * function (practically `containerPhrasing`) has to handle the surrounding.
-   */
-  attentionEncodeSurroundingInfo: EncodeSurrounding | undefined
   /**
    * List marker currently in use.
    */
