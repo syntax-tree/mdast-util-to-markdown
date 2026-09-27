@@ -71,7 +71,7 @@
     ]
   },
   "repository": "syntax-tree/mdast-util-to-markdown",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "scripts": {
     "build": "tsc --build --clean && tsc --build && type-coverage",
     "format": "remark --frail --output --quiet -- . && prettier --log-level warn --write -- . && xo --fix",
