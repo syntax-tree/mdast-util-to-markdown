@@ -1,6 +1,16 @@
 /**
  * @import {Attention, Handle, Info, State} from 'mdast-util-to-markdown'
- * @import {BlockContent, Delete, Emphasis, Link, List, Parents, PhrasingContent, Root, Strong} from 'mdast'
+ * @import {
+ *   BlockContent,
+ *   Delete,
+ *   Emphasis,
+ *   Link,
+ *   List,
+ *   Parents,
+ *   PhrasingContent,
+ *   Root,
+ *   Strong
+ * } from 'mdast'
  */
 
 import assert from 'node:assert/strict'
@@ -5130,6 +5140,48 @@ test('escape', async function (t) {
         children: [{type: 'break'}, {type: 'text', value: '\nb'}]
       }),
       '\\\n&#xA;b\n'
+    )
+  })
+
+  await t.test('should support `afterNode`', async function () {
+    assert.equal(
+      to(
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: '!'},
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]}
+          ]
+        },
+        {unsafe: [{character: '!', afterNode: 'emphasis'}]}
+      ),
+      '\\!*a*\n'
+    )
+  })
+
+  await t.test('should support `beforeNode`', async function () {
+    assert.equal(
+      to(
+        {
+          type: 'paragraph',
+          children: [
+            {type: 'emphasis', children: [{type: 'text', value: 'a'}]},
+            {type: 'text', value: '!'}
+          ]
+        },
+        {unsafe: [{character: '!', beforeNode: ['emphasis']}]}
+      ),
+      '*a*\\!\n'
+    )
+  })
+
+  await t.test('should support `unicode`', async function () {
+    assert.equal(
+      to(
+        {type: 'paragraph', children: [{type: 'text', value: ':á'}]},
+        {unsafe: [{character: ':', after: '\\p{L}', unicode: true}]}
+      ),
+      '\\:á\n'
     )
   })
 })

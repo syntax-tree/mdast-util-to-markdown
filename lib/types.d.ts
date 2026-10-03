@@ -759,6 +759,14 @@ export type PhrasingParents = Parents extends {
  */
 export interface SafeConfig extends SafeFields {
   /**
+   * Node directly after the value (optional).
+   */
+  afterNode?: Nodes | undefined
+  /**
+   * Node directly before the value (optional).
+   */
+  beforeNode?: Nodes | undefined
+  /**
    * Extra characters that *must* be encoded (as character references) instead
    * of escaped (character escapes) (optional).
    *
@@ -958,16 +966,24 @@ export interface Unsafe {
    */
   _compiled?: RegExp | null | undefined
   /**
+   * `character` is bad when these nodes are after it (optional).
+   */
+  afterNode?: Array<Nodes['type']> | Nodes['type'] | null | undefined
+  /**
    * `character` is bad when this is after it (optional).
    */
   after?: string | null | undefined
   /**
-   * `character` is bad at a break (cannot be used together with `before`) (optional).
+   * `character` is bad at a break (potentially w/ `before` between)
+   * (optional).
    */
   atBreak?: boolean | null | undefined
   /**
-   * `character` is bad when this is before it (cannot be used together with
-   * `atBreak`) (optional).
+   * `character` is bad when these nodes are before it (optional).
+   */
+  beforeNode?: Array<Nodes['type']> | Nodes['type'] | null | undefined
+  /**
+   * `character` is bad when this is before it (optional).
    */
   before?: string | null | undefined
   /**
@@ -982,4 +998,8 @@ export interface Unsafe {
    * Constructs where this is fine again (optional).
    */
   notInConstruct?: Array<ConstructName> | ConstructName | null | undefined
+  /**
+   * Compile the regex with `u` (default: `false`).
+   */
+  unicode?: boolean | null | undefined
 }

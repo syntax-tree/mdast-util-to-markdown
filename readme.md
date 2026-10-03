@@ -503,8 +503,12 @@ Configuration passed to `state.safe` (TypeScript type).
 
 * `before` (`string`)
   — characters before this (guaranteed to be one, can be more)
+* `beforeNode` ([`Node`][github-mdast-nodes], optional)
+  — node directly before the value
 * `after` (`string`)
   — characters after this (guaranteed to be one, can be more)
+* `afterNode` ([`Node`][github-mdast-nodes], optional)
+  — node directly after the value
 * `encode` (`Array<string>`, optional)
   — extra characters that *must* be encoded (as character references) instead
   of escaped (character escapes).
@@ -577,6 +581,16 @@ Schema that defines when a character cannot occur (TypeScript type).
 
 ###### Fields
 
+* `afterNode` (`Array<string>`, optional)
+  — `character` is bad when these nodes are after it
+* `after` (`string`, optional)
+  — `character` is bad when this is after it
+* `atBreak` (`boolean`, optional)
+  — `character` is bad at a break (potentially w/ `before` between)
+* `beforeNode` (`Array<string>`, optional)
+  — `character` is bad when these nodes are before it
+* `before` (`string`, optional)
+  — `character` is bad when this is before it
 * `character` (`string`)
   — single unsafe character
 * `inConstruct` ([`Array<ConstructName>`][api-construct-name],
@@ -585,13 +599,8 @@ Schema that defines when a character cannot occur (TypeScript type).
 * `notInConstruct` ([`Array<ConstructName>`][api-construct-name],
   `ConstructName`, optional)
   — constructs where this is fine again
-* `before` (`string`, optional)
-  — `character` is bad when this is before it (cannot be used together with
-  `atBreak`)
-* `after` (`string`, optional)
-  — `character` is bad when this is after it
-* `atBreak` (`boolean`, optional)
-  — `character` is bad at a break (cannot be used together with `before`)
+* `unicode` (`boolean`, default: `false`)
+  — compile the regex with `u`
 
 ## List of extensions
 
