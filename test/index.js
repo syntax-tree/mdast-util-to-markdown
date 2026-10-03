@@ -5143,6 +5143,19 @@ test('escape', async function (t) {
     )
   })
 
+  await t.test(
+    'should escape a character w/ a `before` condition after unsafe characters before the value',
+    async function () {
+      assert.equal(
+        to(
+          {type: 'emphasis', children: [{type: 'text', value: '!'}]},
+          {unsafe: [{before: '.', character: '!'}]}
+        ),
+        '*\\!*\n'
+      )
+    }
+  )
+
   await t.test('should support `afterNode`', async function () {
     assert.equal(
       to(
