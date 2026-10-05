@@ -1883,6 +1883,28 @@ test('html', async function (t) {
     }
   )
 
+  await t.test(
+    'should pair attention when many runs cannot pair',
+    async function () {
+      /** @type {Array<PhrasingContent>} */
+      const children = []
+      let index = -1
+
+      while (++index < 3) {
+        children.push(
+          {type: 'text', value: '\u{1F600}'},
+          {type: 'strong', children: [{type: 'text', value: '[a]'}]},
+          {type: 'text', value: ' '}
+        )
+      }
+
+      assert.equal(
+        to({type: 'paragraph', children}),
+        '&#x1F600;**\\[a]** &#x1F600;**\\[a]** &#x1F600;**\\[a]**&#x20;\n'
+      )
+    }
+  )
+
   await t.test('should serialize html (text)', async function () {
     assert.equal(
       to({
