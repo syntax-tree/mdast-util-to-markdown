@@ -1883,6 +1883,28 @@ test('html', async function (t) {
     }
   )
 
+  await t.test(
+    'should keep a hard break before html (text) that is a character reference',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a'},
+            {type: 'break'},
+            {type: 'html', value: '&#36;'},
+            {type: 'text', value: '5'},
+            {type: 'break'},
+            {type: 'html', value: '&amp;'},
+            {type: 'break'},
+            {type: 'html', value: '&#x1F600;'}
+          ]
+        }),
+        'a\\\n&#36;5\\\n&amp;\\\n&#x1F600;\n'
+      )
+    }
+  )
+
   await t.test('should serialize html (text)', async function () {
     assert.equal(
       to({
