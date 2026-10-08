@@ -6,6 +6,7 @@
  *   Emphasis,
  *   Link,
  *   List,
+ *   ListItem,
  *   Parents,
  *   PhrasingContent,
  *   Root,
@@ -3679,6 +3680,158 @@ test('listItem', async function (t) {
           ]
         }),
         '* a\n\n  <1\n\n  b\n\n  <!1\n\n  c\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a list and a paragraph, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {
+              type: 'list',
+              spread: false,
+              children: [
+                {
+                  type: 'listItem',
+                  spread: false,
+                  children: [
+                    {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+                  ]
+                }
+              ]
+            },
+            {type: 'paragraph', children: [{type: 'text', value: 'c'}]}
+          ]
+        }),
+        '* a\n  * b\n\n  c\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a block quote and a paragraph, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+              ]
+            },
+            {type: 'paragraph', children: [{type: 'text', value: 'c'}]}
+          ]
+        }),
+        '* a\n  > b\n\n  c\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between two block quotes, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+              ]
+            },
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+              ]
+            }
+          ]
+        }),
+        '* > a\n\n  > b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a paragraph and a `-` thematic break, in a tight list item',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'listItem',
+            spread: false,
+            children: [
+              {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+              {type: 'thematicBreak'}
+            ]
+          },
+          {rule: '-'}
+        ),
+        '* a\n\n  ---\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use a blank line between a paragraph and a thematic break that cannot be a setext underline, in a tight list item',
+    async function () {
+      /** @type {ListItem} */
+      const tree = {
+        type: 'listItem',
+        spread: false,
+        children: [
+          {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+          {type: 'thematicBreak'}
+        ]
+      }
+
+      assert.equal(to(tree), '* a\n  ***\n')
+      assert.equal(to(tree, {rule: '-', ruleSpaces: true}), '* a\n  - - -\n')
+    }
+  )
+
+  await t.test(
+    'should not use a blank line between a block quote and a list, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+              ]
+            },
+            {
+              type: 'list',
+              spread: false,
+              children: [
+                {
+                  type: 'listItem',
+                  spread: false,
+                  children: [
+                    {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+                  ]
+                }
+              ]
+            }
+          ]
+        }),
+        '* > a\n  * b\n'
       )
     }
   )
