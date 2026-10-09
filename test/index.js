@@ -17,7 +17,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {removePosition} from 'unist-util-remove-position'
 import {fromMarkdown as from} from 'mdast-util-from-markdown'
-import {toMarkdown as to} from 'mdast-util-to-markdown'
+import {defaultHandlers, toMarkdown as to} from 'mdast-util-to-markdown'
 
 test('core', async function (t) {
   await t.test('should expose the public api', async function () {
@@ -6096,6 +6096,47 @@ test('attention', async function (t) {
       )
     }, /Cannot serialize `delete` as attention with `1\.5` as size, expected positive integer/)
   })
+
+  await t.test(
+    'should support handlers that call the default `emphasis` and `strong` handlers',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a '},
+              {type: 'emphasis', children: [{type: 'text', value: 'b'}]},
+              {type: 'text', value: ' '},
+              {type: 'strong', children: [{type: 'text', value: 'c'}]}
+            ]
+          },
+          {handlers: {emphasis: callEmphasis, strong: callStrong}}
+        ),
+        'a *b* **c**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should support handlers that call the default handlers when nested',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'strong',
+            children: [
+              {type: 'text', value: 'a '},
+              {type: 'emphasis', children: [{type: 'text', value: 'b'}]},
+              {type: 'text', value: ' c'}
+            ]
+          },
+          {handlers: {emphasis: callEmphasis, strong: callStrong}}
+        ),
+        '**a *b* c**\n'
+      )
+    }
+  )
 })
 
 test('roundtrip attention', async function (t) {
@@ -6383,6 +6424,42 @@ test('position (output)', async function (t) {
     )
   })
 })
+
+/**
+ * Call the default `emphasis` handler.
+ *
+ * @param {Emphasis} node
+ *   Node.
+ * @param {Parents | undefined} parent
+ *   Parent.
+ * @param {State} state
+ *   State.
+ * @param {Info} info
+ *   Info.
+ * @returns {string}
+ *   Serialized markdown.
+ */
+function callEmphasis(node, parent, state, info) {
+  return defaultHandlers.emphasis(node, parent, state, info)
+}
+
+/**
+ * Call the default `strong` handler.
+ *
+ * @param {Strong} node
+ *   Node.
+ * @param {Parents | undefined} parent
+ *   Parent.
+ * @param {State} state
+ *   State.
+ * @param {Info} info
+ *   Info.
+ * @returns {string}
+ *   Serialized markdown.
+ */
+function callStrong(node, parent, state, info) {
+  return defaultHandlers.strong(node, parent, state, info)
+}
 
 /**
  * Create a handler for attention.
