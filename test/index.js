@@ -5053,6 +5053,56 @@ test('escape', async function (t) {
   )
 
   await t.test(
+    'should escape a backslash before a letter that is encoded for attention',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: '\\a'},
+            {
+              type: 'strong',
+              children: [
+                {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+              ]
+            }
+          ]
+        }),
+        '\\\\&#x61;**_b_**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape a backslash after an escaped backslash before a letter that is encoded for attention',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: '\\\\a'},
+            {
+              type: 'strong',
+              children: [
+                {type: 'emphasis', children: [{type: 'text', value: 'b'}]}
+              ]
+            }
+          ]
+        }),
+        '\\\\\\\\&#x61;**_b_**\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a backslash before a letter that is encoded for attention',
+    async function () {
+      const value = '\\\\&#x61;**_b_**\n'
+      assert.equal(to(from(value)), value)
+    }
+  )
+
+  await t.test(
     'should escape `_` before a letter that is encoded for attention',
     async function () {
       assert.equal(
