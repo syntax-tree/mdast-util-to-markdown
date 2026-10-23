@@ -4389,6 +4389,26 @@ test('escape', async function (t) {
   )
 
   await t.test(
+    'should escape a backslash before an encoded line ending correctly (1)',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\\\n'}]}),
+        'a\\\\&#xA;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape a backslash before an encoded line ending correctly (2)',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\\\n\nb'}]}),
+        'a\\\\&#xA;&#xA;b\n'
+      )
+    }
+  )
+
+  await t.test(
     'should escape what would otherwise be a named character reference',
     async function () {
       assert.equal(
