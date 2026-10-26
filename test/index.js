@@ -5070,6 +5070,23 @@ test('escape', async function (t) {
       )
     }
   )
+
+  await t.test(
+    'should escape a backslash before a letter that is encoded for attention',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: '\\a'},
+            {type: 'emphasis', children: [{type: 'text', value: '!'}]}
+          ]
+        }),
+        '\\\\&#x61;*!*\n'
+      )
+    }
+  )
+
   await t.test(
     'should encode a line ending at the start of a paragraph',
     async function () {
@@ -5086,6 +5103,16 @@ test('escape', async function (t) {
       assert.equal(
         to({type: 'paragraph', children: [{type: 'text', value: 'a\n'}]}),
         'a&#xA;\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should encode a line ending at the end of a paragraph after a backslash',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: '\\\n'}]}),
+        '\\\\&#xA;\n'
       )
     }
   )
