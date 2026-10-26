@@ -870,6 +870,13 @@ test('code (flow)', async function (t) {
     )
   })
 
+  await t.test('should escape an ampersand in `lang`', async function () {
+    assert.equal(
+      to({type: 'code', lang: '&amp;', value: ''}),
+      '```\\&amp;\n```\n'
+    )
+  })
+
   await t.test('should not encode a space in `meta`', async function () {
     assert.equal(
       to({type: 'code', lang: 'x', meta: 'a b', value: ''}),
@@ -897,6 +904,33 @@ test('code (flow)', async function (t) {
       '```x a\\\\-b\n```\n'
     )
   })
+
+  await t.test('should escape an ampersand in `meta`', async function () {
+    assert.equal(
+      to({type: 'code', lang: 'x', meta: '&amp;', value: ''}),
+      '```x \\&amp;\n```\n'
+    )
+  })
+
+  await t.test(
+    'should escape an ampersand in `lang` when `fence: "~"`',
+    async function () {
+      assert.equal(
+        to({type: 'code', lang: '&amp;', value: ''}, {fence: '~'}),
+        '~~~\\&amp;\n~~~\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape an ampersand in `meta` when `fence: "~"`',
+    async function () {
+      assert.equal(
+        to({type: 'code', lang: 'x', meta: '&amp;', value: ''}, {fence: '~'}),
+        '~~~x \\&amp;\n~~~\n'
+      )
+    }
+  )
 
   await t.test(
     'should support fenced code w/ tildes when `fence: "~"`',
@@ -1111,6 +1145,16 @@ test('definition', async function (t) {
   )
 
   await t.test(
+    'should escape an ampersand in `url` in an enclosed url',
+    async function () {
+      assert.equal(
+        to({type: 'definition', identifier: 'a', url: 'b &amp;'}),
+        '[a]: <b \\&amp;>\n'
+      )
+    }
+  )
+
+  await t.test(
     'should encode a line ending in `url` in an enclosed url',
     async function () {
       assert.equal(
@@ -1160,6 +1204,16 @@ test('definition', async function (t) {
     }
   )
 
+  await t.test(
+    'should escape an ampersand in `url` in a raw url',
+    async function () {
+      assert.equal(
+        to({type: 'definition', identifier: 'a', url: '&amp;'}),
+        '[a]: \\&amp;\n'
+      )
+    }
+  )
+
   await t.test('should support a definition w/ title', async function () {
     assert.equal(
       to({type: 'definition', identifier: 'a', url: '', title: 'b'}),
@@ -1195,6 +1249,16 @@ test('definition', async function (t) {
   )
 
   await t.test(
+    'should escape an ampersand in `title` in a title',
+    async function () {
+      assert.equal(
+        to({type: 'definition', identifier: 'a', url: '', title: '&amp;'}),
+        '[a]: <> "\\&amp;"\n'
+      )
+    }
+  )
+
+  await t.test(
     'should support a definition w/ title when `quote: "\'"`',
     async function () {
       assert.equal(
@@ -1216,6 +1280,19 @@ test('definition', async function (t) {
           {quote: "'"}
         ),
         "[a]: <> '\\''\n"
+      )
+    }
+  )
+
+  await t.test(
+    'should escape an ampersand in `title` in a title when `quote: "\'"`',
+    async function () {
+      assert.equal(
+        to(
+          {type: 'definition', identifier: 'a', url: '', title: '&amp;'},
+          {quote: "'"}
+        ),
+        "[a]: <> '\\&amp;'\n"
       )
     }
   )
