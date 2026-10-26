@@ -870,6 +870,20 @@ test('code (flow)', async function (t) {
     )
   })
 
+  await t.test(
+    'should escape character references in `lang`',
+    async function () {
+      assert.equal(
+        to({type: 'code', lang: 'a&amp;b', value: ''}),
+        '```a\\&amp;b\n```\n'
+      )
+      assert.equal(
+        to({type: 'code', lang: 'a&#x26;b', value: ''}),
+        '```a\\&#x26;b\n```\n'
+      )
+    }
+  )
+
   await t.test('should not encode a space in `meta`', async function () {
     assert.equal(
       to({type: 'code', lang: 'x', meta: 'a b', value: ''}),
@@ -899,6 +913,20 @@ test('code (flow)', async function (t) {
   })
 
   await t.test(
+    'should escape character references in `meta`',
+    async function () {
+      assert.equal(
+        to({type: 'code', lang: 'x', meta: 'title="&lt;x"', value: ''}),
+        '```x title="\\&lt;x"\n```\n'
+      )
+      assert.equal(
+        to({type: 'code', lang: 'x', meta: 'title="&#38;x"', value: ''}),
+        '```x title="\\&#38;x"\n```\n'
+      )
+    }
+  )
+
+  await t.test(
     'should support fenced code w/ tildes when `fence: "~"`',
     async function () {
       assert.equal(to({type: 'code', value: ''}, {fence: '~'}), '~~~\n~~~\n')
@@ -912,6 +940,39 @@ test('code (flow)', async function (t) {
         to({type: 'code', lang: 'a`b', value: ''}, {fence: '~'}),
         '~~~a`b\n~~~\n'
       )
+    }
+  )
+
+  await t.test(
+    'should escape character references in `lang` and `meta` when `fence: "~"`',
+    async function () {
+      assert.equal(
+        to(
+          {type: 'code', lang: 'a&amp;b', meta: 'title="&lt;x"', value: ''},
+          {fence: '~'}
+        ),
+        '~~~a\\&amp;b title="\\&lt;x"\n~~~\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip character references in code `lang` and `meta`',
+    async function () {
+      /** @type {import('mdast').Code} */
+      const node = {
+        type: 'code',
+        lang: 'a&amp;b',
+        meta: 'title="&lt;x"',
+        value: 'x'
+      }
+      const markdown = to(node)
+      assert.equal(markdown, '```a\\&amp;b title="\\&lt;x"\nx\n```\n')
+      const parsed = /** @type {import('mdast').Code} */ (
+        from(markdown).children[0]
+      )
+      assert.equal(parsed.lang, node.lang)
+      assert.equal(parsed.meta, node.meta)
     }
   )
 
