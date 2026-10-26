@@ -3761,6 +3761,161 @@ test('listItem', async function (t) {
   )
 
   await t.test(
+    'should use a blank line between a paragraph and a list that cannot interrupt it, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+            {
+              type: 'list',
+              ordered: true,
+              start: 2,
+              children: [{type: 'listItem', children: []}]
+            }
+          ]
+        }),
+        '* a\n\n  2.\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a paragraph and a rule that would underline it, in a tight list item',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'listItem',
+            spread: false,
+            children: [
+              {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+              {type: 'thematicBreak'}
+            ]
+          },
+          {rule: '-'}
+        ),
+        '* a\n\n  ---\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a paragraph and indented code, in a tight list item',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'listItem',
+            spread: false,
+            children: [
+              {type: 'paragraph', children: [{type: 'text', value: 'a'}]},
+              {type: 'code', value: 'b'}
+            ]
+          },
+          {fences: false}
+        ),
+        '* a\n\n      b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a definition and what cannot interrupt a paragraph, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {type: 'definition', identifier: 'a', url: 'b'},
+            {type: 'html', value: '<b>'},
+            {type: 'definition', identifier: 'c', url: 'd'},
+            {
+              type: 'list',
+              ordered: true,
+              start: 2,
+              children: [{type: 'listItem', children: []}]
+            }
+          ]
+        }),
+        '* [a]: b\n\n  <b>\n\n  [c]: d\n\n  2.\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a block quote and a paragraph, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+              ]
+            },
+            {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+          ]
+        }),
+        '* > a\n\n  b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between a block quote ending in a definition and a paragraph, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {
+              type: 'blockquote',
+              children: [{type: 'definition', identifier: 'a', url: 'b'}]
+            },
+            {type: 'paragraph', children: [{type: 'text', value: 'c'}]}
+          ]
+        }),
+        '* > [a]: b\n\n  c\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use a blank line between block quotes, in a tight list item',
+    async function () {
+      assert.equal(
+        to({
+          type: 'listItem',
+          spread: false,
+          children: [
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'a'}]}
+              ]
+            },
+            {
+              type: 'blockquote',
+              children: [
+                {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
+              ]
+            }
+          ]
+        }),
+        '* > a\n\n  > b\n'
+      )
+    }
+  )
+
+  await t.test(
     'should use one space after the bullet for `listItemIndent: "one"`',
     async function () {
       assert.equal(
