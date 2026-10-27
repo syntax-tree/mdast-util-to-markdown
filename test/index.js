@@ -2435,6 +2435,48 @@ test('link', async function (t) {
   })
 
   await t.test(
+    'should use an empty title if the text could form a definition',
+    async function () {
+      assert.equal(
+        to({
+          type: 'link',
+          url: 'b',
+          children: [{type: 'inlineCode', value: 'a]:'}]
+        }),
+        '[`a]:`](b "")\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use an empty title and enclose an empty url if the text could form a definition',
+    async function () {
+      assert.equal(
+        to({
+          type: 'link',
+          url: '',
+          children: [{type: 'inlineCode', value: 'a]:'}]
+        }),
+        '[`a]:`](<> "")\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use an empty title if the bracket is escaped',
+    async function () {
+      assert.equal(
+        to({
+          type: 'link',
+          url: 'b',
+          children: [{type: 'inlineCode', value: '\\]:'}]
+        }),
+        '[`\\]:`](b)\n'
+      )
+    }
+  )
+
+  await t.test(
     'should support a link w/ enclosed url w/ whitespace in url',
     async function () {
       assert.equal(to({type: 'link', url: 'b c', children: []}), '[](<b c>)\n')
