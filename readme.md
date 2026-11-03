@@ -803,7 +803,7 @@ abide by its terms.
 
 [size]: https://bundlejs.com/?q=mdast-util-to-markdown
 
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-to-markdown
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size\&query=$.size.compressedSize\&url=https://deno.bundlejs.com/?q=mdast-util-to-markdown
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
