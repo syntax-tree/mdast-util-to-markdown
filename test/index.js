@@ -5498,6 +5498,29 @@ test('escape', async function (t) {
       '\\:á\n'
     )
   })
+
+  await t.test(
+    'should treat empty `after` or `before` as missing',
+    async function () {
+      /** @type {Root} */
+      const tree = {type: 'root', children: [{type: 'text', value: '*!*'}]}
+
+      assert.equal(
+        to(tree, {
+          unsafe: [{after: undefined, before: undefined, character: '!'}]
+        }),
+        '\\*\\!\\*\n'
+      )
+      assert.equal(
+        to(tree, {unsafe: [{after: null, before: null, character: '!'}]}),
+        '\\*\\!\\*\n'
+      )
+      assert.equal(
+        to(tree, {unsafe: [{after: '', before: '', character: '!'}]}),
+        '\\*\\!\\*\n'
+      )
+    }
+  )
 })
 
 test('roundtrip', async function (t) {
