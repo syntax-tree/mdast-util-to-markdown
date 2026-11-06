@@ -6257,7 +6257,7 @@ test('attention', async function (t) {
           },
           {emphasis: '_', strong: '_'}
         ),
-        '**___.a__*b*_**\n'
+        '__***.a**_b_*__\n'
       )
     }
   )
@@ -6299,6 +6299,55 @@ test('attention', async function (t) {
       )
     }
   )
+
+  await t.test('should roundtrip touching runs (GH-96)', async function (t) {
+    /** @type {Array<PhrasingContent>} */
+    const runs = []
+    let index = -1
+
+    while (++index < 40) {
+      const a = index % 2 ? '.' : 'a'
+      const b = index % 2 ? 'a' : '.'
+      runs.push(
+        {type: 'strong', children: [{type: 'text', value: a}]},
+        {
+          type: 'emphasis',
+          children: [
+            {type: 'text', value: b},
+            {type: 'strong', children: [{type: 'text', value: a}]}
+          ]
+        },
+        {
+          type: 'strong',
+          children: [{type: 'emphasis', children: [{type: 'text', value: b}]}]
+        }
+      )
+    }
+
+    await t.test('in a paragraph', async function () {
+      /** @type {Root} */
+      const tree = {
+        type: 'root',
+        children: [{type: 'paragraph', children: runs}]
+      }
+      const actual = from(to(tree))
+      removePosition(actual, {force: true})
+      assert.deepEqual(actual, tree)
+    })
+
+    await t.test('in emphasis', async function () {
+      /** @type {Root} */
+      const tree = {
+        type: 'root',
+        children: [
+          {type: 'paragraph', children: [{type: 'emphasis', children: runs}]}
+        ]
+      }
+      const actual = from(to(tree))
+      removePosition(actual, {force: true})
+      assert.deepEqual(actual, tree)
+    })
+  })
 
   await t.test('should support attention from extensions', async function () {
     assert.equal(
