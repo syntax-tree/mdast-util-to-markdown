@@ -6,6 +6,7 @@
  *   Emphasis,
  *   Link,
  *   List,
+ *   Paragraph,
  *   Parents,
  *   PhrasingContent,
  *   Root,
@@ -1312,13 +1313,47 @@ test('definition', async function (t) {
 })
 
 test('emphasis', async function (t) {
-  await t.test('should support an empty emphasis', async function () {
+  await t.test('should drop an empty emphasis', async function () {
     assert.equal(
       // @ts-expect-error: check how the runtime handles `children` missing.
       to({type: 'emphasis'}),
-      '**\n'
+      ''
     )
   })
+
+  await t.test(
+    'should drop empty attention handled directly',
+    async function () {
+      assert.equal(
+        to(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'emphasis', children: []},
+              {type: 'strong', children: []}
+            ]
+          },
+          {
+            handlers: {
+              /**
+               * Handle children directly, like some extensions do.
+               *
+               * @type {Handle}
+               * @param {Paragraph} node
+               *   Paragraph node.
+               */
+              paragraph(node, _, state, info) {
+                return node.children
+                  .map((child) => state.handle(child, node, state, info))
+                  .join('')
+              }
+            }
+          }
+        ),
+        ''
+      )
+    }
+  )
 
   await t.test(
     'should throw on when given an incorrect `emphasis`',
@@ -1389,21 +1424,53 @@ test('emphasis', async function (t) {
   )
 
   await t.test(
-    'should not encode characters in empty emphasis',
+    'should drop emphasis with only empty attention',
+    async function () {
+      assert.equal(
+        to({
+          type: 'paragraph',
+          children: [
+            {type: 'text', value: 'a '},
+            {type: 'emphasis', children: [{type: 'strong', children: []}]},
+            {type: 'text', value: ' b'}
+          ]
+        }),
+        'a  b\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not encode outside when there is nothing before emphasis',
     async function () {
       assert.equal(
         to(
           {
             type: 'paragraph',
             children: [
-              {type: 'text', value: 'a'},
-              {type: 'emphasis', children: []},
-              {type: 'text', value: 'b'}
+              {type: 'emphasis', children: [{type: 'text', value: '.'}]}
             ]
           },
-          {emphasis: '_'}
+          {
+            handlers: {
+              /**
+               * Serialize paragraphs as if after and before a letter.
+               *
+               * @type {Handle}
+               * @param {Paragraph} node
+               *   Paragraph node.
+               */
+              paragraph(node, _, state, info) {
+                return state.containerPhrasing(node, {
+                  ...info,
+                  before: 'a',
+                  after: 'a'
+                })
+              }
+            }
+          }
         ),
-        '&#x61;__&#x62;\n'
+        '*.*\n'
       )
     }
   )
@@ -4353,11 +4420,11 @@ test('paragraph', async function (t) {
 })
 
 test('strong', async function (t) {
-  await t.test('should support an empty strong', async function () {
+  await t.test('should drop an empty strong', async function () {
     assert.equal(
       // @ts-expect-error: check how the runtime handles `children` missing.
       to({type: 'strong'}),
-      '****\n'
+      ''
     )
   })
 
@@ -4462,26 +4529,6 @@ test('strong', async function (t) {
           {strong: '_'}
         ),
         '__b&#x1F4A1;__&#x61;\n'
-      )
-    }
-  )
-
-  await t.test(
-    'should not encode characters in empty strong',
-    async function () {
-      assert.equal(
-        to(
-          {
-            type: 'paragraph',
-            children: [
-              {type: 'text', value: 'a'},
-              {type: 'strong', children: []},
-              {type: 'text', value: 'b'}
-            ]
-          },
-          {strong: '_'}
-        ),
-        '&#x61;____&#x62;\n'
       )
     }
   )
