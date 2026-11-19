@@ -2909,6 +2909,67 @@ test('link', async function (t) {
   )
 
   await t.test(
+    'should escape a `<` at the start of a `destinationRaw` (link)',
+    async function () {
+      assert.equal(
+        to({type: 'link', url: '<a>', children: [{type: 'text', value: 'b'}]}),
+        '[b](\\<a>)\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape a `<` at the start of a `destinationRaw` (link, unclosed)',
+    async function () {
+      assert.equal(
+        to({type: 'link', url: '<a', children: [{type: 'text', value: 'b'}]}),
+        '[b](\\<a)\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape a `<` at the start of a `destinationRaw` (image)',
+    async function () {
+      assert.equal(to({type: 'image', url: '<a>', alt: 'b'}), '![b](\\<a>)\n')
+    }
+  )
+
+  await t.test(
+    'should escape a `<` at the start of a `destinationRaw` (definition)',
+    async function () {
+      assert.equal(
+        to({type: 'definition', identifier: 'b', url: '<a>'}),
+        '[b]: \\<a>\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a `destinationRaw` starting with `<`',
+    async function () {
+      const urls = ['<a>', '<a', '<', '<<a>>']
+
+      assert.deepEqual(
+        urls.map(function (url) {
+          const tree = from(
+            to({
+              type: 'link',
+              url,
+              title: 't',
+              children: [{type: 'text', value: 'b'}]
+            })
+          )
+          const head = tree.children[0]
+          const link = head.type === 'paragraph' ? head.children[0] : undefined
+          return link && link.type === 'link' ? link.url : undefined
+        }),
+        urls
+      )
+    }
+  )
+
+  await t.test(
     'should not escape unneeded characters in a `title` (double quotes)',
     async function () {
       assert.equal(
