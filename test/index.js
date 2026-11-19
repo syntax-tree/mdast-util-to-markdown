@@ -1126,6 +1126,16 @@ test('definition', async function (t) {
   )
 
   await t.test(
+    'should use an enclosed url for a leading `<` in `url`',
+    async function () {
+      assert.equal(
+        to({type: 'definition', identifier: 'a', url: '<b>'}),
+        '[a]: <\\<b\\>>\n'
+      )
+    }
+  )
+
+  await t.test(
     'should escape a closing angle bracket in `url` in an enclosed url',
     async function () {
       assert.equal(
@@ -2082,6 +2092,13 @@ test('image', async function (t) {
   )
 
   await t.test(
+    'should use an enclosed url for a leading `<` in `url`',
+    async function () {
+      assert.equal(to({type: 'image', url: '<b>'}), '![](<\\<b\\>>)\n')
+    }
+  )
+
+  await t.test(
     'should escape a closing angle bracket in `url` in an enclosed url',
     async function () {
       assert.equal(to({type: 'image', url: 'b >c'}), '![](<b \\>c>)\n')
@@ -2556,6 +2573,16 @@ test('link', async function (t) {
       assert.equal(
         to({type: 'link', url: 'b <c', children: []}),
         '[](<b \\<c>)\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should use an enclosed url for a leading `<` in `url`',
+    async function () {
+      assert.equal(
+        to({type: 'link', url: '<b>', children: []}),
+        '[](<\\<b\\>>)\n'
       )
     }
   )
