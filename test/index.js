@@ -5790,10 +5790,11 @@ test('roundtrip', async function (t) {
   await t.test('should not collapse escapes (2)', async function () {
     const value = '\\\\*a\\\\\\*'
 
-    assert.deepEqual(
-      removePosition(from(value)),
-      removePosition(from(to(from(value))))
-    )
+    const expected = from(value)
+    const actual = from(to(expected))
+    removePosition(actual, {force: true})
+    removePosition(expected, {force: true})
+    assert.deepEqual(actual, expected)
   })
 
   await t.test(
@@ -5826,179 +5827,151 @@ test('roundtrip', async function (t) {
   await t.test(
     'should roundtrip different lists w/ `bulletOther`',
     async function () {
-      const tree = from('* a\n- b')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('* a\n- b')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (1)',
     async function () {
-      const tree = from('* ---\n- - +\n+ b')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('* ---\n- - +\n+ b')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (2)',
     async function () {
-      const tree = from('- - +\n* ---\n+ b')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('- - +\n* ---\n+ b')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (3)',
     async function () {
-      const tree = from('- - +\n- -')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('- - +\n- -')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (4)',
     async function () {
-      const tree = from('* - +\n    *\n    -\n    +')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('* - +\n    *\n    -\n    +')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (5)',
     async function () {
-      const tree = from('* - +\n  - *\n    -\n    +')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('* - +\n  - *\n    -\n    +')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different lists w/ `bulletOther` and lists that could turn into thematic breaks (6)',
     async function () {
-      const tree = from('- +\n- *\n  -\n  +')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree, {bullet: '*', bulletOther: '-'})), {
-          force: true
-        })
-      )
+      const expected = from('- +\n- *\n  -\n  +')
+      const actual = from(to(expected, {bullet: '*', bulletOther: '-'}))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test('should roundtrip adjacent ordered lists', async function () {
-    const tree = from('1. a\n1) b')
-
-    assert.deepEqual(
-      removePosition(tree, {force: true}),
-      removePosition(from(to(tree)), {force: true})
-    )
+    const expected = from('1. a\n1) b')
+    const actual = from(to(expected))
+    removePosition(actual, {force: true})
+    removePosition(expected, {force: true})
+    assert.deepEqual(actual, expected)
   })
 
   await t.test(
     'should roundtrip different ordered lists and lists that could turn into thematic breaks (1)',
     async function () {
-      const tree = from('1. ---\n1) 1. 1)\n1. b')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree)), {force: true})
-      )
+      const expected = from('1. ---\n1) 1. 1)\n1. b')
+      const actual = from(to(expected))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different ordered lists and lists that could turn into thematic breaks (2)',
     async function () {
-      const tree = from('1. 1. 1)\n1) ---\n1. b')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree)), {force: true})
-      )
+      const expected = from('1. 1. 1)\n1) ---\n1. b')
+      const actual = from(to(expected))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different ordered lists and lists that could turn into thematic breaks (3)',
     async function () {
-      const tree = from('1. 1. 1)\n1. 1.')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree)), {force: true})
-      )
+      const expected = from('1. 1. 1)\n1. 1.')
+      const actual = from(to(expected))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different ordered lists and lists that could turn into thematic breaks (4)',
     async function () {
-      const tree = from('1. 1) 1.\n      1.\n      1)\n    1.')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree)), {force: true})
-      )
+      const expected = from('1. 1) 1.\n      1.\n      1)\n    1.')
+      const actual = from(to(expected))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different ordered lists and lists that could turn into thematic breaks (5)',
     async function () {
-      const tree = from('1. 1) 1.\n   1) 1.\n     1)\n     1.')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree)), {force: true})
-      )
+      const expected = from('1. 1) 1.\n   1) 1.\n     1)\n     1.')
+      const actual = from(to(expected))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
   await t.test(
     'should roundtrip different ordered lists and lists that could turn into thematic breaks (6)',
     async function () {
-      const tree = from('1. 1)\n1. 1.\n   1)\n   1.')
-
-      assert.deepEqual(
-        removePosition(tree, {force: true}),
-        removePosition(from(to(tree)), {force: true})
-      )
+      const expected = from('1. 1)\n1. 1.\n   1)\n   1.')
+      const actual = from(to(expected))
+      removePosition(actual, {force: true})
+      removePosition(expected, {force: true})
+      assert.deepEqual(actual, expected)
     }
   )
 
@@ -6051,10 +6024,10 @@ a **\\* is this emphasis? **\\*
 a *\\** is this emphasis? *\\**`
     const tree = from(value)
 
-    assert.deepEqual(
-      removePosition(from(to(tree)), {force: true}),
-      removePosition(tree, {force: true})
-    )
+    const actual = from(to(tree))
+    removePosition(tree, {force: true})
+    removePosition(actual, {force: true})
+    assert.deepEqual(actual, tree)
   })
 
   await t.test('should roundtrip underscores (tree)', async function () {
@@ -6085,10 +6058,10 @@ a __\\_ is this emphasis? __\\_
 a _\\__ is this emphasis? _\\__`
     const tree = from(value)
 
-    assert.deepEqual(
-      removePosition(from(to(tree)), {force: true}),
-      removePosition(tree, {force: true})
-    )
+    const actual = from(to(tree))
+    removePosition(tree, {force: true})
+    removePosition(actual, {force: true})
+    assert.deepEqual(actual, tree)
   })
 
   await t.test('should roundtrip attention-like plain text', async function () {
