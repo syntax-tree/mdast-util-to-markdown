@@ -76,12 +76,6 @@ In Node.js (version 16+), install with [npm][]:
 npm install mdast-util-to-markdown
 ```
 
-In Deno with [`esm.sh`][esmsh]:
-
-```js
-import {toMarkdown} from 'https://esm.sh/mdast-util-to-markdown@2'
-```
-
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
@@ -803,7 +797,7 @@ abide by its terms.
 
 [size]: https://bundlejs.com/?q=mdast-util-to-markdown
 
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size\&query=$.size.compressedSize\&url=https://deno.bundlejs.com/?q=mdast-util-to-markdown
+[size-badge]: https://img.shields.io/bundlejs/size/mdast-util-to-markdown
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
