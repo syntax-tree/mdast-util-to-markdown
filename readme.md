@@ -1,12 +1,9 @@
 # mdast-util-to-markdown
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
-[![Sponsors][sponsors-badge]][collective]
-[![Backers][backers-badge]][collective]
-[![Chat][chat-badge]][chat]
+[![Build][badge-build-image]][badge-build-url]
+[![Coverage][badge-coverage-image]][badge-coverage-url]
+[![Downloads][badge-downloads-image]][badge-downloads-url]
+[![Size][badge-size-image]][badge-size-url]
 
 **[mdast][github-mdast]** utility that turns a syntax tree into markdown.
 
@@ -17,8 +14,6 @@
 * [Install](#install)
 * [Use](#use)
 * [API](#api)
-  * [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
-  * [`defaultHandlers`](#defaulthandlers)
   * [`Attention`](#attention)
   * [`AttentionInfo`](#attentioninfo)
   * [`ConstructName`](#constructname)
@@ -33,10 +28,11 @@
   * [`State`](#state)
   * [`Tracker`](#tracker)
   * [`Unsafe`](#unsafe)
+  * [`defaultHandlers`](#defaulthandlers)
+  * [`toMarkdown(tree[, options])`](#tomarkdowntree-options)
 * [List of extensions](#list-of-extensions)
 * [Syntax](#syntax)
 * [Syntax tree](#syntax-tree)
-* [Types](#types)
 * [Compatibility](#compatibility)
 * [Security](#security)
 * [Related](#related)
@@ -69,8 +65,8 @@ Notable examples that deeply integrate with it are
 
 ## Install
 
-This package is [ESM only][esm].
-In Node.js (version 16+), install with [npm][]:
+This package is [ESM only][github-gist-esm].
+In Node.js (version 16+), install with [npm][npmjs-install]:
 
 ```sh
 npm install mdast-util-to-markdown
@@ -140,24 +136,21 @@ This package exports the identifiers [`defaultHandlers`][api-default-handlers]
 and [`toMarkdown`][api-to-markdown].
 There is no default export.
 
-### `toMarkdown(tree[, options])`
-
-Turn an **[mdast][github-mdast]** syntax tree into markdown.
-
-###### Parameters
-
-* `tree` ([`Node`][github-mdast-nodes])
-  — tree to serialize
-* `options` ([`Options`][api-options], optional)
-  — configuration
-
-###### Returns
-
-Serialized markdown representing `tree` (`string`).
-
-### `defaultHandlers`
-
-Default (CommonMark) handlers ([`Handlers`][api-handlers]).
+It exports the additional [TypeScript][] types
+[`Attention`][api-attention],
+[`AttentionInfo`][api-attention-info],
+[`ConstructName`][api-construct-name],
+[`ConstructNameMap`][api-construct-name-map],
+[`Handle`][api-handle],
+[`Handlers`][api-handlers],
+[`Info`][api-info],
+[`Join`][api-join],
+[`Map`][api-map],
+[`Options`][api-options],
+[`SafeConfig`][api-safe-config],
+[`State`][api-state],
+[`Tracker`][api-tracker], and
+[`Unsafe`][api-unsafe].
 
 ### `Attention`
 
@@ -381,7 +374,7 @@ Marker to use for bullets of items in ordered lists (`'.'` or `')'`, default:
 There is one case where the primary bullet for ordered items cannot be used:
 
 * when two ordered lists appear next to each other: `1. a\n2) b`; to solve
-  that, `'.'` will be used when `bulletOrdered` is `')'`, and `'.'` otherwise
+  that, `'.'` will be used when `bulletOrdered` is `')'`, and `')'` otherwise
 
 ###### `options.closeAtx`
 
@@ -596,6 +589,25 @@ Schema that defines when a character cannot occur (TypeScript type).
 * `unicode` (`boolean`, default: `false`)
   — compile the regex with `u`
 
+### `defaultHandlers`
+
+Default (CommonMark) handlers ([`Handlers`][api-handlers]).
+
+### `toMarkdown(tree[, options])`
+
+Turn an **[mdast][github-mdast]** syntax tree into markdown.
+
+###### Parameters
+
+* `tree` ([`Node`][github-mdast-nodes])
+  — tree to serialize
+* `options` ([`Options`][api-options], optional)
+  — configuration
+
+###### Returns
+
+Serialized markdown representing `tree` (`string`).
+
 ## List of extensions
 
 * [`syntax-tree/mdast-util-directive`][github-mdast-util-directive]
@@ -634,24 +646,6 @@ Extensions can add support for custom syntax.
 ## Syntax tree
 
 The syntax tree is [mdast][github-mdast].
-
-## Types
-
-This package is fully typed with [TypeScript][].
-It exports the additional types
-[`Attention`][api-attention],
-[`AttentionInfo`][api-attention-info],
-[`ConstructName`][api-construct-name],
-[`ConstructNameMap`][api-construct-name-map],
-[`Handle`][api-handle],
-[`Handlers`][api-handlers],
-[`Info`][api-info],
-[`Join`][api-join],
-[`Map`][api-map],
-[`Options`][api-options],
-[`SafeConfig`][api-safe-config],
-[`State`][api-State], and
-[`Unsafe`][api-Unsafe].
 
 ## Compatibility
 
@@ -699,7 +693,7 @@ abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][wooorm]
+[MIT][file-license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
 
@@ -735,29 +729,27 @@ abide by its terms.
 
 [api-unsafe]: #unsafe
 
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
+[badge-build-image]: https://github.com/syntax-tree/mdast-util-to-markdown/workflows/main/badge.svg
 
-[build]: https://github.com/syntax-tree/mdast-util-to-markdown/actions
+[badge-build-url]: https://github.com/syntax-tree/mdast-util-to-markdown/actions
 
-[build-badge]: https://github.com/syntax-tree/mdast-util-to-markdown/workflows/main/badge.svg
+[badge-coverage-image]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-to-markdown.svg
 
-[chat]: https://github.com/syntax-tree/unist/discussions
+[badge-coverage-url]: https://codecov.io/github/syntax-tree/mdast-util-to-markdown
 
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
+[badge-downloads-image]: https://img.shields.io/npm/dm/mdast-util-to-markdown.svg
 
-[collective]: https://opencollective.com/unified
+[badge-downloads-url]: https://www.npmjs.com/package/mdast-util-to-markdown
 
-[coverage]: https://codecov.io/github/syntax-tree/mdast-util-to-markdown
+[badge-size-image]: https://img.shields.io/bundlejs/size/mdast-util-to-markdown
 
-[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-to-markdown.svg
-
-[downloads]: https://www.npmjs.com/package/mdast-util-to-markdown
-
-[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-to-markdown.svg
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+[badge-size-url]: https://bundlejs.com/?q=mdast-util-to-markdown
 
 [esmsh]: https://esm.sh
+
+[file-license]: license
+
+[github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 
 [github-hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
 
@@ -791,15 +783,7 @@ abide by its terms.
 
 [health-support]: https://github.com/syntax-tree/.github/blob/main/support.md
 
-[license]: license
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[size]: https://bundlejs.com/?q=mdast-util-to-markdown
-
-[size-badge]: https://img.shields.io/bundlejs/size/mdast-util-to-markdown
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+[npmjs-install]: https://docs.npmjs.com/cli/install
 
 [typescript]: https://www.typescriptlang.org
 
