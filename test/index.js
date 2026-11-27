@@ -2466,6 +2466,13 @@ test('code (text)', async function (t) {
     assert.equal(to({type: 'inlineCode', value: 'a\n- b'}), '`a - b`\n')
   })
 
+  await t.test(
+    'should prevent breaking out of code after a line with only a list marker',
+    async function () {
+      assert.equal(to({type: 'inlineCode', value: 'a\n-\n- b'}), '`a - - b`\n')
+    }
+  )
+
   await t.test('should prevent breaking out of code (#)', async function () {
     assert.equal(to({type: 'inlineCode', value: 'a\n#'}), '`a #`\n')
   })
@@ -5077,6 +5084,29 @@ test('escape', async function (t) {
     }
   )
 
+  for (const value of [
+    'a\n-\n- b',
+    'a\n+\n+ b',
+    'a\n1.\n1. b',
+    'a\n-\n-\n- b'
+  ]) {
+    await t.test(
+      'should roundtrip adjacent list markers in text (' +
+        JSON.stringify(value) +
+        ')',
+      async function () {
+        /** @type {Root} */
+        const tree = {
+          type: 'root',
+          children: [{type: 'paragraph', children: [{type: 'text', value}]}]
+        }
+        const actual = from(to(tree))
+        removePosition(actual, {force: true})
+        assert.deepEqual(actual, tree)
+      }
+    )
+  }
+
   await t.test(
     'should not escape what can’t be a list (dot)',
     async function () {
@@ -5572,6 +5602,19 @@ test('escape', async function (t) {
       '\\:á\n'
     )
   })
+
+  await t.test(
+    'should escape consecutive characters with an `after` condition',
+    async function () {
+      assert.equal(
+        to(
+          {type: 'paragraph', children: [{type: 'text', value: ':::a :b'}]},
+          {extensions: [{unsafe: [{character: ':', after: '[:a]'}]}]}
+        ),
+        '\\:\\:\\:a :b\n'
+      )
+    }
+  )
 
   await t.test(
     'should treat empty `after` or `before` as missing',
