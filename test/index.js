@@ -2466,6 +2466,13 @@ test('code (text)', async function (t) {
     assert.equal(to({type: 'inlineCode', value: 'a\n- b'}), '`a - b`\n')
   })
 
+  await t.test(
+    'should prevent breaking out of code (`-` after `-` line)',
+    async function () {
+      assert.equal(to({type: 'inlineCode', value: 'a\n-\n- b'}), '`a - - b`\n')
+    }
+  )
+
   await t.test('should prevent breaking out of code (#)', async function () {
     assert.equal(to({type: 'inlineCode', value: 'a\n#'}), '`a #`\n')
   })
@@ -4995,6 +5002,16 @@ test('escape', async function (t) {
   )
 
   await t.test(
+    'should escape what would otherwise be a list item (dash after `-` line)',
+    async function () {
+      assert.equal(
+        to({type: 'paragraph', children: [{type: 'text', value: 'a\n-\n- b'}]}),
+        'a\n\\-\n\\- b\n'
+      )
+    }
+  )
+
+  await t.test(
     'should not escape `-` when not followed by whitespace',
     async function () {
       assert.equal(
@@ -5572,6 +5589,19 @@ test('escape', async function (t) {
       '\\:á\n'
     )
   })
+
+  await t.test(
+    'should support `before` matching the previous character',
+    async function () {
+      assert.equal(
+        to(
+          {type: 'paragraph', children: [{type: 'text', value: 'a:::'}]},
+          {unsafe: [{before: ':', character: ':'}]}
+        ),
+        'a:\\:\\:\n'
+      )
+    }
+  )
 
   await t.test(
     'should treat empty `after` or `before` as missing',
